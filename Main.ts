@@ -3,8 +3,7 @@ import Database from "./database/Database"
 import Request from "./request/Request";
 import User from "./database/model/User";
 import Bot from "./bot/Bot";
-import Helper from "./utility/Helper";
-import {Sequelize} from "sequelize";
+import {Op, Sequelize} from "sequelize";
 
 export default class Main {
 
@@ -22,7 +21,10 @@ export default class Main {
         //this.startBot(1)
 
         User.findAll({
-            limit: 10,
+            where: {
+                username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
+            },
+            limit: 5,
             order: Sequelize.literal('random()')
         }).then((users: User[]) => users.forEach(user => this.startBot(user.id)))
 
@@ -34,6 +36,7 @@ export default class Main {
         //         i++
         //     }
         // })
+
     }
 
     private static _singleton: Main

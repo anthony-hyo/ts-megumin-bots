@@ -20,12 +20,19 @@ export default class Database {
             ],
         })
 
-        this.sequelize.authenticate()
+        this.sequelize
+            .authenticate()
             .then(() => {
                 logger.info("Database connected")
-                this.sequelize.sync().catch(console.error)
+
+                this.sequelize
+                    .sync()
+                    .then(() => {
+                        logger.info("Database sync")
+                    })
+                    .catch(logger.error)
             })
-            .catch(console.error)
+            .catch(logger.error)
     }
 
 }
