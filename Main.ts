@@ -28,7 +28,7 @@ export default class Main {
             // where: {
             //     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
             // },
-            limit: 1,
+            limit: 30,
             order: Sequelize.literal('random()')
         }).then((users: User[]) => users.forEach(user => this.startBot(user.id)))
     }

@@ -31,7 +31,7 @@ export default class Request {
             const command: String = this.packets.get(data.cmd)
 
             if (command == undefined) {
-                if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems'].includes(data.cmd)) {
+                if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {
                     logger.error(`[request] undefined "${data.cmd}"`)
                 }
                 return
