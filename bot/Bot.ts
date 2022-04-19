@@ -9,6 +9,7 @@ import WorldBoss from "./handler/WorldBoss";
 import Room from "../data/Room";
 import BotProperties from "./BotProperties";
 import Default from "./handler/Default";
+import Fill from "./handler/Fill";
 
 export default class Bot {
 
@@ -56,7 +57,7 @@ export default class Bot {
         return this._user;
     }
 
-    private _room: Room = new Room()
+    private _room: Room = new Room(this)
 
     public get room(): Room {
         return this._room;
@@ -66,15 +67,10 @@ export default class Bot {
         this._room = value;
     }
 
-    private _handler: IHandler = new Default(this)
+    private _handler: IHandler = new WorldBoss(this)
 
     public get handler(): IHandler {
         return this._handler;
-    }
-
-    public join(id, name): void {
-        this.room.id = id
-        this.room.name = name
     }
 
 }
