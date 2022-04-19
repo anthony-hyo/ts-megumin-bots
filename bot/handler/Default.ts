@@ -2,8 +2,8 @@ import {IHandler} from "../../interface/IHandler";
 import Bot from "../Bot";
 import logger from "../../utility/Logger";
 import Avatar from "../../data/Avatar";
-import {IMoveToArea} from "../../interface/request/MoveToArea";
-import ILoadInventoryBig from "../../interface/request/Item";
+import IMoveToArea from "../../interface/request/IMoveToArea";
+import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 
 export default class Default implements IHandler {
 

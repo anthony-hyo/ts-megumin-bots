@@ -21,10 +21,10 @@ export default class Main {
         //this.startBot(1)
 
         User.findAll({
-            where: {
-                username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
-            },
-            limit: 5,
+            // where: {
+            //     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
+            // },
+            limit: 50,
             order: Sequelize.literal('random()')
         }).then((users: User[]) => users.forEach(user => this.startBot(user.id)))
 

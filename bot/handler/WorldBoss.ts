@@ -36,6 +36,31 @@ export default class WorldBoss extends Default {
             })
             .catch(logger.error)
 
+        //test
+        setInterval(() => {
+            Position
+                .findOne({
+                    where: {
+                        map_name: data.strMapName
+                    },
+                    order: Sequelize.literal('random()')
+                })
+                .then((position: Position) => {
+                    this.bot.network.send('moveToCell', [
+                        position.frame,
+                        position.pad
+                    ])
+                    setTimeout(() => {
+                        this.bot.network.send("mv", [
+                            position.x,
+                            position.y,
+                            10 //ignored
+                        ])
+                    }, 2000)
+                })
+                .catch(logger.error)
+        }, 10000)
+
         if (data.monmap !== undefined && data.monmap.length > 0) {
             const monster: Monmap = data.monmap[0]
 
@@ -55,10 +80,10 @@ export default class WorldBoss extends Default {
     onInventoryLoad(data: ILoadInventoryBig) {
         data.items.forEach(item => {
             switch (item.ItemID) {
-                case 8236:
-                case 13397:
-                case 16222:
-                case 14936:
+                case 8236: //Boss Soul
+                case 13397: //Boss Blood
+                case 16222: //Limit Break +5
+                case 14936: //Limit Break +1
                     axios
                         .get(`https://redhero.online/api/wiki/item/${item.ItemID}`)
                         .then((response: AxiosResponse) => {
@@ -71,7 +96,7 @@ export default class WorldBoss extends Default {
 
                                 const cost: number = Math.round(Helper.arrayAverage(costs)) * item.iQty
 
-                                logger.info(`[market] selling "${item.sName}" for "${cost}" Coins`)
+                                logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
 
                                 this.bot.network.send("sellAuctionItem", [
                                     item.ItemID,

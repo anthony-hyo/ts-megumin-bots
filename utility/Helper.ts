@@ -43,4 +43,6 @@ export default class Helper {
         return sum / numbersCnt
     }
 
+    public static parseHTML = (value: string) => value.replaceAll(/<.*?>/, '');
+
 }
