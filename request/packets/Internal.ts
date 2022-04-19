@@ -1,6 +1,7 @@
 import IRequest from "../../interface/IRequest";
 import Bot from "../../bot/Bot";
 import logger from "../../utility/Logger";
+import Main from "../../Main";
 
 export default class Internal implements IRequest {
 
@@ -26,6 +27,13 @@ export default class Internal implements IRequest {
             case 'server':
                 if (String(args[2]).startsWith('You joined')) {
                     bot.network.send('retrieveUserDatas', [ bot.network.id ])
+                }
+                break
+            case 'chatm':
+                const split: string[] = String(args[2]).split('~')
+
+                if (String(args[3]).toLowerCase() !== bot.user.username.toLowerCase()) {
+                    Main.singleton.seeborg.onMessage(bot, 'zone', args[3], split[1])
                 }
                 break
         }

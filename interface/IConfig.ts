@@ -1,3 +1,9 @@
+export interface ISeeborgConfig {
+    behavior: any;
+    channelOverrides: any;
+    autoSavePeriod: number;
+}
+
 export default interface IConfig {
     database: {
         user: string
@@ -6,4 +12,5 @@ export default interface IConfig {
         host: string
         port: number
     }
+    seeborg: ISeeborgConfig
 }

@@ -3,40 +3,34 @@ import Database from "./database/Database"
 import Request from "./request/Request";
 import User from "./database/model/User";
 import Bot from "./bot/Bot";
-import {Op, Sequelize} from "sequelize";
+import {Sequelize} from "sequelize";
+import Seeborg from "./seeborg/Seeborg";
+
+const yaml = require('yaml-js')
+const fs = require('fs')
 
 export default class Main {
 
-    private readonly config: Config = Config.loadConfig('./config.yml')
+    public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
+
+    private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
+
+    private readonly _seeborg: Seeborg = new Seeborg(this.config)
 
     private readonly database: Database = new Database(this.config)
-
-    public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
 
     constructor() {
         Main._singleton = this
 
         this.bots.clear()
 
-        //this.startBot(1)
-
         User.findAll({
             // where: {
             //     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
             // },
-            limit: 50,
+            limit: 1,
             order: Sequelize.literal('random()')
         }).then((users: User[]) => users.forEach(user => this.startBot(user.id)))
-
-        // User.findAll().then((users: User[]) => {
-        //     let i = 0
-        //     for (const user of users) {
-        //         if (i > 5) break
-        //         new Bot(user.id)
-        //         i++
-        //     }
-        // })
-
     }
 
     private static _singleton: Main
@@ -49,6 +43,14 @@ export default class Main {
 
     public get request(): Request {
         return this._request;
+    }
+
+    public get config(): Config {
+        return this._config
+    }
+
+    public get seeborg(): Seeborg {
+        return this._seeborg
     }
 
     public startBot(botId: number): Bot {
