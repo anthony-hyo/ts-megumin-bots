@@ -1,4 +1,4 @@
-interface Item {
+export interface Item {
     ItemID: number;
     bCoins: number;
     bHouse: number;

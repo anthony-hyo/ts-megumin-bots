@@ -32,7 +32,7 @@ export default class Request {
 
             if (command == undefined) {
                 if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems'].includes(data.cmd)) {
-                    logger.warn(`[request] undefined "${data.cmd}"`)
+                    logger.error(`[request] undefined "${data.cmd}"`)
                 }
                 return
             }
