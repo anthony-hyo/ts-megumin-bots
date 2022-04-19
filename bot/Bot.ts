@@ -8,6 +8,7 @@ import {IHandler} from "../interface/IHandler";
 import WorldBoss from "./handler/WorldBoss";
 import Room from "../data/Room";
 import BotProperties from "./BotProperties";
+import Default from "./handler/Default";
 
 export default class Bot {
 
@@ -65,7 +66,7 @@ export default class Bot {
         this._room = value;
     }
 
-    private _handler: IHandler = new WorldBoss(this)
+    private _handler: IHandler = new Default(this)
 
     public get handler(): IHandler {
         return this._handler;

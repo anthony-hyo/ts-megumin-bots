@@ -16,7 +16,6 @@ function removeEmpty(strArr: any[]) {
         el !== null && el !== undefined && el.trim() !== '');
 }
 
-
 module.exports = {
     splitWords: splitWords,
     splitSentences: splitSentences

@@ -45,4 +45,6 @@ export default class Helper {
 
     public static parseHTML = (value: string) => value.replaceAll(/<.*?>/, '');
 
+    public static chancePredicate = (chancePercentage: number, predicate: { (): any; (): any; (): boolean; (): any; }) => !!(chancePercentage > 0 && predicate() && (chancePercentage > Math.random() * 99 || chancePercentage === 100));
+
 }
