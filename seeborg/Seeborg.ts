@@ -18,11 +18,11 @@ export default class Seeborg {
         this.config = config
         
         setInterval(() => {
-            logger.warn('[Seeborg] Saving dictionary...');
+            logger.debug('[Seeborg] Saving dictionary...');
 
             this.dictionary.save();
 
-            logger.warn('[Seeborg] Dictionary saved.');
+            logger.debug('[Seeborg] Dictionary saved.');
 
         }, config.autoSavePeriod() * 1000);
     }
@@ -43,7 +43,7 @@ export default class Seeborg {
     }
 
     private replyWithAnswer(bot: Bot, channel: string, message: string) {
-        logger.warn('[Seeborg] Reply with answer');
+        logger.debug('[Seeborg] Reply with answer');
 
         message = this.computeAnswer(message);
 
@@ -52,7 +52,8 @@ export default class Seeborg {
                 logger.error('[Seeborg] response was null');
                 break;
             default:
-                logger.warn(`[Seeborg] Reply "${message}"`)
+                message = message.replace('@', '')
+                logger.info(`[Seeborg] Reply "${channel}" ${message}"`)
                 bot.network.send('message', [ message, channel ])
                 break;
         }
@@ -63,7 +64,7 @@ export default class Seeborg {
         const knownWords = words.filter((word: any) => this.dictionary.isWordKnown(word));
 
         if (knownWords.length === 0) {
-            logger.warn(`[Seeborg] No sentences with ${words} found`);
+            logger.debug(`[Seeborg] No sentences with ${words} found`);
             return null;
         }
 
@@ -117,7 +118,7 @@ export default class Seeborg {
     }
 
     private learn(message: string) {
-        logger.warn(`[Seeborg] Learn`);
+        logger.debug(`[Seeborg] Learn`);
 
         try {
             this.dictionary.insertLine(message);
@@ -133,7 +134,7 @@ export default class Seeborg {
 
         // Ignore messages that match the blacklist
         if (this.config.matchesBlacklistedPattern(channel, message)) {
-            logger.warn(`[Seeborg] Should learn is black listed ${message}`);
+            logger.debug(`[Seeborg] Should learn is black listed ${message}`);
             return false;
         }
 
@@ -143,7 +144,7 @@ export default class Seeborg {
     private shouldProcessMessage(channel: string, username: string) {
         //Ignore users in the ignore list
         if (this.config.isIgnored(channel, username)) {
-            logger.warn(`[Seeborg] Should process message ignored "${channel}" "${username}"`);
+            logger.debug(`[Seeborg] Should process message ignored "${channel}" "${username}"`);
             return false;
         }
 

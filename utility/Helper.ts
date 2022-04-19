@@ -43,7 +43,7 @@ export default class Helper {
         return sum / numbersCnt
     }
 
-    public static parseHTML = (value: string) => value.replaceAll(/<.*?>/, '');
+    public static parseHTML = (value: string) => value.replace(/(<([^>]+)>)/ig, '');
 
     public static chancePredicate = (chancePercentage: number, predicate: { (): any; (): any; (): boolean; (): any; }) => !!(chancePercentage > 0 && predicate() && (chancePercentage > Math.random() * 99 || chancePercentage === 100));
 

@@ -46,8 +46,9 @@ export default class CombatState implements IRequest {
                 switch (element.intState) {
                     case AvatarState.DEAD:
                         //this.bot.handler.onTargetDeath()
-                        if (pKey.toLocaleLowerCase() == this.bot.user.username.toLocaleLowerCase())
-                            console.log(avatarType, pKey, 'DEAD')
+                        if (pKey.toLocaleLowerCase() == this.bot.user.username.toLocaleLowerCase()) {
+                            setTimeout(() => this.bot.network.send('resPlayerTimed'), 6000)
+                        }
                         break;
                     case AvatarState.NEUTRAL:
                         //console.log(avatarType, pKey, 'NEUTRAL')

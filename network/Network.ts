@@ -32,7 +32,7 @@ export default class Network {
         this._id = value;
     }
 
-    public send(command: string, args: Array<any>) {
+    public send(command: string, args: Array<any> = []) {
         logger.debug(`[send] ${command} ${args.toString()}`)
 
         this.write({

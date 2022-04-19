@@ -19,7 +19,7 @@ export default class Internal implements IRequest {
                 const status:Boolean = args[2]
 
                 if (status) {
-                    bot.network.send('firstJoin', [])
+                    bot.network.send('firstJoin')
                 } else {
                     logger.error(`login failed to ${bot.user.username}`)
                 }
