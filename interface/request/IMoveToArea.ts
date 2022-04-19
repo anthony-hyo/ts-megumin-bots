@@ -174,7 +174,7 @@ export interface Npcmap {
     strFrame: string;
 }
 
-export interface IMoveToArea {
+export default interface IMoveToArea {
     cmd: string;
     areaId: number;
     areaName: string;

@@ -1,13 +1,41 @@
 import Default from "./Default";
-import {IMoveToArea, Monmap} from "../../interface/request/MoveToArea";
-import ILoadInventoryBig from "../../interface/request/Item";
 import axios, {AxiosResponse} from "axios";
 import logger from "../../utility/Logger";
 import Helper from "../../utility/Helper";
+import Position from "../../database/model/Position";
+import {Sequelize} from "sequelize";
+import IMoveToArea, {Monmap} from "../../interface/request/IMoveToArea";
+import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 
 export default class WorldBoss extends Default {
 
     onJoin(data: IMoveToArea): void {
+
+        /**
+         * Find position to move
+         */
+        Position
+            .findOne({
+                where: {
+                    map_name: data.strMapName
+                },
+                order: Sequelize.literal('random()')
+            })
+            .then((position: Position) => {
+                this.bot.network.send('moveToCell', [
+                    position.frame,
+                    position.pad
+                ])
+                setTimeout(() => {
+                    this.bot.network.send("mv", [
+                        position.x,
+                        position.y,
+                        10 //ignored
+                    ])
+                }, 2000)
+            })
+            .catch(logger.error)
+
         if (data.monmap !== undefined && data.monmap.length > 0) {
             const monster: Monmap = data.monmap[0]
 
@@ -23,11 +51,6 @@ export default class WorldBoss extends Default {
             }, 3000)
         }
     }
-
-    //8236 Boss Soul
-    //13397 Boss Blood
-    //16222	preview Limit Break +5
-    //14936	preview Limit Break +1
 
     onInventoryLoad(data: ILoadInventoryBig) {
         data.items.forEach(item => {
