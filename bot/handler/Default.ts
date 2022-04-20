@@ -7,61 +7,61 @@ import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 
 export default class Default implements IHandler {
 
-    constructor(bot: Bot) {
-        this._bot = bot
-    }
+	private readonly _bot: Bot
 
-    private readonly _bot: Bot
+	constructor(bot: Bot) {
+		this._bot = bot
+	}
 
-    public get bot(): Bot {
-        return this._bot;
-    }
+	public get bot(): Bot {
+		return this._bot;
+	}
 
-    onJoin(data: IMoveToArea): void {
-        logger.debug('default onJoin')
-    }
+	onJoin(data: IMoveToArea): void {
+		logger.debug('default onJoin')
+	}
 
-    onInventoryLoad(data: ILoadInventoryBig): void {
-        logger.debug('default onInventoryLoad')
-    }
+	onInventoryLoad(data: ILoadInventoryBig): void {
+		logger.debug('default onInventoryLoad')
+	}
 
-    onDropItem(): void {
-        logger.debug('default onDropItem')
-    }
+	onDropItem(): void {
+		logger.debug('default onDropItem')
+	}
 
-    onDamageTaken(): void {
-        logger.debug('default onDamageTaken')
-    }
+	onDamageTaken(): void {
+		logger.debug('default onDamageTaken')
+	}
 
-    /*
-        User
-     */
-    onUserJoin(networkId: number): void {
-        logger.debug('default onUserJoin')
-    }
+	/*
+		User
+	 */
+	onUserJoin(networkId: number): void {
+		logger.debug('default onUserJoin')
+	}
 
-    onUserLeave(networkId: number): void {
-        logger.debug('default onUserLeave')
-    }
+	onUserLeave(networkId: number): void {
+		logger.debug('default onUserLeave')
+	}
 
-    /*
-        Monster
-     */
-    onWorldBoss(data: any): void {
-        logger.debug('default onWorldBoss')
-    }
+	/*
+		Monster
+	 */
+	onWorldBoss(data: any): void {
+		logger.debug('default onWorldBoss')
+	}
 
-    /*
-        NPC
-     */
-    //TODO:..
+	/*
+		NPC
+	 */
+	//TODO:..
 
-    /*
-        Avatar
-     */
-    onTargetDeath(avatar: Avatar): void {
-        logger.debug('default onTargetDeath')
-    }
+	/*
+		Avatar
+	 */
+	onTargetDeath(avatar: Avatar): void {
+		logger.debug('default onTargetDeath')
+	}
 
 
 }

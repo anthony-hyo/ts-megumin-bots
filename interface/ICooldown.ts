@@ -1,5 +1,5 @@
 export interface ICooldown {
-    command: string
-    userId: string
-    timeout: number
+	command: string
+	userId: string
+	timeout: number
 }

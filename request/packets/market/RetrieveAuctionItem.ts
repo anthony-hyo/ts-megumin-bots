@@ -6,10 +6,10 @@ import Helper from "../../../utility/Helper";
 
 export default class RetrieveAuctionItem implements IRequest {
 
-    public command: string = 'retrieveAuctionItem'
+	public command: string = 'retrieveAuctionItem'
 
-    handler(bot: Bot, data: IMarket): void {
-        logger.info(`[${bot.user.username}] [market] retrieved "${Helper.parseHTML(data.item.sName)}"`)
-    }
+	handler(bot: Bot, data: IMarket): void {
+		logger.info(`[${bot.user.username}] [market] retrieved "${Helper.parseHTML(data.item.sName)}"`)
+	}
 
 }

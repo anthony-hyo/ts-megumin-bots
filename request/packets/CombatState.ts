@@ -2,63 +2,63 @@ import Bot from "../../bot/Bot";
 import IRequest from "../../interface/IRequest";
 
 const AvatarType = {
-    PLAYER:'p',
-    MONSTER: 'm',
-    NPC: 'n'
+	PLAYER: 'p',
+	MONSTER: 'm',
+	NPC: 'n'
 }
 
 const AvatarState = {
-    DEAD: 0,
-    NEUTRAL: 1,
-    COMBAT: 2
+	DEAD: 0,
+	NEUTRAL: 1,
+	COMBAT: 2
 }
 
 export default class CombatState implements IRequest {
 
-    public command: string = 'ct'
+	public command: string = 'ct'
 
-    private bot: Bot
+	private bot: Bot
 
-    handler(bot: Bot, data: any): void {
-        this.bot = bot
+	handler(bot: Bot, data: any): void {
+		this.bot = bot
 
-        // Player
-        if (data.p != undefined) {
-            this.parse(AvatarType.PLAYER, data.p)
-        }
+		// Player
+		if (data.p != undefined) {
+			this.parse(AvatarType.PLAYER, data.p)
+		}
 
-        // Monster
-        if (data.m != undefined) {
-            this.parse(AvatarType.MONSTER, data.m)
-        }
+		// Monster
+		if (data.m != undefined) {
+			this.parse(AvatarType.MONSTER, data.m)
+		}
 
-        // NPC
-        if (data.n != undefined) {
-            this.parse(AvatarType.NPC, data.n)
-        }
-    }
+		// NPC
+		if (data.n != undefined) {
+			this.parse(AvatarType.NPC, data.n)
+		}
+	}
 
-    private parse(avatarType: string, data: any) {
-        for (const pKey in data) {
-            const element: any = data[pKey]
+	private parse(avatarType: string, data: any) {
+		for (const pKey in data) {
+			const element: any = data[pKey]
 
-            if (element.intState !== undefined) {
-                switch (element.intState) {
-                    case AvatarState.DEAD:
-                        //this.bot.handler.onTargetDeath()
-                        if (pKey.toLocaleLowerCase() == this.bot.user.username.toLocaleLowerCase()) {
-                            setTimeout(() => this.bot.network.send('resPlayerTimed'), 6000)
-                        }
-                        break;
-                    case AvatarState.NEUTRAL:
-                        //console.log(avatarType, pKey, 'NEUTRAL')
-                        break;
-                    case AvatarState.COMBAT:
-                        //console.log(avatarType, pKey, 'COMBAT')
-                        break;
-                }
-            }
-        }
-    }
+			if (element.intState !== undefined) {
+				switch (element.intState) {
+					case AvatarState.DEAD:
+						//this.bot.handler.onTargetDeath()
+						if (pKey.toLocaleLowerCase() == this.bot.user.username.toLocaleLowerCase()) {
+							setTimeout(() => this.bot.network.send('resPlayerTimed'), 6000)
+						}
+						break;
+					case AvatarState.NEUTRAL:
+						//console.log(avatarType, pKey, 'NEUTRAL')
+						break;
+					case AvatarState.COMBAT:
+						//console.log(avatarType, pKey, 'COMBAT')
+						break;
+				}
+			}
+		}
+	}
 
 }

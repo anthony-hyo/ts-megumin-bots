@@ -11,53 +11,51 @@ const fs = require('fs')
 
 export default class Main {
 
-    public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
+	public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
+	public i = 0
+	private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
+	private readonly _seeborg: Seeborg = new Seeborg(this.config)
+	private readonly database: Database = new Database(this.config)
 
-    private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
+	constructor() {
+		Main._singleton = this
 
-    private readonly _seeborg: Seeborg = new Seeborg(this.config)
+		this.bots.clear()
 
-    private readonly database: Database = new Database(this.config)
+		User.findAll({
+			// where: {
+			//     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
+			// },
+			limit: 5,
+			order: Sequelize.literal('random()')
+		}).then((users: User[]) => users.forEach(user => this.startBot(user.id)))
+	}
 
-    constructor() {
-        Main._singleton = this
+	private static _singleton: Main
 
-        this.bots.clear()
+	public static get singleton(): Main {
+		return this._singleton;
+	}
 
-        User.findAll({
-            // where: {
-            //     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
-            // },
-            limit: 30,
-            order: Sequelize.literal('random()')
-        }).then((users: User[]) => users.forEach(user => this.startBot(user.id)))
-    }
+	private _request: Request = new Request();
 
-    private static _singleton: Main
+	public get request(): Request {
+		return this._request;
+	}
 
-    public static get singleton(): Main {
-        return this._singleton;
-    }
+	public get config(): Config {
+		return this._config
+	}
 
-    private _request: Request = new Request();
+	public get seeborg(): Seeborg {
+		return this._seeborg
+	}
 
-    public get request(): Request {
-        return this._request;
-    }
-
-    public get config(): Config {
-        return this._config
-    }
-
-    public get seeborg(): Seeborg {
-        return this._seeborg
-    }
-
-    public startBot(botId: number): Bot {
-        const bot = new Bot(botId)
-        this.bots.set(botId, bot)
-        return bot
-    }
+	public startBot(botId: number): Bot {
+		const bot = new Bot(botId)
+		this.bots.set(botId, bot)
+		return bot
+	}
 
 }
 

@@ -38,7 +38,7 @@ export default class Fill extends Default {
 			'purgatory'
 		]
 
-		this.bot.network.send('cmd', ['tfer', '', arr[Helper.randomIntegerInRange(0, arr.length-1)]])
+		this.bot.network.send('cmd', ['tfer', '', arr[Helper.randomIntegerInRange(0, arr.length - 1)]])
 	}
 
 }

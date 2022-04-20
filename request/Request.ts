@@ -6,47 +6,47 @@ import logger from "../utility/Logger";
 
 export default class Request {
 
-    private readonly packets: Map<String, String> = new Map<String, String>()
+	private readonly packets: Map<String, String> = new Map<String, String>()
 
-    constructor() {
-        let location: string = path.resolve(__dirname, 'packets')
+	constructor() {
+		let location: string = path.resolve(__dirname, 'packets')
 
-        let files: string[] = Helper.getAllFilesFromFolder(location)
+		let files: string[] = Helper.getAllFilesFromFolder(location)
 
-        files.forEach(file => {
-            const request: IRequest = new (require(file).default)()
+		files.forEach(file => {
+			const request: IRequest = new (require(file).default)()
 
-            logger.debug(`[request] ${request.command}`)
+			logger.debug(`[request] ${request.command}`)
 
-            this.packets.set(request.command, file)
-        });
-    }
+			this.packets.set(request.command, file)
+		});
+	}
 
-    public run(json: string, bot: Bot) {
-        const data: any = JSON.parse(json)
+	public run(json: string, bot: Bot) {
+		const data: any = JSON.parse(json)
 
-        try {
-            logger.debug(`[received] ${data.cmd}`)
+		try {
+			logger.debug(`[received] ${data.cmd}`)
 
-            const command: String = this.packets.get(data.cmd)
+			const command: String = this.packets.get(data.cmd)
 
-            if (command == undefined) {
-                if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {
-                    logger.error(`[request] undefined "${data.cmd}"`)
-                }
-                return
-            }
+			if (command == undefined) {
+				if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {
+					logger.error(`[request] undefined "${data.cmd}"`)
+				}
+				return
+			}
 
-            const request: IRequest = new (require(command.toString()).default)()
+			const request: IRequest = new (require(command.toString()).default)()
 
-            if (request) {
-                request.handler(bot, data)
-            } else {
-                logger.error(`[request] not found "${data.cmd}"`)
-            }
-        } catch (error) {
-            logger.error(`[request] error ${data.cmd} ${error}`)
-        }
-    }
+			if (request) {
+				request.handler(bot, data)
+			} else {
+				logger.error(`[request] not found "${data.cmd}"`)
+			}
+		} catch (error) {
+			logger.error(`[request] error ${data.cmd} ${error}`)
+		}
+	}
 
 }
