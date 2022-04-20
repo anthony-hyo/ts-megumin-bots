@@ -56,9 +56,10 @@ export interface Item {
     bSold: boolean;
 }
 
-export interface ILoadRetrieve {
-    items: Item[];
-    item: Item;
+export interface IMarket {
     cmd: string;
     bitSuccess: number;
+    strMessage: string
+    items: Item[];
+    item: Item;
 }
