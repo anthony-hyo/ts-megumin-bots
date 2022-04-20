@@ -2,9 +2,7 @@ import Room from "../data/Room";
 
 export default class BotProperties {
 
-	public room: Room
-
-	public token: string = null
+	public token!: string
 
 	public required_monsters: Array<any> = [];
 

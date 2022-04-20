@@ -17,7 +17,7 @@ export default class CombatState implements IRequest {
 
 	public command: string = 'ct'
 
-	private bot: Bot
+	private bot!: Bot;
 
 	handler(bot: Bot, data: any): void {
 		this.bot = bot

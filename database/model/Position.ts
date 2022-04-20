@@ -12,41 +12,41 @@ export default class Position extends Model {
 		autoIncrement: true,
 		allowNull: false
 	})
-	id: number
+	id!: number
 
 	@Column({
 		type: DataType.STRING(32),
 		allowNull: false,
 		defaultValue: ``
 	})
-	map_name: string
+	map_name!: string
 
 	@Column({
 		type: DataType.STRING(32),
 		allowNull: false,
 		defaultValue: ``
 	})
-	frame: string
+	frame!: string
 
 	@Column({
 		type: DataType.STRING(32),
 		allowNull: false,
 		defaultValue: ``
 	})
-	pad: string
+	pad!: string
 
 	@Column({
 		type: DataType.DOUBLE,
 		allowNull: false,
 		defaultValue: ``
 	})
-	x: string
+	x!: string
 
 	@Column({
 		type: DataType.STRING(32),
 		allowNull: false,
 		defaultValue: ``
 	})
-	y: string
+	y!: string
 
 }

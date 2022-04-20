@@ -90,24 +90,13 @@ export default class Seeborg {
 	}
 
 	private shouldComputeAnswer(channel: string, username: string, message: string) {
-		// Bot should not speak if speaking is set to false
-		if (!this.config.speaking(channel)) {
+		if (!this.config.speaking(channel)) { // Bot should not speak if speaking is set to false
 			return false;
-		}
-
-			// Reply mention
-		//TODO: CHECK Whisper
-		else if (Helper.chancePredicate(this.config.replyMention(channel), () => message.includes(username))) {
+		} else if (Helper.chancePredicate(this.config.replyMention(channel), () => message.includes(username))) {// Reply mention //TODO: CHECK Whisper
 			return true;
-		}
-
-		// Reply magic
-		else if (Helper.chancePredicate(this.config.replyMagic(channel), () => this.config.matchesMagicPattern(channel, message))) {
+		}else if (Helper.chancePredicate(this.config.replyMagic(channel), () => this.config.matchesMagicPattern(channel, message))) { // Reply magic
 			return true;
-		}
-
-		// Reply rate
-		else if (Helper.chancePredicate(this.config.replyRate(channel), () => true)) {
+		} else if (Helper.chancePredicate(this.config.replyRate(channel), () => true)) { // Reply rate
 			return true
 		} else {
 			return false;

@@ -12,7 +12,7 @@ export default class Room {
 		this.bot = bot
 	}
 
-	private _id: number
+	private _id!: number
 
 	public get id(): number {
 		return this._id;
@@ -22,7 +22,7 @@ export default class Room {
 		this._id = value;
 	}
 
-	private _name: string
+	private _name!: string
 
 	public get name(): string {
 		return this._name;
@@ -49,12 +49,15 @@ export default class Room {
 				},
 				order: Sequelize.literal('random()')
 			})
-			.then((position: Position) => {
-				this.bot.network.send('moveToCell', [
-					position.frame,
-					position.pad
-				])
-				setTimeout(() => this.bot.network.send("mv", [position.x, position.y, 10]), Helper.randomIntegerInRange(2000, 5000))
+			.then((position: Position | null) => {
+				if (position) {
+					this.bot.network.send('moveToCell', [
+						position.frame,
+						position.pad
+					])
+
+					setTimeout(() => this.bot.network.send("mv", [position.x, position.y, 10]), Helper.randomIntegerInRange(2000, 5000))
+				}
 			})
 			.catch(console.error)
 	}

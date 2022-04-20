@@ -28,7 +28,7 @@ export default class Request {
 		try {
 			logger.debug(`[received] ${data.cmd}`)
 
-			const command: String = this.packets.get(data.cmd)
+			const command: String | undefined = this.packets.get(data.cmd)
 
 			if (command == undefined) {
 				if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {

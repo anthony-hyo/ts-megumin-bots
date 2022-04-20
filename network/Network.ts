@@ -10,9 +10,9 @@ export default class Network {
 
 	private readonly socket: net.Socket = new net.Socket()
 
-	private readonly bot: Bot = null
+	private readonly bot: Bot
 
-	private readonly delimiter = '\0';
+	private readonly delimiter: string = '\0';
 
 	private chunk = "";
 
@@ -73,9 +73,7 @@ export default class Network {
 				this.bot.properties.token
 			])
 
-			this.bot.handler = Main.singleton.i > 15 ? new Fill(this.bot) : new WorldBoss(this.bot)
-
-			Main.singleton.i++;
+			this.bot.handler = new WorldBoss(this.bot)
 
 			setTimeout(() => {
 				this.bot.network.send('retrieveInventory', [this.bot.network.id])
