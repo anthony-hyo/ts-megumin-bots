@@ -1,15 +1,14 @@
 import Bot from "../../../bot/Bot";
 import IRequest from "../../../interface/IRequest";
+import {IMarket} from "../../../interface/request/IMarket";
 import logger from "../../../utility/Logger";
-import {ILoadRetrieve} from "../../../interface/request/ILoadRetrieve";
-import Helper from "../../../utility/Helper";
 
 export default class SellAuctionItem implements IRequest {
 
 	public command: string = 'sellAuctionItem'
 
-	handler(bot: Bot, data: ILoadRetrieve): void {
-		console.log(data)
+	handler(bot: Bot, data: IMarket): void {
+		logger.warn(`[market] sell "${bot.user.username}" "${data.strMessage}"`)
 	}
 
 }
