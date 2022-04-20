@@ -27,7 +27,7 @@ export default class Helper {
 		}
 	}
 
-	public static randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+	public static randomIntegerInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 	public static arrayAverage(arr: Array<number>): number {
 		//Find the sum

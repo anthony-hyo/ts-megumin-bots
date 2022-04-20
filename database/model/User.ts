@@ -12,21 +12,21 @@ export default class User extends Model {
 		autoIncrement: true,
 		allowNull: false
 	})
-	id: number
+	id!: number
 
 	@Column({
 		type: DataType.STRING(32),
 		allowNull: false,
 		defaultValue: ``
 	})
-	username: string
+	username!: string
 
 	@Column({
 		type: DataType.STRING(32),
 		allowNull: false,
 		defaultValue: ``
 	})
-	password: string
+	password!: string
 
 	// @Column({
 	//     type: DataType.STRING(64),

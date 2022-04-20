@@ -1,7 +1,7 @@
 export default class Avatar {
 
-	public networkId: number
+	public networkId!: number
 
-	public username: string
+	public username!: string
 
 }

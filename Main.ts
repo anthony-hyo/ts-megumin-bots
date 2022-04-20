@@ -12,9 +12,11 @@ const fs = require('fs')
 export default class Main {
 
 	public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
-	public i = 0
+
 	private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
+
 	private readonly _seeborg: Seeborg = new Seeborg(this.config)
+
 	private readonly database: Database = new Database(this.config)
 
 	constructor() {
@@ -26,9 +28,9 @@ export default class Main {
 			// where: {
 			//     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
 			// },
-			limit: 5,
+			limit: 15,
 			order: Sequelize.literal('random()')
-		}).then((users: User[]) => users.forEach(user => this.startBot(user.id)))
+		}).then((users: User[]) => users.forEach(user => this.startBot(user)))
 	}
 
 	private static _singleton: Main
@@ -51,9 +53,9 @@ export default class Main {
 		return this._seeborg
 	}
 
-	public startBot(botId: number): Bot {
-		const bot = new Bot(botId)
-		this.bots.set(botId, bot)
+	public startBot(user: User): Bot {
+		const bot = new Bot(user)
+		this.bots.set(<Number>user.id, bot)
 		return bot
 	}
 

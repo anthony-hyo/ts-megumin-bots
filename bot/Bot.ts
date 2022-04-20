@@ -7,64 +7,62 @@ import {ILoginResponse} from "../interface/ILoginResponse";
 import {IHandler} from "../interface/IHandler";
 import Room from "../data/Room";
 import BotProperties from "./BotProperties";
+import Default from "./handler/Default";
 
 export default class Bot {
 
-	constructor(userId: number) {
-		User.findByPk(userId)
-			.then((user: User) => {
-				logger.debug(`[Bot] found "${user.username}"`)
+	private readonly _user!: User
 
-				this._user = user
+	private readonly _room: Room = new Room(this)
 
-				axios
-					.post('https://redhero.online/api/game/login', {
-						username: this._user.username,
-						password: this._user.password
-					})
-					.then((response: AxiosResponse) => {
-						const loginResponse: ILoginResponse = response.data;
+	private readonly _properties: BotProperties = new BotProperties()
 
-						logger.warn(`[login] ${loginResponse.user.Name}`)
+	constructor(user: User) {
+		logger.debug(`[Bot] found "${user.username}"`)
 
-						this.properties.token = loginResponse.user.Hash
+		this._user = user
 
-						const loginResponseServer: ILoginResponseServer = loginResponse.servers.find(server => server.Name == `Midgard`);
+		axios
+			.post('https://redhero.online/api/game/login', {
+				username: this._user.username,
+				password: this._user.password
+			})
+			.then((response: AxiosResponse) => {
+				const loginResponse: ILoginResponse = response.data;
 
-						this._network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
-					}).catch(console.error)
+				logger.warn(`[login] ${loginResponse.user.Name}`)
+
+				this.properties.token = loginResponse.user.Hash
+
+				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == `Midgard`);
+
+				if (loginResponseServer) {
+					this._network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
+				} else {
+					logger.error(`[Bot] server undefined "${user.username}"`)
+				}
 			}).catch(console.error)
 	}
 
-	private _network: Network
+	private _network!: Network
 
 	public get network(): Network {
 		return this._network
 	}
 
-	private _properties: BotProperties = new BotProperties()
-
-	public get properties(): BotProperties {
-		return this._properties;
-	}
-
-	private _user: User = null
-
 	public get user(): User {
 		return this._user;
 	}
-
-	private _room: Room = new Room(this)
 
 	public get room(): Room {
 		return this._room;
 	}
 
-	public set room(value: Room) {
-		this._room = value;
+	public get properties(): BotProperties {
+		return this._properties;
 	}
 
-	private _handler: IHandler
+	private _handler: IHandler = new Default(this)
 
 	public get handler(): IHandler {
 		return this._handler;

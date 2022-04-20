@@ -7,20 +7,19 @@ import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 
 export default class WorldBoss extends Default {
 
-	private interval: NodeJS.Timeout = null
+	private interval: NodeJS.Timeout | null = null
 
 	onJoin(data: IMoveToArea): void {
-		if (data.strMapName == 'town') {
-			const arr: Array<string> = [
-				'newbie',
-				'outset',
-				'yulgar',
-				'avalon',
-				'estarta',
-			]
+		const arr: Array<string> = [
+			'newbie',
+			'outset',
+			'yulgar',
+			'avalon',
+			'estarta',
+		]
 
+		if (!arr.includes(data.strMapName.toLowerCase()) || data.strMapName == 'town') {
 			this.bot.network.send('cmd', ['tfer', '', arr[Helper.randomIntegerInRange(0, arr.length - 1)]])
-
 			return
 		}
 
@@ -66,7 +65,7 @@ export default class WorldBoss extends Default {
 							if (json.markets != null && json.markets.length > 0) {
 								const costs: Array<number> = []
 
-								json.markets.forEach(market => costs.push(Number(market.Coins)))
+								json.markets.forEach((market: { Coins: any; }) => costs.push(Number(market.Coins)))
 
 								const cost: number = Math.round(Helper.arrayAverage(costs)) * item.iQty
 
