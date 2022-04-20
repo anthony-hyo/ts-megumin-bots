@@ -2,8 +2,8 @@ import Bot from "../bot/Bot";
 
 export default interface IRequest {
 
-    command: string
+	command: string
 
-    handler(bot: Bot, data: any): void
+	handler(bot: Bot, data: any): void
 
 }

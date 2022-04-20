@@ -1,6 +1,5 @@
 import Position from "../database/model/Position";
 import {Sequelize} from "sequelize";
-import logger from "../utility/Logger";
 import Bot from "../bot/Bot";
 import Helper from "../utility/Helper";
 import Avatar from "./Avatar";
@@ -35,7 +34,7 @@ export default class Room {
 
 	private _players: Set<Avatar> = new Set<Avatar>()
 
-    public get players(): Set<Avatar> {
+	public get players(): Set<Avatar> {
 		return this._players;
 	}
 

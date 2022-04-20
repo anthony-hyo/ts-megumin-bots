@@ -4,34 +4,34 @@ import ILoadInventoryBig from "./request/ILoadInventoryBig";
 
 export interface IHandler {
 
-    onJoin(data: IMoveToArea): void
+	onJoin(data: IMoveToArea): void
 
-    onInventoryLoad(data: ILoadInventoryBig): void
+	onInventoryLoad(data: ILoadInventoryBig): void
 
-    onDropItem(): void
+	onDropItem(): void
 
-    onDamageTaken(): void
+	onDamageTaken(): void
 
-    /*
-        User
-     */
-    onUserJoin(networkId: number): void
+	/*
+		User
+	 */
+	onUserJoin(networkId: number): void
 
-    onUserLeave(networkId: number): void
+	onUserLeave(networkId: number): void
 
-    /*
-        Monster
-     */
-    onWorldBoss(data: any): void;
+	/*
+		Monster
+	 */
+	onWorldBoss(data: any): void;
 
-    /*
-        NPC
-     */
-    //TODO:..
+	/*
+		NPC
+	 */
+	//TODO:..
 
-    /*
-        Avatar
-     */
-    onTargetDeath(avatar: Avatar): void
+	/*
+		Avatar
+	 */
+	onTargetDeath(avatar: Avatar): void
 
 }

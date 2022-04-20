@@ -1,7 +1,6 @@
 import Dictionary from "./Dictionary";
 import logger from "../utility/Logger"
 import Helper from "../utility/Helper";
-import Main from "../Main";
 import Bot from "../bot/Bot";
 import Config from "../utility/Config";
 
@@ -10,145 +9,143 @@ const _ = require('underscore');
 
 export default class Seeborg {
 
-    private readonly dictionary: Dictionary = new Dictionary()
+	private readonly dictionary: Dictionary = new Dictionary()
 
-    private readonly config: Config
+	private readonly config: Config
 
-    constructor(config: Config) {
-        this.config = config
-        
-        setInterval(() => {
-            logger.debug('[Seeborg] Saving dictionary...');
+	constructor(config: Config) {
+		this.config = config
 
-            this.dictionary.save();
+		setInterval(() => {
+			logger.debug('[Seeborg] Saving dictionary...');
 
-            logger.debug('[Seeborg] Dictionary saved.');
+			this.dictionary.save();
 
-        }, config.autoSavePeriod() * 1000);
-    }
+			logger.debug('[Seeborg] Dictionary saved.');
 
-    public onMessage(bot: Bot, channel: string, username: string, message: string) {
-        try {
-            if (this.shouldProcessMessage(username, username)) { //Reply?
-                if (this.shouldComputeAnswer(channel, username, message)) {
-                    setTimeout(() => this.replyWithAnswer(bot, channel, message), Math.floor((Math.floor(Math.random() * 3) + 1) * 1000))
-                }
-                if (this.shouldLearn(channel, message)) {
-                    this.learn(message);
-                }
-            }
-        } catch (error) {
-            logger.error(`[Seeborg] Seeborg error ${error}`)
-        }
-    }
+		}, config.autoSavePeriod() * 1000);
+	}
 
-    private replyWithAnswer(bot: Bot, channel: string, message: string) {
-        logger.debug('[Seeborg] Reply with answer');
+	public onMessage(bot: Bot, channel: string, username: string, message: string) {
+		try {
+			if (this.shouldProcessMessage(username, username)) { //Reply?
+				if (this.shouldComputeAnswer(channel, username, message)) {
+					setTimeout(() => this.replyWithAnswer(bot, channel, message), Math.floor((Math.floor(Math.random() * 3) + 1) * 1000))
+				}
+				if (this.shouldLearn(channel, message)) {
+					this.learn(message);
+				}
+			}
+		} catch (error) {
+			logger.error(`[Seeborg] Seeborg error ${error}`)
+		}
+	}
 
-        message = this.computeAnswer(message);
+	private replyWithAnswer(bot: Bot, channel: string, message: string) {
+		logger.debug('[Seeborg] Reply with answer');
 
-        switch (message) {
-            case null:
-                logger.error('[Seeborg] response was null');
-                break;
-            default:
-                message = message.replace('@', '')
-                logger.info(`[Seeborg] Reply "${bot.room.name}" "${channel}" ${message}"`)
-                bot.network.send('message', [ message, channel ])
-                break;
-        }
-    }
+		message = this.computeAnswer(message);
 
-    private computeAnswer(message: string) {
-        const words = stringUtil.splitWords(message);
-        const knownWords = words.filter((word: any) => this.dictionary.isWordKnown(word));
+		switch (message) {
+			case null:
+				logger.error('[Seeborg] response was null');
+				break;
+			default:
+				message = message.replace('@', '')
+				logger.info(`[Seeborg] Reply "${bot.room.name}" "${channel}" ${message}"`)
+				bot.network.send('message', [message, channel])
+				break;
+		}
+	}
 
-        if (knownWords.length === 0) {
-            logger.debug(`[Seeborg] No sentences with ${words} found`);
-            return null;
-        }
+	private computeAnswer(message: string) {
+		const words = stringUtil.splitWords(message);
+		const knownWords = words.filter((word: any) => this.dictionary.isWordKnown(word));
 
-        const pivot = _.sample(knownWords);
-        const sentences = this.dictionary.sentencesWithWord(pivot);
+		if (knownWords.length === 0) {
+			logger.debug(`[Seeborg] No sentences with ${words} found`);
+			return null;
+		}
 
-        switch (sentences.length) {
-            case 0:
-                return null;
-            case 1:
-                return sentences[0];
-        }
+		const pivot = _.sample(knownWords);
+		const sentences = this.dictionary.sentencesWithWord(pivot);
 
-        const leftSentence = _.sample(sentences);
-        const rightSentence = _.sample(sentences);
+		switch (sentences.length) {
+			case 0:
+				return null;
+			case 1:
+				return sentences[0];
+		}
 
-        const leftSentenceWords = stringUtil.splitWords(leftSentence);
-        const rightSentenceWords = stringUtil.splitWords(rightSentence);
+		const leftSentence = _.sample(sentences);
+		const rightSentence = _.sample(sentences);
 
-        const leftSide = leftSentenceWords.slice(0, leftSentenceWords.indexOf(pivot));
-        const rightSide = rightSentenceWords.slice(rightSentenceWords.indexOf(pivot) + 1, rightSentenceWords.length);
+		const leftSentenceWords = stringUtil.splitWords(leftSentence);
+		const rightSentenceWords = stringUtil.splitWords(rightSentence);
 
-        return [leftSide.join(' '), pivot, rightSide.join(' ')].join(' ');
-    }
+		const leftSide = leftSentenceWords.slice(0, leftSentenceWords.indexOf(pivot));
+		const rightSide = rightSentenceWords.slice(rightSentenceWords.indexOf(pivot) + 1, rightSentenceWords.length);
 
-    private shouldComputeAnswer(channel: string, username: string, message: string) {
-        // Bot should not speak if speaking is set to false
-        if (!this.config.speaking(channel)) {
-            return false;
-        }
+		return [leftSide.join(' '), pivot, rightSide.join(' ')].join(' ');
+	}
 
-        // Reply mention
-        //TODO: CHECK Whisper
-        else if (Helper.chancePredicate(this.config.replyMention(channel), () => message.includes(username))) {
-            return true;
-        }
+	private shouldComputeAnswer(channel: string, username: string, message: string) {
+		// Bot should not speak if speaking is set to false
+		if (!this.config.speaking(channel)) {
+			return false;
+		}
 
-        // Reply magic
-        else if (Helper.chancePredicate(this.config.replyMagic(channel), () => this.config.matchesMagicPattern(channel, message))) {
-            return true;
-        }
+			// Reply mention
+		//TODO: CHECK Whisper
+		else if (Helper.chancePredicate(this.config.replyMention(channel), () => message.includes(username))) {
+			return true;
+		}
 
-        // Reply rate
-        else if (Helper.chancePredicate(this.config.replyRate(channel), () => true)) {
-            return true
-        }
+		// Reply magic
+		else if (Helper.chancePredicate(this.config.replyMagic(channel), () => this.config.matchesMagicPattern(channel, message))) {
+			return true;
+		}
 
-        else {
-            return false;
-        }
-    }
+		// Reply rate
+		else if (Helper.chancePredicate(this.config.replyRate(channel), () => true)) {
+			return true
+		} else {
+			return false;
+		}
+	}
 
-    private learn(message: string) {
-        logger.debug(`[Seeborg] Learn`);
+	private learn(message: string) {
+		logger.debug(`[Seeborg] Learn`);
 
-        try {
-            this.dictionary.insertLine(message);
-        } catch (error) {
-            logger.error(`[Seeborg] Learn ${error}`)
-        }
-    }
+		try {
+			this.dictionary.insertLine(message);
+		} catch (error) {
+			logger.error(`[Seeborg] Learn ${error}`)
+		}
+	}
 
-    private shouldLearn(channel: string, message: string) {
-        if (!this.config.learning(channel)) {
-            return false;
-        }
+	private shouldLearn(channel: string, message: string) {
+		if (!this.config.learning(channel)) {
+			return false;
+		}
 
-        // Ignore messages that match the blacklist
-        if (this.config.matchesBlacklistedPattern(channel, message)) {
-            logger.debug(`[Seeborg] Should learn is black listed ${message}`);
-            return false;
-        }
+		// Ignore messages that match the blacklist
+		if (this.config.matchesBlacklistedPattern(channel, message)) {
+			logger.debug(`[Seeborg] Should learn is black listed ${message}`);
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    private shouldProcessMessage(channel: string, username: string) {
-        //Ignore users in the ignore list
-        if (this.config.isIgnored(channel, username)) {
-            logger.debug(`[Seeborg] Should process message ignored "${channel}" "${username}"`);
-            return false;
-        }
+	private shouldProcessMessage(channel: string, username: string) {
+		//Ignore users in the ignore list
+		if (this.config.isIgnored(channel, username)) {
+			logger.debug(`[Seeborg] Should process message ignored "${channel}" "${username}"`);
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
 }
