@@ -7,7 +7,23 @@ import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 
 export default class WorldBoss extends Default {
 
+    private interval: NodeJS.Timeout = null
+
     onJoin(data: IMoveToArea): void {
+        if (data.strMapName == 'town') {
+            const arr: Array<string> = [
+                'newbie',
+                'outset',
+                'yulgar',
+                'avalon',
+                'estarta',
+            ]
+
+            this.bot.network.send('cmd', ['tfer', '', arr[Helper.randomIntegerInRange(0, arr.length-1)]])
+
+            return
+        }
+
         if (data.monmap !== undefined && data.monmap.length > 0) {
             const monster: Monmap = data.monmap[0]
 
@@ -17,11 +33,22 @@ export default class WorldBoss extends Default {
                     'Left'
                 ])
 
-                setInterval(() => {
+                if (this.interval != null) {
+                    clearInterval(this.interval)
+                }
+
+                this.interval = setInterval(() => {
                     this.bot.network.send('gar', [23,`aa>m:${monster.MonMapID}`,"wvz"])
-                }, 3000)
+                }, 10000)
             }, 3000)
+        } else if (this.interval != null) {
+            clearInterval(this.interval)
         }
+
+        /**
+         * Keep moving
+         */
+        setInterval(() => this.bot.room.freeWalk(), 30000)
     }
 
     onInventoryLoad(data: ILoadInventoryBig) {
@@ -58,6 +85,12 @@ export default class WorldBoss extends Default {
                     break;
             }
         })
+    }
+
+    onWorldBoss(data: any) {
+        this.bot.properties.required_monsters.push(data.monName)
+
+        this.bot.network.send('joinWorldBoss', [data.worldBossId])
     }
 
 }

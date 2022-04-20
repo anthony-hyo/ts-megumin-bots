@@ -6,7 +6,6 @@ export default class InitUserDatas implements IRequest {
     public command: string = 'initUserDatas'
 
     handler(bot: Bot, data: any): void {
-        bot.network.send('retrieveInventory', [ bot.network.id ])
     }
 
 }

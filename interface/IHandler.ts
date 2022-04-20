@@ -1,6 +1,6 @@
 import Avatar from "../data/Avatar";
-import {IMoveToArea} from "./request/MoveToArea";
-import ILoadInventoryBig from "./request/Item";
+import IMoveToArea from "./request/IMoveToArea";
+import ILoadInventoryBig from "./request/ILoadInventoryBig";
 
 export interface IHandler {
 
@@ -22,7 +22,7 @@ export interface IHandler {
     /*
         Monster
      */
-    //TODO:..
+    onWorldBoss(data: any): void;
 
     /*
         NPC
