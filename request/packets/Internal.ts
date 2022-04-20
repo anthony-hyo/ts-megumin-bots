@@ -12,8 +12,6 @@ export default class Internal implements IRequest {
 
         const args: Array<any> = data.args
 
-        logger.debug(`[internal] ${data.args.toString()}`)
-
         switch (command) {
             case 'loginResponse':
                 const status:Boolean = args[2]

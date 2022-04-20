@@ -28,4 +28,11 @@ export default class User extends Model {
     })
     password: string
 
+    // @Column({
+    //     type: DataType.STRING(64),
+    //     allowNull: false,
+    //     defaultValue: ``
+    // })
+    // handler: string
+
 }

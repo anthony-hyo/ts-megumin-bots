@@ -81,7 +81,7 @@ export default class WorldBoss extends Default {
                                 ])
                             }
                         })
-                        .catch(logger.error)
+                        .catch(console.error)
                     break;
             }
         })

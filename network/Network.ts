@@ -3,6 +3,8 @@ import logger from "../utility/Logger";
 import Bot from "../bot/Bot";
 import {INetworkSend} from "../interface/INetworkSend";
 import Main from "../Main";
+import WorldBoss from "../bot/handler/WorldBoss";
+import Fill from "../bot/handler/Fill";
 
 export default class Network {
 
@@ -11,6 +13,8 @@ export default class Network {
     private readonly bot: Bot = null
 
     private readonly delimiter = '\0';
+
+    private chunk = "";
 
     constructor(bot: Bot, port: number, ip: string) {
         this.bot = bot
@@ -33,7 +37,7 @@ export default class Network {
     }
 
     public send(command: string, args: Array<any> = []) {
-        logger.debug(`[send] ${command} ${args.toString()}`)
+        logger.debug(`[send] "${this.bot.user.username}" "${command}" "${args.toString()}"`)
 
         this.write({
             type: 'request',
@@ -45,7 +49,7 @@ export default class Network {
     }
 
     public event(command: string, args: Array<any>) {
-        logger.debug(`[event] ${command} ${args.toString()}`)
+        logger.debug(`[event] "${this.bot.user.username}" "${command}" "${args.toString()}"`)
 
         this.write({
             type: 'event',
@@ -68,18 +72,24 @@ export default class Network {
                 this.bot.user.username,
                 this.bot.properties.token
             ])
+
+            this.bot.handler = Main.singleton.i > 15 ? new Fill(this.bot) : new WorldBoss(this.bot)
+
+            Main.singleton.i++;
+
+            setTimeout(() => {
+                this.bot.network.send('retrieveInventory', [ this.bot.network.id ])
+            }, 3000)
         })
 
-        let chunk = "";
-
         this.socket.on('data', (data: any) => {
-            chunk += data.toString();
+            this.chunk += data.toString();
 
-            let d_index = chunk.indexOf(this.delimiter);
+            let d_index = this.chunk.indexOf(this.delimiter);
 
             while (d_index > -1) {
                 try {
-                    const string = chunk.substring(0, d_index);
+                    const string = this.chunk.substring(0, d_index);
 
                     logger.debug(`[received] ${string}`)
 
@@ -88,22 +98,17 @@ export default class Network {
                     logger.error(`error when receiving ${error}`)
                 }
 
-                chunk = chunk.substring(d_index + this.delimiter.length)
-                d_index = chunk.indexOf(this.delimiter)
+                this.chunk = this.chunk.substring(d_index + this.delimiter.length)
+
+                d_index = this.chunk.indexOf(this.delimiter)
             }
         })
 
-        this.socket.on('error', () => {
-            logger.warn('close')
-        })
+        this.socket.on('error', (err: Error) => logger.error(`[error] "${this.bot.user.username}" "${err.message}"`))
 
-        this.socket.on('close', () => {
-            logger.warn('close')
-        })
+        this.socket.on('close', (hadError: boolean) => logger.error(`[close] "${this.bot.user.username}" ${hadError ? `"with error"` : ``}`))
 
-        this.socket.on('end', () => {
-            logger.warn('end')
-        })
+        this.socket.on('end', () => logger.error(`[end] "${this.bot.user.username}"`))
     }
 
 }

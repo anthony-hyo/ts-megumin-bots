@@ -30,9 +30,9 @@ export default class Database {
                     .then(() => {
                         logger.info("Database sync")
                     })
-                    .catch(logger.error)
+                    .catch(console.error)
             })
-            .catch(logger.error)
+            .catch(console.error)
     }
 
 }
