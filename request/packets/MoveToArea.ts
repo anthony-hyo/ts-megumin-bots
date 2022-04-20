@@ -14,7 +14,9 @@ export default class MoveToArea implements IRequest {
 
         bot.handler.onJoin(data)
 
-        bot.room.freeWalk()
+        setTimeout(() => {
+            bot.room.freeWalk()
+        }, 3000)
 
         data.uoBranch
             .forEach((uoBranch: UoBranch) => {

@@ -47,7 +47,9 @@ export default class Default implements IHandler {
     /*
         Monster
      */
-    //TODO:..
+    onWorldBoss(data: any): void {
+        logger.debug('default onWorldBoss')
+    }
 
     /*
         NPC
