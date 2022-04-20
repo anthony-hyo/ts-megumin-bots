@@ -57,7 +57,7 @@ export default class Room {
 				])
 				setTimeout(() => this.bot.network.send("mv", [position.x, position.y, 10]), Helper.randomIntegerInRange(2000, 5000))
 			})
-			.catch(logger.error)
+			.catch(console.error)
 	}
 
 }

@@ -36,8 +36,8 @@ export default class Bot {
                         const loginResponseServer: ILoginResponseServer = loginResponse.servers.find(server => server.Name == `Midgard`);
 
                         this._network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
-                    }).catch(logger.error)
-            }).catch(logger.error)
+                    }).catch(console.error)
+            }).catch(console.error)
     }
 
     private _network: Network
