@@ -52,7 +52,7 @@ export default class Seeborg {
 				break;
 			default:
 				message = message.replace('@', '')
-				logger.info(`[Seeborg] Reply "${bot.room.name}" "${channel}" ${message}"`)
+				logger.info(`[Seeborg] Reply "${bot.room.fullName}" "${channel}" ${message}"`)
 				bot.network.send('message', [message, channel])
 				break;
 		}

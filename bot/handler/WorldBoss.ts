@@ -44,10 +44,7 @@ export default class WorldBoss extends Default {
 			clearInterval(this.interval)
 		}
 
-		/**
-		 * Keep moving
-		 */
-		setInterval(() => this.bot.room.freeWalk(), 30000)
+		this.bot.room.freeWalk()
 	}
 
 	onInventoryLoad(data: ILoadInventoryBig) {
