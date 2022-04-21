@@ -17,7 +17,13 @@ export default class Internal implements IRequest {
 				const status: Boolean = args[2]
 
 				if (status) {
+					bot.network.id = args[3]
+
+					Main.singleton.bots.set(bot.network.id, bot)
+
 					bot.network.send('firstJoin')
+
+					setTimeout(() => bot.network.send('retrieveInventory', [bot.network.id]), 3000)
 				} else {
 					logger.error(`login failed to ${bot.user.username}`)
 				}
