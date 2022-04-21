@@ -1,20 +1,14 @@
 import IRequest from "../../../interface/IRequest";
 import Bot from "../../../bot/Bot";
 import Avatar from "../../../data/Avatar";
+import Main from "../../../Main";
 
 export default class EnterRoom implements IRequest {
 
-	public command: string = 'enterRoom'
+	public command: string = 'joinRoom'
 
 	handler(bot: Bot, data: any): void {
-		Array(data.users).forEach(user => {
-			const avatar: Avatar = new Avatar()
-
-			avatar.username = data.username
-			avatar.networkId = data.networkId
-
-			bot.room.players.add(avatar)
-		})
+		Array(data.users).forEach(user => bot.room.players.set(data.networkId, new Avatar(user.networkId, user.username, Main.singleton.bots.has(user.networkId))))
 	}
 
 }
