@@ -4,7 +4,6 @@ import Bot from "../bot/Bot";
 import {INetworkSend} from "../interface/INetworkSend";
 import Main from "../Main";
 import WorldBoss from "../bot/handler/WorldBoss";
-import Fill from "../bot/handler/Fill";
 
 export default class Network {
 
@@ -14,7 +13,7 @@ export default class Network {
 
 	private readonly delimiter: string = '\0';
 
-	private chunk = "";
+	private chunk: string = "";
 
 	constructor(bot: Bot, port: number, ip: string) {
 		this.bot = bot
@@ -36,7 +35,7 @@ export default class Network {
 		this._id = value;
 	}
 
-	public send(command: string, args: Array<any> = []) {
+	public send(command: string, args: Array<any> = []): void {
 		logger.debug(`[send] "${this.bot.user.username}" "${command}" "${args.toString()}"`)
 
 		this.write({
@@ -48,7 +47,7 @@ export default class Network {
 		});
 	}
 
-	public event(command: string, args: Array<any>) {
+	public event(command: string, args: Array<any>): void {
 		logger.debug(`[event] "${this.bot.user.username}" "${command}" "${args.toString()}"`)
 
 		this.write({
@@ -60,11 +59,11 @@ export default class Network {
 		});
 	}
 
-	public write(iNetworkSend: INetworkSend) {
+	public write(iNetworkSend: INetworkSend): void {
 		this.socket.write(`${JSON.stringify(iNetworkSend)}\0`)
 	}
 
-	private listeners() {
+	private listeners(): void {
 		this.socket.on('connect', () => {
 			logger.debug('connected to server')
 
@@ -74,10 +73,6 @@ export default class Network {
 			])
 
 			this.bot.handler = new WorldBoss(this.bot)
-
-			setTimeout(() => {
-				this.bot.network.send('retrieveInventory', [this.bot.network.id])
-			}, 3000)
 		})
 
 		this.socket.on('data', (data: any) => {
