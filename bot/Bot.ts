@@ -72,4 +72,8 @@ export default class Bot {
 		this._handler = value;
 	}
 
+	public static create(user: User): Bot {
+		return new Bot(user)
+	}
+
 }

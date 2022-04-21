@@ -28,9 +28,9 @@ export default class Main {
 			// where: {
 			//     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
 			// },
-			limit: 15,
+			limit: 2,
 			order: Sequelize.literal('random()')
-		}).then((users: User[]) => users.forEach(user => this.startBot(user)))
+		}).then((users: User[]) => users.forEach(user => Bot.create(user)))
 	}
 
 	private static _singleton: Main
@@ -51,12 +51,6 @@ export default class Main {
 
 	public get seeborg(): Seeborg {
 		return this._seeborg
-	}
-
-	public startBot(user: User): Bot {
-		const bot = new Bot(user)
-		this.bots.set(<Number>user.id, bot)
-		return bot
 	}
 
 }
