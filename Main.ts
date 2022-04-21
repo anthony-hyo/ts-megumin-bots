@@ -5,6 +5,7 @@ import User from "./database/model/User";
 import Bot from "./bot/Bot";
 import {Sequelize} from "sequelize";
 import Seeborg from "./seeborg/Seeborg";
+import Helper from "./utility/Helper";
 
 const yaml = require('yaml-js')
 const fs = require('fs')
@@ -28,9 +29,9 @@ export default class Main {
 			// where: {
 			//     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
 			// },
-			limit: 2,
+			//limit: 15,
 			order: Sequelize.literal('random()')
-		}).then((users: User[]) => users.forEach(user => Bot.create(user)))
+		}).then((users: User[]) => users.forEach(user => setTimeout(() => Bot.create(user), Helper.randomIntegerInRange(1000, 120000))))
 	}
 
 	private static _singleton: Main

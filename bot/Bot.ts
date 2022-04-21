@@ -41,7 +41,11 @@ export default class Bot {
 				} else {
 					logger.error(`[Bot] server undefined "${user.username}"`)
 				}
-			}).catch(console.error)
+			})
+			.catch((response: any) => {
+				logger.error(`[Bot] "${response.statusMessage}"`)
+				Bot.create(this.user)
+			})
 	}
 
 	private _network!: Network
