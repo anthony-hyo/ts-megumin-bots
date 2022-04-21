@@ -1,7 +1,13 @@
 export default class Avatar {
 
-	public networkId!: number
+	public readonly networkId: number
+	public readonly username: string
+	public readonly isBot: boolean
 
-	public username!: string
+	constructor(networkId: number, username: string, isBot: boolean) {
+		this.networkId = networkId
+		this.username = username
+		this.isBot = isBot
+	}
 
 }

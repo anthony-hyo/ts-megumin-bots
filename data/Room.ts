@@ -7,41 +7,39 @@ import Avatar from "./Avatar";
 export default class Room {
 
 	private readonly bot: Bot
+	private readonly _id: number = -1
+	private readonly _name: string = 'none'
+	private readonly _fullName: string = 'none'
 
-	constructor(bot: Bot) {
+	constructor(bot: Bot, id: number, fullName: string, name: string) {
 		this.bot = bot
+		this._id = id
+		this._name = name
+		this._fullName = fullName
 	}
-
-	private _id!: number
 
 	public get id(): number {
 		return this._id;
 	}
 
-	public set id(value: number) {
-		this._id = value;
-	}
-
-	private _name!: string
-
 	public get name(): string {
 		return this._name;
 	}
 
-	public set name(value: string) {
-		this._name = value;
+	public get fullName(): string {
+		return this._fullName;
 	}
 
-	private _players: Set<Avatar> = new Set<Avatar>()
+	private _players: Map<Number, Avatar> = new Map<Number, Avatar>()
 
-	public get players(): Set<Avatar> {
+	public get players(): Map<Number, Avatar> {
 		return this._players;
 	}
 
 	/**
 	 * Find position to move
 	 */
-	public freeWalk() {
+	public freeWalk(): void {
 		Position
 			.findOne({
 				where: {

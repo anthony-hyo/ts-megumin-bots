@@ -13,7 +13,7 @@ export default class Bot {
 
 	private readonly _user!: User
 
-	private readonly _room: Room = new Room(this)
+	private _room: Room = new Room(this, -1, 'none-1', 'none')
 
 	private readonly _properties: BotProperties = new BotProperties()
 
@@ -56,6 +56,10 @@ export default class Bot {
 
 	public get room(): Room {
 		return this._room;
+	}
+
+	public set room(value: Room) {
+		this._room = value;
 	}
 
 	public get properties(): BotProperties {
