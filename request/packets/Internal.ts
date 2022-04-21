@@ -30,8 +30,19 @@ export default class Internal implements IRequest {
 			case 'chatm':
 				const split: string[] = String(args[2]).split('~')
 
-				if (String(args[3]).toLowerCase() !== bot.user.username.toLowerCase()) {
-					Main.singleton.seeborg.onMessage(bot, 'zone', args[3], split[1])
+				switch (split[0]) {
+					case 'world':
+						Main.singleton.seeborg.onMessage(bot, 'world', args[3], split[1])
+						break;
+					case 'trade':
+						Main.singleton.seeborg.onMessage(bot, 'trade', args[3], split[1])
+						break;
+					case 'crosschat':
+						Main.singleton.seeborg.onMessage(bot, 'crosschat', args[3], split[1])
+						break;
+					default:
+						Main.singleton.seeborg.onMessage(bot, 'zone', args[3], split[1])
+						break;
 				}
 				break
 		}
