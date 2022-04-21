@@ -104,7 +104,17 @@ export default class Network {
 
 		this.socket.on('error', (err: Error) => logger.error(`[error] "${this.bot.user.username}" "${err.message}"`))
 
-		this.socket.on('close', (hadError: boolean) => logger.error(`[close] "${this.bot.user.username}" ${hadError ? `"with error"` : ``}`))
+		this.socket.on('close', (hadError: boolean) => {
+
+			/**
+			 * Remove user from bots
+			 */
+			Main.singleton.bots.delete(this.id)
+
+			Bot.create(this.bot.user)
+
+			logger.error(`[close] "${this.bot.user.username}" ${hadError ? `"with error"` : ``}`);
+		})
 
 		this.socket.on('end', () => logger.error(`[end] "${this.bot.user.username}"`))
 	}
