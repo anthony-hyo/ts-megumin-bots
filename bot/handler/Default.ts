@@ -4,6 +4,8 @@ import logger from "../../utility/Logger";
 import Avatar from "../../data/Avatar";
 import IMoveToArea from "../../interface/request/IMoveToArea";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
+import {IMarket} from "../../interface/request/IMarket";
+import {IRemoveItem} from "../../interface/request/IRemoveItem";
 
 export default class Default implements IHandler {
 
@@ -29,8 +31,20 @@ export default class Default implements IHandler {
 		logger.debug('default onDropItem')
 	}
 
+	onRemoveItem(data: IRemoveItem): void {
+		logger.debug('default onRemoveItem')
+	}
+
 	onDamageTaken(): void {
 		logger.debug('default onDamageTaken')
+	}
+
+	onMarketLoad(data: IMarket): void {
+		logger.debug('default onMarketLoad')
+	}
+
+	onMarketRetrieveLoad(data: IMarket): void {
+		logger.debug('default onMarketRetrieveLoad')
 	}
 
 	/*
@@ -62,6 +76,5 @@ export default class Default implements IHandler {
 	onTargetDeath(avatar: Avatar): void {
 		logger.debug('default onTargetDeath')
 	}
-
 
 }

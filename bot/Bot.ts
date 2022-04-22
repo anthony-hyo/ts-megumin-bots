@@ -8,6 +8,7 @@ import {IHandler} from "../interface/IHandler";
 import Room from "../data/Room";
 import BotProperties from "./BotProperties";
 import Default from "./handler/Default";
+import Helper from "../utility/Helper";
 
 export default class Bot {
 
@@ -83,6 +84,42 @@ export default class Bot {
 	// public get haste():Number {
 	// 	return 1 - Math.min(Math.max(tha, -1), 0.85)
 	// }
+
+	public marketSell(item: { ItemID: any; iQty: number; sName: string; CharItemID: any; }) {
+		switch (item.ItemID) {
+			case 8236: //Boss Soul
+			case 13397: //Boss Blood
+			case 16222: //Limit Break +5
+			case 14936: //Limit Break +1
+				axios
+					.get(`https://redhero.online/api/wiki/item/${item.ItemID}`)
+					.then((response: AxiosResponse) => {
+						const json: any = response.data
+
+						if (json.markets != null && json.markets.length > 0 && item.iQty > 50) {
+							const costs: Array<number> = []
+
+							json.markets.forEach((market: { Coins: any; }) => costs.push(Number(market.Coins)))
+
+							const quantity: number = Math.min(item.iQty, 20)
+
+							const cost: number = Helper.replaceLastDigit(Helper.decreaseByPercentage(90, json.MarketAverage * quantity))
+
+							logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
+
+							this.network.send("sellAuctionItem", [
+								item.ItemID,
+								item.CharItemID,
+								quantity,
+								cost,
+								0
+							])
+						}
+					})
+					.catch(console.error)
+				break;
+		}
+	}
 
 	public static create(user: User): Bot {
 		return new Bot(user)

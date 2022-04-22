@@ -56,6 +56,14 @@ export interface Item {
 	bSold: boolean;
 }
 
+export interface ISellMarketItem {
+	cmd: string
+	bitSuccess: number
+	strMessage: string | undefined
+	CharItemID: number
+	Quantity: number
+}
+
 export interface IMarket {
 	cmd: string;
 	bitSuccess: number;

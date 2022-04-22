@@ -1,9 +1,10 @@
 import Default from "./Default";
-import axios, {AxiosResponse} from "axios";
 import logger from "../../utility/Logger";
 import Helper from "../../utility/Helper";
 import IMoveToArea, {Monmap} from "../../interface/request/IMoveToArea";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
+import {IMarket, Item} from "../../interface/request/IMarket";
+import {IRemoveItem} from "../../interface/request/IRemoveItem";
 
 export default class WorldBoss extends Default {
 
@@ -51,37 +52,33 @@ export default class WorldBoss extends Default {
 	}
 
 	onInventoryLoad(data: ILoadInventoryBig) {
-		data.items.forEach(item => {
-			switch (item.ItemID) {
-				case 8236: //Boss Soul
-				case 13397: //Boss Blood
-				case 16222: //Limit Break +5
-				case 14936: //Limit Break +1
-					axios
-						.get(`https://redhero.online/api/wiki/item/${item.ItemID}`)
-						.then((response: AxiosResponse) => {
-							const json: any = response.data
+		this.bot.properties.inventory = data.items
 
-							if (json.markets != null && json.markets.length > 0 && item.iQty > 50) {
-								const costs: Array<number> = []
+		this.bot.properties.inventory.forEach((item): void => this.bot.marketSell(item))
 
-								json.markets.forEach((market: { Coins: any; }) => costs.push(Number(market.Coins)))
+		this.bot.network.send('loadRetrieve', ['All'])
+	}
 
-								const cost: number = Helper.replaceLastDigit(Helper.decreaseByPercentage(50, Math.round(Helper.arrayAverage(costs)) * item.iQty))
+	onRemoveItem(data: IRemoveItem): void {
+		this.bot.properties.inventory?.forEach((item, index, arr) => {
+			if (arr[index].CharItemID === data.CharItemID) {
 
-								logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
+				arr[index].iQty -= data.iQty
 
-								this.bot.network.send("sellAuctionItem", [
-									item.ItemID,
-									item.CharItemID,
-									item.iQty,
-									cost,
-									0
-								])
-							}
-						})
-						.catch(console.error)
-					break;
+				if (arr[index].iQty > 0) {
+					this.bot.marketSell(arr[index])
+				} else {
+					arr.splice(index, 1)
+				}
+			}
+		})
+	}
+
+	onMarketRetrieveLoad(data: IMarket): void {
+		data.items.forEach((item: Item) => {
+			if (item.Player !== 'On Listing') {
+				logger.info(`[${this.bot.user.username}] [market] ${item.Player} "${Helper.parseHTML(item.sName)}"`)
+				this.bot.network.send('retrieveAuctionItem', [item.AuctionID])
 			}
 		})
 	}
