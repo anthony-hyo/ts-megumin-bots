@@ -52,4 +52,16 @@ export default class Helper {
 		return Math.floor(value  / l) * l
 	}
 
+	public static increaseByPercentage(percent: number, value: number): number {
+		return value + this.calculatePercent(percent, value)
+	}
+
+	public static decreaseByPercentage(percent: number, value: number): number {
+		return value - this.calculatePercent(percent, value)
+	}
+
+	private static calculatePercent(percent: number, value: number){
+		return (percent / 100) * value
+	}
+
 }
