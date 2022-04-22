@@ -1,6 +1,7 @@
 import Avatar from "../data/Avatar";
 import IMoveToArea from "./request/IMoveToArea";
 import ILoadInventoryBig from "./request/ILoadInventoryBig";
+import {IMarket} from "./request/IMarket";
 
 export interface IHandler {
 
@@ -12,6 +13,10 @@ export interface IHandler {
 
 	onDamageTaken(): void
 
+	onMarketLoad(data: IMarket): void
+
+	onMarketRetrieveLoad(data: IMarket): void
+
 	/*
 		User
 	 */
@@ -22,7 +27,7 @@ export interface IHandler {
 	/*
 		Monster
 	 */
-	onWorldBoss(data: any): void;
+	onWorldBoss(data: any): void
 
 	/*
 		NPC
