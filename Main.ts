@@ -3,7 +3,7 @@ import Database from "./database/Database"
 import Request from "./request/Request";
 import User from "./database/model/User";
 import Bot from "./bot/Bot";
-import {Sequelize} from "sequelize";
+import {Op, Sequelize} from "sequelize";
 import Seeborg from "./seeborg/Seeborg";
 import Helper from "./utility/Helper";
 

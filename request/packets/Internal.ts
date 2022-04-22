@@ -38,6 +38,10 @@ export default class Internal implements IRequest {
 			case 'chatm':
 				const split: string[] = String(args[2]).split('~')
 
+				if (bot.room.isBot(args[3])) {
+					return
+				}
+
 				switch (split[0]) {
 					case 'world':
 						Main.singleton.seeborg.onMessage(bot, 'world', args[3], split[1])

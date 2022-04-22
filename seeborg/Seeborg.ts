@@ -29,7 +29,7 @@ export default class Seeborg {
 	public onMessage(bot: Bot, channel: string, username: string, message: string) {
 		try {
 			if (this.shouldProcessMessage(username, username)) { //Reply?
-				if (this.shouldComputeAnswer(channel, username, message)) {
+				if (this.shouldComputeAnswer(channel, bot.user.username, message)) {
 					setTimeout(() => this.replyWithAnswer(bot, channel, message), Math.floor((Math.floor(Math.random() * 3) + 1) * 1000))
 				}
 				if (this.shouldLearn(channel, message)) {
