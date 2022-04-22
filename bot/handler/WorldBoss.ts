@@ -7,8 +7,6 @@ import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 
 export default class WorldBoss extends Default {
 
-	private interval: NodeJS.Timeout | null = null
-
 	onJoin(data: IMoveToArea): void {
 		const arr: Array<string> = [
 			'newbie',
@@ -18,9 +16,17 @@ export default class WorldBoss extends Default {
 			'estarta',
 		]
 
-		if (data.strMapName == 'town') {
+		if (data.strMapName == 'town' && Boolean(Helper.randomIntegerInRange(0, 1))) {
 			this.bot.network.send('cmd', ['tfer', '', arr[Helper.randomIntegerInRange(0, arr.length - 1)]])
 			return
+		}
+
+		if (this.bot.properties.intervalAttack != null) {
+			clearInterval(this.bot.properties.intervalAttack)
+		}
+
+		if (this.bot.properties.intervalWalk != null) {
+			clearInterval(this.bot.properties.intervalWalk)
 		}
 
 		if (data.monmap !== undefined && data.monmap.length > 0) {
@@ -32,16 +38,14 @@ export default class WorldBoss extends Default {
 					'Left'
 				])
 
-				if (this.interval != null) {
-					clearInterval(this.interval)
-				}
-
-				this.interval = setInterval(() => {
+				this.bot.properties.intervalAttack = setInterval(() => {
 					this.bot.network.send('gar', [1, `aa>m:${monster.MonMapID}`, "wvz"])
 				}, 3000)
 			}, 3000)
-		} else if (this.interval != null) {
-			clearInterval(this.interval)
+		} else {
+			this.bot.properties.intervalWalk = setInterval(() => {
+				this.bot.room.freeWalk()
+			}, 60000 * 5)
 		}
 	}
 
@@ -82,8 +86,6 @@ export default class WorldBoss extends Default {
 	}
 
 	onWorldBoss(data: any) {
-		this.bot.properties.required_monsters.push(data.monName)
-
 		this.bot.network.send('joinWorldBoss', [data.worldBossId])
 	}
 

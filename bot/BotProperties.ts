@@ -2,6 +2,7 @@ export default class BotProperties {
 
 	public token!: string
 
-	public required_monsters: Array<any> = [];
+	public intervalAttack: NodeJS.Timeout | null = null
+	public intervalWalk: NodeJS.Timer | null = null
 
 }

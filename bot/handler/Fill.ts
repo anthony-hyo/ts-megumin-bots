@@ -7,10 +7,13 @@ import logger from "../../utility/Logger";
 export default class Fill extends Default {
 
 	onJoin(data: IMoveToArea): void {
-		/**
-		 * Keep moving
-		 */
-		setInterval(() => this.bot.room.freeWalk(), 60000)
+		if (this.bot.properties.intervalWalk != null) {
+			clearInterval(this.bot.properties.intervalWalk)
+		}
+
+		this.bot.properties.intervalWalk = setInterval(() => {
+			this.bot.room.freeWalk()
+		}, 60000 * 5)
 	}
 
 	onInventoryLoad(data: ILoadInventoryBig) {
