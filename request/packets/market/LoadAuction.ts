@@ -4,12 +4,12 @@ import {IMarket, Item} from "../../../interface/request/IMarket";
 import logger from "../../../utility/Logger";
 import Helper from "../../../utility/Helper";
 
-export default class LoadRetrieve implements IRequest {
+export default class LoadAuction implements IRequest {
 
-	public command: string = 'loadRetrieve'
+	public command: string = 'loadAuction'
 
 	handler(bot: Bot, data: IMarket): void {
-		bot.handler.onMarketRetrieveLoad(data)
+		bot.handler.onMarketLoad(data)
 	}
 
 }

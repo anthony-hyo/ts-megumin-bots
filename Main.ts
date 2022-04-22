@@ -29,9 +29,15 @@ export default class Main {
 
 		User.findAll({
 			// where: {
+			// 	username: 'Acid Bunny'
+			// },
+
+			// where: {
 			//     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
 			// },
+
 			limit: 30,
+
 			order: Sequelize.literal('rand()')
 		}).then((users: User[]) => users.forEach(user => {
 			setTimeout(() => Bot.create(user), 1000 * i)

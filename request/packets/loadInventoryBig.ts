@@ -8,8 +8,6 @@ export default class LoadInventoryBig implements IRequest {
 
 	handler(bot: Bot, data: ILoadInventoryBig): void {
 		bot.handler.onInventoryLoad(data)
-
-		bot.network.send('loadRetrieve', ['All'])
 	}
 
 }
