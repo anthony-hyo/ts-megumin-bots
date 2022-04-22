@@ -2,6 +2,8 @@ import IRequest from "../../interface/IRequest";
 import Bot from "../../bot/Bot";
 import logger from "../../utility/Logger";
 import Main from "../../Main";
+import Room from "../../data/Room";
+import Move from "../../interface/request/IUOTLS";
 
 export default class Internal implements IRequest {
 
@@ -51,7 +53,43 @@ export default class Internal implements IRequest {
 						break;
 				}
 				break
+			case 'uotls':
+				if (String(args[3]).includes('strFrame')) {
+					const position: Move = Internal.parseMove(String(args[3]).split(','))
+
+					if (!bot.room.isBot(args[2])) {
+						Room.addPosition(bot.room.name, position.strFrame, position.strPad, position.tx, position.ty, position.sp)
+					}
+				}
+				break
 		}
 	}
+
+	private static parseMove(value: string[]): Move {
+		const split: string[] = String(value).split(':')
+
+		const arr: Move = {
+			tx: '0',
+			ty: '0',
+			sp: '10',
+			strFrame: 'Enter',
+			strPad: 'Left'
+		}
+
+		for (const splitItem of split) {
+			switch (splitItem[0]) {
+				case 'tx':
+				case 'ty':
+				case 'sp':
+				case 'strFrame':
+				case 'strPad':
+					arr[splitItem[0]] = splitItem[1]
+					break
+			}
+		}
+
+		return arr
+	}
+
 
 }
