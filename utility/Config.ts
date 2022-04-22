@@ -1,5 +1,4 @@
-import IConfig, {ISeeborgConfig} from "../interface/IConfig";
-import {IConfigDatabase} from "../interface/IConfigDatabase";
+import {Database, IConfig, Seeborg} from "../interface/IConfig";
 
 export default class Config {
 
@@ -9,70 +8,45 @@ export default class Config {
 		this.config = config
 	}
 
-	public get database(): IConfigDatabase {
+	public get database(): Database {
 		return this.config.database
 	}
 
 	/**
 	 * Seeborg
 	 */
-	public get seeborg(): ISeeborgConfig {
+	public get seeborg(): Seeborg {
 		return this.config.seeborg
 	}
 
-	public autoSavePeriod() {
-		return this.seeborg.autoSavePeriod;
-	}
+	public autoSavePeriod = () => this.seeborg.autoSavePeriod;
 
-	public isIgnored(channel: string, username: string) {
-		return this.behavior(channel, 'ignoredUsers').includes(username);
-	}
+	public isIgnored = (channel: string, username: string) => this.behavior(channel, 'ignoredUsers').includes(username);
 
-	public matchesBlacklistedPattern(channel: string, line: string) {
-		let patterns: any = this.behavior(channel, 'blacklistedPatterns');
-
+	private static match(patterns: any, line: string): boolean {
 		for (let pattern of patterns) {
 			let regex = new RegExp(pattern, 'mi');
 			if (regex.test(line)) {
-				//logger.debug(`[Config] [Seeborg] blacklisted pattern(${pattern}) matched(${line}).`);
-				return true;
+				return true
 			}
 		}
+
 		return false;
 	}
 
-	public matchesMagicPattern(channel: string, line: string) {
-		let patterns: any = this.behavior(channel, 'magicPatterns');
+	public matchesBlacklistedPattern = (channel: string, line: string) => Config.match(this.behavior(channel, 'blacklistedPatterns'), line);
 
-		for (let pattern of patterns) {
-			let regex = new RegExp(pattern, 'mi');
-			if (regex.test(line)) {
-				//logger.debug(`[Config] [Seeborg] magic pattern(${pattern}) matched(${line}).`);
-				return true;
-			}
-		}
-		return false;
-	}
+	public matchesMagicPattern = (channel: string, line: string) => Config.match(this.behavior(channel, 'magicPatterns'), line);
 
-	public replyRate(channel: string) {
-		return this.behavior(channel, 'replyRate');
-	}
+	public replyRate = (channel: string) => this.behavior(channel, 'replyRate');
 
-	public replyMention(channel: string) {
-		return this.behavior(channel, 'replyMention');
-	}
+	public replyMention = (channel: string) => this.behavior(channel, 'replyMention');
 
-	public replyMagic(channel: string) {
-		return this.behavior(channel, 'replyMagic');
-	}
+	public replyMagic = (channel: string) => this.behavior(channel, 'replyMagic');
 
-	public speaking(channel: string) {
-		return this.behavior(channel, 'speaking');
-	}
+	public speaking = (channel: string) => this.behavior(channel, 'speaking');
 
-	public learning(channel: string) {
-		return this.behavior(channel, 'learning');
-	}
+	public learning = (channel: string) => this.behavior(channel, 'learning');
 
 	/**
 	 * Returns the property for the given channel if it's overridden;
@@ -82,15 +56,15 @@ export default class Config {
 	 * @param {String} channel
 	 * @param {String} propertyName
 	 */
-	public behavior(channel: string, propertyName: string): any {
-		let defaultValue = this.seeborg.behavior[propertyName];
-		let override = this._overrideForChannel(channel);
+	private behavior(channel: string, propertyName: string): any {
+		// @ts-ignore
+		let defaultValue: any = this.seeborg.behavior[propertyName];
+		let override = this._overrideForChannel(channel)
 
 		if (override === null || !override.behavior.hasOwnProperty(propertyName)) {
-			return defaultValue;
+			return defaultValue
 		} else {
-			//logger.debug(`[Config] [Seeborg] Overriden behavior${propertyName} in ${channel}.`);
-			return override.behavior[propertyName];
+			return override.behavior[propertyName]
 		}
 	}
 
@@ -100,16 +74,16 @@ export default class Config {
 	 * @param {String} channel
 	 * @returns {?Object}
 	 */
-	public _overrideForChannel(channel: string) {
+	private _overrideForChannel(channel: string): any | null {
 		const channelOverrides: any = this.seeborg.channelOverrides
 
 		for (let override of channelOverrides) {
 			if (override.channel === channel) {
-				return override;
+				return override
 			}
 		}
 
-		return null;
+		return null
 	}
 
 }
