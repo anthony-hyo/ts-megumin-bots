@@ -16,7 +16,7 @@ export default class Database {
 			host: this.config.database.host,
 			port: this.config.database.port,
 			pool: {
-				max: 50
+				max: 100
 			},
 			logging: false,
 			modelPaths: [

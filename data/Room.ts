@@ -4,6 +4,7 @@ import Bot from "../bot/Bot";
 import Helper from "../utility/Helper";
 import Avatar from "./Avatar";
 import logger from "../utility/Logger";
+import Main from "../Main";
 
 export default class Room {
 
@@ -47,8 +48,8 @@ export default class Room {
 	}
 
 	public isBot(username: string): boolean {
-		for (const target of this.players.values()) {
-			if ( target.isBot && target.username.toLowerCase() === username.toLowerCase()) {
+		for (const target of Main.singleton.bots.values()) {
+			if (target.user.username.toLowerCase() === username.toLowerCase()) {
 				return true
 			}
 		}
