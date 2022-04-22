@@ -1,7 +1,36 @@
 import {Column, DataType, Model, Table} from 'sequelize-typescript'
 
 @Table({
-	tableName: 'positions'
+	tableName: 'positions',
+	indexes: [
+		{
+			name: "PRIMARY",
+			unique: true,
+			using: "BTREE",
+			fields: [
+				{name: "id"},
+			]
+		},
+		{
+			name: "id",
+			unique: true,
+			using: "BTREE",
+			fields: [
+				{name: "id"},
+			]
+		},
+		{
+			name: "frame_pad_x_y",
+			unique: true,
+			using: "BTREE",
+			fields: [
+				{name: "frame"},
+				{name: "pad"},
+				{name: "x"},
+				{name: "y"},
+			]
+		},
+	]
 })
 export default class Position extends Model {
 

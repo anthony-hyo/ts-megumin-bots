@@ -62,7 +62,7 @@ export default class WorldBoss extends Default {
 						.then((response: AxiosResponse) => {
 							const json: any = response.data
 
-							if (json.markets != null && json.markets.length > 0) {
+							if (json.markets != null && json.markets.length > 0 && item.iQty > 50) {
 								const costs: Array<number> = []
 
 								json.markets.forEach((market: { Coins: any; }) => costs.push(Number(market.Coins)))

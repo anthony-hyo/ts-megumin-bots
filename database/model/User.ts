@@ -1,7 +1,25 @@
 import {Column, DataType, Model, Table} from 'sequelize-typescript'
 
 @Table({
-	tableName: 'users'
+	tableName: 'users',
+	indexes: [
+		{
+			name: "PRIMARY",
+			unique: true,
+			using: "BTREE",
+			fields: [
+				{name: "id"},
+			]
+		},
+		{
+			name: "id",
+			unique: true,
+			using: "BTREE",
+			fields: [
+				{name: "id"},
+			]
+		},
+	]
 })
 export default class User extends Model {
 
