@@ -15,6 +15,9 @@ export default class Database {
 			dialect: 'mariadb',
 			host: this.config.database.host,
 			port: this.config.database.port,
+			pool: {
+				max: 50
+			},
 			logging: false,
 			modelPaths: [
 				`${__dirname}/model/`
