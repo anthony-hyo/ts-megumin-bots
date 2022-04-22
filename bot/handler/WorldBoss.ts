@@ -64,7 +64,7 @@ export default class WorldBoss extends Default {
 
 								json.markets.forEach((market: { Coins: any; }) => costs.push(Number(market.Coins)))
 
-								const cost: number = Math.round(Helper.arrayAverage(costs)) * item.iQty
+								const cost: number = Helper.replaceLastDigit(Math.round(Helper.arrayAverage(costs)) * item.iQty)
 
 								logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
 

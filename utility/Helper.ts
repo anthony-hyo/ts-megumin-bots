@@ -47,4 +47,9 @@ export default class Helper {
 
 	public static chancePredicate = (chancePercentage: number, predicate: { (): any; (): any; (): boolean; (): any; }) => !!(chancePercentage > 0 && predicate() && (chancePercentage > Math.random() * 99 || chancePercentage === 100));
 
+	public static replaceLastDigit(value: number): number {
+		const l: number = value.toString().length - 1
+		return Math.floor(value  / l) * l
+	}
+
 }
