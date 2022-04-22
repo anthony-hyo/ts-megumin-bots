@@ -32,7 +32,7 @@ export default class Request {
 
 			if (command == undefined) {
 				if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {
-					logger.error(`[request] undefined "${data.cmd}"`)
+					logger.error(`[request] "${bot.user.username}" "${bot.room.fullName}" undefined "${data.cmd}"`)
 				}
 				return
 			}
@@ -42,10 +42,10 @@ export default class Request {
 			if (request) {
 				request.handler(bot, data)
 			} else {
-				logger.error(`[request] not found "${data.cmd}"`)
+				logger.error(`[request] "${bot.user.username}" "${bot.room.fullName}" not found "${data.cmd}"`)
 			}
 		} catch (error) {
-			logger.error(`[request] error ${data.cmd} ${error}`)
+			logger.error(`[request] "${bot.user.username}" "${bot.room.fullName}" error ${data.cmd} ${error}`)
 		}
 	}
 
