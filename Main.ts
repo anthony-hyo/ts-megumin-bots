@@ -25,13 +25,18 @@ export default class Main {
 
 		this.bots.clear()
 
+		let i: number = 0
+
 		User.findAll({
 			// where: {
 			//     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
 			// },
 			//limit: 15,
 			order: Sequelize.literal('random()')
-		}).then((users: User[]) => users.forEach(user => setTimeout(() => Bot.create(user), Helper.randomIntegerInRange(1000, 120000))))
+		}).then((users: User[]) => users.forEach(user => {
+			setTimeout(() => Bot.create(user), 1000 * i)
+			i++
+		}))
 	}
 
 	private static _singleton: Main

@@ -37,7 +37,7 @@ export default class WorldBoss extends Default {
 				}
 
 				this.interval = setInterval(() => {
-					this.bot.network.send('gar', [23, `aa>m:${monster.MonMapID}`, "wvz"])
+					this.bot.network.send('gar', [1, `aa>m:${monster.MonMapID}`, "wvz"])
 				}, 3000)
 			}, 3000)
 		} else if (this.interval != null) {
