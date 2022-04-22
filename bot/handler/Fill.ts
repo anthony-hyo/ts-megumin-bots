@@ -20,25 +20,12 @@ export default class Fill extends Default {
 		logger.info(`[inventory] load "${this.bot.user.username}"`)
 
 		const arr: Array<string> = [
-			'market',
-			'genjutsu',
-			'forest',
-			'forestcolored',
-			'thravine',
-			'outset',
-			'thravine',
-			//'town',
-			'cyberspace',
-			'fraskwinter',
 			'newbie',
 			'outset',
 			'yulgar',
-			'ainzvariant',
 			'avalon',
 			'estarta',
-			'universe',
-			'town',
-			'purgatory'
+			'ivillis',
 		]
 
 		this.bot.network.send('cmd', ['tfer', '', arr[Helper.randomIntegerInRange(0, arr.length - 1)]])

@@ -96,7 +96,7 @@ export default class Room {
 				where: {
 					name: this.name
 				},
-				order: Sequelize.literal('random()')
+				order: Sequelize.literal('rand()')
 			})
 			.then((position: Position | null) => {
 				if (position) {

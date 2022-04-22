@@ -14,6 +14,7 @@ export default class WorldBoss extends Default {
 			'yulgar',
 			'avalon',
 			'estarta',
+			'ivillis',
 		]
 
 		if (data.strMapName == 'town' && Boolean(Helper.randomIntegerInRange(0, 1))) {
