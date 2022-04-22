@@ -12,9 +12,10 @@ export default class Database {
 		this.config = config
 
 		this.sequelize = new Sequelize(this.config.database.dbname, this.config.database.user, this.config.database.password, {
-			dialect: 'sqlite',
+			dialect: 'mariadb',
+			host: this.config.database.host,
+			port: this.config.database.port,
 			logging: false,
-			storage: `${__dirname}/database.sqlite`,
 			modelPaths: [
 				`${__dirname}/model/`
 			],

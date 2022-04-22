@@ -2,6 +2,8 @@ export interface Database {
 	user: string;
 	password: string;
 	dbname: string;
+	host: string
+	port: number
 }
 
 export interface Behavior {

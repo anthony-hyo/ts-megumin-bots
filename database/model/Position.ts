@@ -31,28 +31,28 @@ export default class Position extends Model {
 	@Column({
 		type: DataType.STRING(32),
 		allowNull: false,
-		defaultValue: ``
+		defaultValue: 0
 	})
 	pad!: string
 
 	@Column({
-		type: DataType.DOUBLE,
+		type: DataType.INTEGER,
 		allowNull: false,
-		defaultValue: ``
+		defaultValue: 0
 	})
-	x!: string
+	x!: number
 
 	@Column({
-		type: DataType.STRING(32),
+		type: DataType.INTEGER,
 		allowNull: false,
-		defaultValue: ``
+		defaultValue: 0
 	})
-	y!: string
+	y!: number
 
 	@Column({
-		type: DataType.STRING(32),
+		type: DataType.INTEGER,
 		allowNull: false,
-		defaultValue: ``
+		defaultValue: 1
 	})
 	speed!: string
 

@@ -80,6 +80,10 @@ export default class Bot {
 		this._handler = value;
 	}
 
+	// public get haste():Number {
+	// 	return 1 - Math.min(Math.max(tha, -1), 0.85)
+	// }
+
 	public static create(user: User): Bot {
 		return new Bot(user)
 	}
