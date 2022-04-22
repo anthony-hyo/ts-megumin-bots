@@ -32,7 +32,7 @@ export default class Request {
 
 			if (command == undefined) {
 				if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {
-					logger.error(`[request] "${bot.user.username}" "${bot.room.fullName}" undefined "${data.cmd}"`)
+					logger.warn(`[request] "${bot.user.username}" "${bot.room.fullName}" undefined "${data.cmd}"`)
 				}
 				return
 			}

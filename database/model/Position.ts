@@ -19,7 +19,7 @@ export default class Position extends Model {
 		allowNull: false,
 		defaultValue: ``
 	})
-	map_name!: string
+	name!: string
 
 	@Column({
 		type: DataType.STRING(32),
@@ -48,5 +48,12 @@ export default class Position extends Model {
 		defaultValue: ``
 	})
 	y!: string
+
+	@Column({
+		type: DataType.STRING(32),
+		allowNull: false,
+		defaultValue: ``
+	})
+	speed!: string
 
 }

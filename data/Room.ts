@@ -3,6 +3,7 @@ import {Sequelize} from "sequelize";
 import Bot from "../bot/Bot";
 import Helper from "../utility/Helper";
 import Avatar from "./Avatar";
+import logger from "../utility/Logger";
 
 export default class Room {
 
@@ -36,6 +37,56 @@ export default class Room {
 		return this._players;
 	}
 
+	public hasPlayer(username: string): boolean {
+		for (const target of this.players.values()) {
+			if (target.username.toLowerCase() === username.toLowerCase()) {
+				return true
+			}
+		}
+		return false
+	}
+
+	public isBot(username: string): boolean {
+		for (const target of this.players.values()) {
+			if ( target.isBot && target.username.toLowerCase() === username.toLowerCase()) {
+				return true
+			}
+		}
+		return false
+	}
+
+	public static addPosition(name: string, frame: string, pad: string, x: number, y: number, speed: number) {
+		// noinspection JSIgnoredPromiseFromCall
+		/**
+		 * Save players positions to be used by the bots
+		 */
+		Position
+			.findOrCreate({
+				where: {
+					name: name,
+					frame: frame,
+					pad: pad,
+					x: x,
+					y: y,
+					speed: speed
+				},
+				defaults: {
+					name: name,
+					frame: frame,
+					pad: pad,
+					x: x,
+					y: y,
+					speed: speed
+				}
+			})
+			.catch((error: any) => {
+				if (error.parent.code === 'SQLITE_BUSY') {
+					logger.error(`[SQLITE_BUSY] trying again in 3s`)
+					setTimeout(() => Room.addPosition(name, frame, pad, x, y, speed), 3000)
+				}
+			})
+	}
+
 	/**
 	 * Find position to move
 	 */
@@ -43,7 +94,7 @@ export default class Room {
 		Position
 			.findOne({
 				where: {
-					map_name: this.name
+					name: this.name
 				},
 				order: Sequelize.literal('random()')
 			})
@@ -54,7 +105,7 @@ export default class Room {
 						position.pad
 					])
 
-					setTimeout(() => this.bot.network.send("mv", [position.x, position.y, 10]), Helper.randomIntegerInRange(2000, 5000))
+					setTimeout(() => this.bot.network.send("mv", [position.x, position.y, position.speed]), Helper.randomIntegerInRange(2000, 5000))
 				}
 			})
 			.catch(console.error)
