@@ -30,7 +30,7 @@ export default class WorldBoss extends Default {
 		}
 
 		if (data.monmap !== undefined && data.monmap.length > 0) {
-			const monster: Monmap = data.monmap[0]
+			const monster: Monmap = data.monmap[Helper.randomIntegerInRange(0, data.monmap.length - 1)]
 
 			setTimeout(() => {
 				this.bot.network.send('moveToCell', [
