@@ -43,7 +43,7 @@ export default class Bot {
 				}
 			})
 			.catch((response: any) => {
-				logger.error(`[Bot] "${response.statusMessage}"`)
+				logger.error(`[Bot] "${response}"`)
 				Bot.create(this.user)
 			})
 	}
