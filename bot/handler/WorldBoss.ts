@@ -42,7 +42,8 @@ export default class WorldBoss extends Default {
 
 				this.bot.properties.intervalAttack = setInterval(() => {
 					this.bot.network.send('gar', [1, `aa>m:${monster.MonMapID}`, "wvz"])
-				}, 3000)
+					this.bot.network.send('gar', [1, `a1>m:${monster.MonMapID}`, "wvz"])
+				}, 5000)
 			}, 3000)
 		} else {
 			this.bot.properties.intervalWalk = setInterval(() => {

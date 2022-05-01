@@ -29,12 +29,12 @@ export default class Main {
 
 		User.findAll({
 			// where: {
-			// 	username: 'Acid Bunny'
+			// 	username: {[Op.notLike]: 'Acid Bunny'}
 			// },
 
-			// where: {
-			//     username: {[Op.in]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
-			// },
+			where: {
+			    username: {[Op.notIn]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
+			},
 
 			limit: 30,
 
