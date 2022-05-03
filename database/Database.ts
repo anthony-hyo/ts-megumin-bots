@@ -34,9 +34,9 @@ export default class Database {
 					.then(() => {
 						logger.info("Database sync")
 					})
-					.catch(console.error)
+					.catch(e => console.error('error 1', e))
 			})
-			.catch(console.error)
+			.catch(e => console.error('error 2', e))
 	}
 
 }

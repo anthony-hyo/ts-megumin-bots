@@ -109,7 +109,7 @@ export default class Room {
 					setTimeout(() => this.bot.network.send("mv", [position.x, position.y, position.speed]), Helper.randomIntegerInRange(2000, 5000))
 				}
 			})
-			.catch(console.error)
+			.catch(e => console.error('error 3', e))
 	}
 
 }
