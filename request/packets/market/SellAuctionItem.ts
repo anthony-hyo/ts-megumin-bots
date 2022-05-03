@@ -8,7 +8,7 @@ export default class SellAuctionItem implements IRequest {
 	public command: string = 'sellAuctionItem'
 
 	handler(bot: Bot, data: ISellMarketItem): void {
-		logger.warn(`[market] sell "${bot.user.username}" ${data.strMessage === undefined ? `` : `"${data.strMessage}"`}`)
+		logger.warn(`[market] [${bot.user.username}] sell ${data.strMessage === undefined ? `` : `"${data.strMessage}"`}`)
 	}
 
 }
