@@ -24,10 +24,21 @@ export default class Main {
 
 	private readonly _seeborg: Seeborg = new Seeborg(this.config)
 
-	private readonly database: Database = new Database(this.config)
+	private readonly database: Database = new Database(this)
 
 	constructor() {
 		Main._singleton = this
+	}
+
+	public init(): void {
+		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
+		this.database.sequelize.query("UPDATE users SET handler = 'Default'")
+
+		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
+		this.database.sequelize.query("UPDATE users SET handler = 'monster/WorldBoss' ORDER BY RAND() LIMIT 20")
+
+		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
+		this.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler != 'monster/WorldBoss'")
 
 		axios
 			.get(`https://redhero.online/api/game/world`)

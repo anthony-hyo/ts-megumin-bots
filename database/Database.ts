@@ -1,20 +1,16 @@
 import {Sequelize} from 'sequelize-typescript'
 import logger from "../utility/Logger";
-import Config from "../utility/Config";
+import Main from "../Main";
 
 export default class Database {
 
-	private readonly config: Config
+	private readonly _sequelize: Sequelize
 
-	private readonly sequelize: Sequelize
-
-	constructor(config: Config) {
-		this.config = config
-
-		this.sequelize = new Sequelize(this.config.database.dbname, this.config.database.user, this.config.database.password, {
+	constructor(main: Main) {
+		this._sequelize = new Sequelize(main.config.database.dbname, main.config.database.user, main.config.database.password, {
 			dialect: 'mariadb',
-			host: this.config.database.host,
-			port: this.config.database.port,
+			host: main.config.database.host,
+			port: main.config.database.port,
 			pool: {
 				max: 100
 			},
@@ -24,19 +20,24 @@ export default class Database {
 			],
 		})
 
-		this.sequelize
+		this._sequelize
 			.authenticate()
 			.then(() => {
 				logger.info("Database connected")
 
-				this.sequelize
+				this._sequelize
 					.sync()
 					.then(() => {
 						logger.info("Database sync")
+						main.init()
 					})
 					.catch(e => console.error('error 1', e))
 			})
 			.catch(e => console.error('error 2', e))
+	}
+
+	public get sequelize(): Sequelize {
+		return this._sequelize;
 	}
 
 }
