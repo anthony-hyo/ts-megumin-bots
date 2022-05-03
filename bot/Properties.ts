@@ -9,4 +9,6 @@ export default class Properties {
 
 	public droppedItems: Map<Number, IItem> = new Map<Number, IItem>()
 
+	public isOnWorldBoss: boolean = false
+
 }
