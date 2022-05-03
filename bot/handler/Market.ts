@@ -4,7 +4,8 @@ import logger from "../../utility/Logger";
 import Helper from "../../utility/Helper";
 import IMoveToArea from "../../interface/request/IMoveToArea";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
-import {IMarket, Item} from "../../interface/request/IMarket";
+import {IMarket} from "../../interface/request/IMarket";
+import {IItem} from "../../interface/IItem";
 
 export default class Market extends Default {
 
@@ -61,10 +62,10 @@ export default class Market extends Default {
 	}
 
 	onMarketLoad(data: IMarket): void {
-		data.items.forEach((item: Item) => {
+		data.items.forEach((item: IItem) => {
 			switch (item.ItemID) {
 				case 13397: //Boss Blood
-					this.bot.network.send("buyAuctionItem", [ item.AuctionID ])
+					this.bot.network.send("buyAuctionItem", [item.AuctionID])
 					break;
 			}
 		})

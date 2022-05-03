@@ -6,6 +6,8 @@ import IMoveToArea from "../../interface/request/IMoveToArea";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 import {IMarket} from "../../interface/request/IMarket";
 import {IRemoveItem} from "../../interface/request/IRemoveItem";
+import Helper from "../../utility/Helper";
+import {IItem} from "../../interface/IItem";
 
 export default class Default implements IHandler {
 
@@ -25,14 +27,24 @@ export default class Default implements IHandler {
 
 	onInventoryLoad(data: ILoadInventoryBig): void {
 		logger.debug('default onInventoryLoad')
+
+		data.items.forEach((item: IItem) => this.bot.inventory.all.set(item.ItemID, item))
+
+		this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
+
+		this.bot.network.send('loadRetrieve', ['All'])
 	}
 
-	onDropItem(): void {
+	onDropItem(item: IItem): void {
 		logger.debug('default onDropItem')
+
+		this.bot.inventory.add(item)
 	}
 
 	onRemoveItem(data: IRemoveItem): void {
 		logger.debug('default onRemoveItem')
+
+		this.bot.inventory.removeByCharItemID(data)
 	}
 
 	onDamageTaken(): void {
@@ -45,6 +57,13 @@ export default class Default implements IHandler {
 
 	onMarketRetrieveLoad(data: IMarket): void {
 		logger.debug('default onMarketRetrieveLoad')
+
+		data.items.forEach((item: IItem) => {
+			if (item.Player !== 'On Listing') {
+				logger.info(`[${this.bot.user.username}] [market] ${item.Player} "${Helper.parseHTML(item.sName)}"`)
+				this.bot.network.send('retrieveAuctionItem', [item.AuctionID])
+			}
+		})
 	}
 
 	/*

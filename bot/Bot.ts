@@ -6,17 +6,17 @@ import {ILoginResponseServer} from "../interface/ILoginResponseServer";
 import {ILoginResponse} from "../interface/ILoginResponse";
 import {IHandler} from "../interface/IHandler";
 import Room from "../data/Room";
-import BotProperties from "./BotProperties";
+import Properties from "./Properties";
 import Default from "./handler/Default";
 import Helper from "../utility/Helper";
+import Inventory from "./data/Inventory";
+import {IItem} from "../interface/IItem";
 
 export default class Bot {
 
 	private readonly _user!: User
-
-	private _room: Room = new Room(this, -1, 'none-1', 'none')
-
-	private readonly _properties: BotProperties = new BotProperties()
+	private readonly _properties: Properties = new Properties()
+	private readonly _inventory: Inventory = new Inventory(this)
 
 	constructor(user: User) {
 		logger.debug(`[Bot] found "${user.username}"`)
@@ -49,6 +49,16 @@ export default class Bot {
 			})
 	}
 
+	private _room: Room = new Room(this, -1, 'none-1', 'none')
+
+	public get room(): Room {
+		return this._room;
+	}
+
+	public set room(value: Room) {
+		this._room = value;
+	}
+
 	private _network!: Network
 
 	public get network(): Network {
@@ -59,16 +69,12 @@ export default class Bot {
 		return this._user;
 	}
 
-	public get room(): Room {
-		return this._room;
-	}
-
-	public set room(value: Room) {
-		this._room = value;
-	}
-
-	public get properties(): BotProperties {
+	public get properties(): Properties {
 		return this._properties;
+	}
+
+	public get inventory(): Inventory {
+		return this._inventory;
 	}
 
 	private _handler: IHandler = new Default(this)
@@ -85,7 +91,11 @@ export default class Bot {
 	// 	return 1 - Math.min(Math.max(tha, -1), 0.85)
 	// }
 
-	public marketSell(item: { ItemID: any; iQty: number; sName: string; CharItemID: any; }) {
+	public static create(user: User): Bot {
+		return new Bot(user)
+	}
+
+	public marketSell(item: IItem) {
 		switch (item.ItemID) {
 			case 8236: //Boss Soul
 			case 13397: //Boss Blood
@@ -119,10 +129,6 @@ export default class Bot {
 					.catch(console.error)
 				break;
 		}
-	}
-
-	public static create(user: User): Bot {
-		return new Bot(user)
 	}
 
 }

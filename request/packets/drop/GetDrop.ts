@@ -2,16 +2,28 @@ import Bot from "../../../bot/Bot";
 import IRequest from "../../../interface/IRequest";
 import {IGetDrop} from "../../../interface/request/IDrop";
 import logger from "../../../utility/Logger";
+import {IItem} from "../../../interface/IItem";
 
 export default class GetDrop implements IRequest {
 
 	public command: string = 'getDrop'
 
 	handler(bot: Bot, data: IGetDrop): void {
-		if (data.bSuccess) {
-			logger.info(`[${bot.user.username}] [market] accepted drop "${data.ItemID}"`)
+		if (data.bBank) {
+			logger.warn(`[getDrop] [${bot.user.username}] could not accept drop ${data.ItemID} in bank`)
+		} else if (data.bSuccess) {
+			logger.info(`[getDrop] [${bot.user.username}] accepted drop ${data.ItemID}`)
+
+			const item: IItem | undefined = bot.properties.droppedItems.get(data.ItemID)
+
+			if (item) {
+				bot.handler.onDropItem(item)
+			} else {
+				logger.warn(`[getDrop] [${bot.user.username}] drop undefined ${data.ItemID}`)
+			}
 		} else {
-			logger.error(`[${bot.user.username}] [market] could not accept drop "${data.ItemID}" ${data.bBank ? `"in bank"` : ``}`)
+			logger.warn(`[getDrop] [${bot.user.username}] could not accept drop ${data.ItemID}`)
+			bot.properties.droppedItems.delete(data.ItemID)
 		}
 	}
 

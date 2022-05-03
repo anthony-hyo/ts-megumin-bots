@@ -1,8 +1,6 @@
 import Bot from "../../../bot/Bot";
 import IRequest from "../../../interface/IRequest";
-import {IMarket, Item} from "../../../interface/request/IMarket";
-import logger from "../../../utility/Logger";
-import Helper from "../../../utility/Helper";
+import {IMarket} from "../../../interface/request/IMarket";
 
 export default class LoadAuction implements IRequest {
 

@@ -3,6 +3,7 @@ import IMoveToArea from "./request/IMoveToArea";
 import ILoadInventoryBig from "./request/ILoadInventoryBig";
 import {IMarket} from "./request/IMarket";
 import {IRemoveItem} from "./request/IRemoveItem";
+import {IItem} from "./IItem";
 
 export interface IHandler {
 
@@ -10,7 +11,7 @@ export interface IHandler {
 
 	onInventoryLoad(data: ILoadInventoryBig): void
 
-	onDropItem(): void
+	onDropItem(item: IItem): void
 
 	onRemoveItem(data: IRemoveItem): void;
 
