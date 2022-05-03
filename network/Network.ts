@@ -113,10 +113,14 @@ export default class Network {
 	}
 
 	private onClose(hadError: boolean): void {
+		if (this.bot.properties.intervalAttack != null) {
+			clearInterval(this.bot.properties.intervalAttack)
+		}
 
-		/**
-		 * Remove user from bots
-		 */
+		if (this.bot.properties.intervalWalk != null) {
+			clearInterval(this.bot.properties.intervalWalk)
+		}
+
 		Main.singleton.bots.delete(this.id)
 
 		Bot.create(this.bot.user)
