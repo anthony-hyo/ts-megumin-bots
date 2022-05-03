@@ -106,7 +106,14 @@ export default class Bot {
 		return new Bot(user)
 	}
 
-	public marketSell(item: IItem) {
+	public joinMap(map: string) {
+		logger.info(`[request] [${this.user.username}] joining ${map}`)
+		this.network.send('cmd', ['tfer', '', map])
+	}
+
+	public marketSell(item: IItem): void {
+		let i: number = 0
+
 		switch (item.ItemID) {
 			case 8236: //Boss Soul
 			case 13397: //Boss Blood
@@ -117,6 +124,10 @@ export default class Bot {
 					.then((response: AxiosResponse) => {
 						const json: any = response.data
 
+						if (i > 4) {
+							return
+						}
+
 						if (json.markets != null && json.markets.length > 0 && item.iQty > 50) {
 							const costs: Array<number> = []
 
@@ -124,17 +135,21 @@ export default class Bot {
 
 							const quantity: number = Math.min(item.iQty, 20)
 
-							const cost: number = Helper.replaceLastDigit(Helper.decreaseByPercentage(90, json.MarketAverage * quantity))
+							const cost: number = Helper.replaceLastDigit(json.MarketAverage * quantity)
 
-							logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
+							setTimeout(() => {
+								logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
 
-							this.network.send("sellAuctionItem", [
-								item.ItemID,
-								item.CharItemID,
-								quantity,
-								cost,
-								0
-							])
+								this.network.send("sellAuctionItem", [
+									item.ItemID,
+									item.CharItemID,
+									quantity,
+									cost,
+									0
+								])
+							}, Helper.randomIntegerInRange(1000, 60000))
+
+							i++
 						}
 					})
 					.catch(console.error)
