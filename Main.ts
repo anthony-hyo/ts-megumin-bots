@@ -28,15 +28,11 @@ export default class Main {
 		let i: number = 0
 
 		User.findAll({
-			// where: {
-			// 	username: {[Op.notLike]: 'Acid Bunny'}
-			// },
-
-			where: {
-			    username: {[Op.notIn]: ['Acid Bunny', 'Agapi Mou', 'Alliebear', 'Ancestor', 'Angel Baby', 'Andre the Giant', 'Amore Mio', 'Ankle Biter', 'Armrest', 'Ashkim', 'Baba Ganoush', 'Baby Angel', 'Beer Belly', 'Babett']}
+			 where: {
+			 	username: 'Acid Bunny'
 			},
 
-			limit: 30,
+			limit: 1,
 
 			order: Sequelize.literal('rand()')
 		}).then((users: User[]) => users.forEach(user => {

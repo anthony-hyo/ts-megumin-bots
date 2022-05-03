@@ -4,6 +4,7 @@ import Bot from "../bot/Bot";
 import {INetworkSend} from "../interface/INetworkSend";
 import Main from "../Main";
 import WorldBoss from "../bot/handler/WorldBoss";
+import Fill from "../bot/handler/Fill";
 
 export default class Network {
 
@@ -36,7 +37,7 @@ export default class Network {
 	}
 
 	public send(command: string, args: Array<any> = []): void {
-		logger.debug(`[send] "${this.bot.user.username}" "${command}" "${args.toString()}"`)
+		logger.debug(`[network] [${this.bot.user.username}] send command: ${command} with args: ${args.toString()}`)
 
 		this.write({
 			type: 'request',
@@ -48,7 +49,7 @@ export default class Network {
 	}
 
 	public event(command: string, args: Array<any>): void {
-		logger.debug(`[event] "${this.bot.user.username}" "${command}" "${args.toString()}"`)
+		logger.debug(`[network] [${this.bot.user.username}] event command: ${command} with args: ${args.toString()}`)
 
 		this.write({
 			type: 'event',
@@ -65,14 +66,14 @@ export default class Network {
 
 	private listeners(): void {
 		this.socket.on('connect', () => {
-			logger.debug('connected to server')
+			logger.debug(`[network] [${this.bot.user.username}] connected to server`)
 
 			this.event('login', [
 				this.bot.user.username,
 				this.bot.properties.token
 			])
 
-			this.bot.handler = new WorldBoss(this.bot)
+			this.bot.handler = new Fill(this.bot)
 		})
 
 		this.socket.on('data', (data: any) => {
@@ -84,11 +85,11 @@ export default class Network {
 				try {
 					const string = this.chunk.substring(0, d_index);
 
-					logger.debug(`[received] ${string}`)
+					logger.debug(`[network] [${this.bot.user.username}] received ${string}`)
 
 					Main.singleton.request.run(string, this.bot)
 				} catch (error) {
-					logger.error(`error when receiving ${error}`)
+					logger.error(`[network] [${this.bot.user.username}] received error ${error}`)
 				}
 
 				this.chunk = this.chunk.substring(d_index + this.delimiter.length)
@@ -97,7 +98,7 @@ export default class Network {
 			}
 		})
 
-		this.socket.on('error', (err: Error) => logger.error(`[error] "${this.bot.user.username}" "${err.message}"`))
+		this.socket.on('error', (err: Error) => logger.error(`[network] [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`))
 
 		this.socket.on('close', (hadError: boolean) => {
 
@@ -108,10 +109,10 @@ export default class Network {
 
 			Bot.create(this.bot.user)
 
-			logger.error(`[close] "${this.bot.user.username}" ${hadError ? `"with error"` : ``}`);
+			logger.error(`[network] [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
 		})
 
-		this.socket.on('end', () => logger.error(`[end] "${this.bot.user.username}"`))
+		this.socket.on('end', () => logger.error(`[network] [${this.bot.user.username}] end "${this.bot.user.username}"`))
 	}
 
 }

@@ -26,13 +26,13 @@ export default class Request {
 		const data: any = JSON.parse(json)
 
 		try {
-			logger.debug(`[received] ${data.cmd}`)
+			logger.debug(`[request] [${bot.user.username}] received ${data.cmd}`)
 
 			const command: String | undefined = this.packets.get(data.cmd)
 
 			if (command == undefined) {
 				if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {
-					logger.warn(`[request] undefined request "${bot.user.username}" "${bot.room.fullName}" "${data.cmd}"`)
+					logger.warn(`[request] [${bot.user.username}] undefined request ${data.cmd}`)
 				}
 				return
 			}
@@ -42,10 +42,10 @@ export default class Request {
 			if (request) {
 				request.handler(bot, data)
 			} else {
-				logger.error(`[request] "${bot.user.username}" "${bot.room.fullName}" not found "${data.cmd}"`)
+				logger.error(`[request] [${bot.user.username}] not found ${data.cmd}`)
 			}
 		} catch (error) {
-			logger.error(`[request] "${bot.user.username}" "${bot.room.fullName}" error ${data.cmd} ${error}`)
+			logger.error(`[request] [${bot.user.username}] error ${data.cmd} ${error}`)
 		}
 	}
 
