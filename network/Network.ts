@@ -3,8 +3,7 @@ import logger from "../utility/Logger";
 import Bot from "../bot/Bot";
 import {INetworkSend} from "../interface/INetworkSend";
 import Main from "../Main";
-import WorldBoss from "../bot/handler/WorldBoss";
-import Fill from "../bot/handler/Fill";
+import Monster from "../bot/handler/Monster";
 
 export default class Network {
 
@@ -65,54 +64,68 @@ export default class Network {
 	}
 
 	private listeners(): void {
-		this.socket.on('connect', () => {
-			logger.debug(`[network] [${this.bot.user.username}] connected to server`)
+		this.socket.on('connect', this.onConnect.bind(this))
 
-			this.event('login', [
-				this.bot.user.username,
-				this.bot.properties.token
-			])
+		this.socket.on('data', this.onData.bind(this))
 
-			this.bot.handler = new Fill(this.bot)
-		})
+		this.socket.on('error', this.onError.bind(this))
 
-		this.socket.on('data', (data: any) => {
-			this.chunk += data.toString();
+		this.socket.on('close', this.onClose.bind(this))
 
-			let d_index = this.chunk.indexOf(this.delimiter);
+		this.socket.on('end', this.onEnd.bind(this))
+	}
 
-			while (d_index > -1) {
-				try {
-					const string = this.chunk.substring(0, d_index);
+	private onConnect(): void {
+		logger.debug(`[network] [${this.bot.user.username}] connected to server`)
 
-					logger.debug(`[network] [${this.bot.user.username}] received ${string}`)
+		this.event('login', [
+			this.bot.user.username,
+			this.bot.properties.token
+		])
 
-					Main.singleton.request.run(string, this.bot)
-				} catch (error) {
-					logger.error(`[network] [${this.bot.user.username}] received error ${error}`)
-				}
+		this.bot.handler = new Monster(this.bot)
+	}
 
-				this.chunk = this.chunk.substring(d_index + this.delimiter.length)
+	private onData(data: any): void {
+		this.chunk += data.toString();
 
-				d_index = this.chunk.indexOf(this.delimiter)
+		let d_index = this.chunk.indexOf(this.delimiter);
+
+		while (d_index > -1) {
+			try {
+				const string = this.chunk.substring(0, d_index);
+
+				logger.debug(`[network] [${this.bot.user.username}] received ${string}`)
+
+				Main.singleton.request.run(string, this.bot)
+			} catch (error) {
+				logger.error(`[network] [${this.bot.user.username}] received error ${error}`)
 			}
-		})
 
-		this.socket.on('error', (err: Error) => logger.error(`[network] [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`))
+			this.chunk = this.chunk.substring(d_index + this.delimiter.length)
 
-		this.socket.on('close', (hadError: boolean) => {
+			d_index = this.chunk.indexOf(this.delimiter)
+		}
+	}
 
-			/**
-			 * Remove user from bots
-			 */
-			Main.singleton.bots.delete(this.id)
+	private onError(err: Error): void {
+		logger.error(`[network] [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`);
+	}
 
-			Bot.create(this.bot.user)
+	private onClose(hadError: boolean): void {
 
-			logger.error(`[network] [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
-		})
+		/**
+		 * Remove user from bots
+		 */
+		Main.singleton.bots.delete(this.id)
 
-		this.socket.on('end', () => logger.error(`[network] [${this.bot.user.username}] end "${this.bot.user.username}"`))
+		Bot.create(this.bot.user)
+
+		logger.error(`[network] [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
+	}
+
+	private onEnd(): void {
+		logger.error(`[network] [${this.bot.user.username}] end "${this.bot.user.username}"`);
 	}
 
 }
