@@ -1,5 +1,5 @@
 import Monster from "./Monster";
-import IMoveToArea from "../../interface/request/IMoveToArea";
+import IMoveToArea from "../../../interface/request/IMoveToArea";
 
 export default class WorldBoss extends Monster {
 
