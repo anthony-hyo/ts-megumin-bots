@@ -5,20 +5,6 @@ import IMoveToArea, {Monmap} from "../../interface/request/IMoveToArea";
 export default class Monster extends Default {
 
 	onJoin(data: IMoveToArea): void {
-		const arr: Array<string> = [
-			'newbie',
-			'outset',
-			'yulgar',
-			'avalon',
-			'estarta',
-			'ivillis',
-		]
-
-		if (data.strMapName == 'town' && Boolean(Helper.randomIntegerInRange(0, 1))) {
-			this.bot.network.send('cmd', ['tfer', '', arr[Helper.randomIntegerInRange(0, arr.length - 1)]])
-			return
-		}
-
 		if (this.bot.properties.intervalAttack != null) {
 			clearInterval(this.bot.properties.intervalAttack)
 		}
@@ -39,17 +25,16 @@ export default class Monster extends Default {
 				this.bot.properties.intervalAttack = setInterval(() => {
 					this.bot.network.send('gar', [1, `aa>m:${monster.MonMapID}`, "wvz"])
 					this.bot.network.send('gar', [1, `a1>m:${monster.MonMapID}`, "wvz"])
-				}, 5000)
+					this.bot.network.send('gar', [1, `a2>m:${monster.MonMapID}`, "wvz"])
+					this.bot.network.send('gar', [1, `a3>m:${monster.MonMapID}`, "wvz"])
+					this.bot.network.send('gar', [1, `a4>m:${monster.MonMapID}`, "wvz"])
+				}, 2000)
 			}, 3000)
 		} else {
 			this.bot.properties.intervalWalk = setInterval(() => {
 				this.bot.room.freeWalk()
 			}, 60000 * 5)
 		}
-	}
-
-	onWorldBoss(data: any) {
-		this.bot.network.send('joinWorldBoss', [data.worldBossId])
 	}
 
 }

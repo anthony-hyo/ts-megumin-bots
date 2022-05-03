@@ -1,22 +1,17 @@
 import Default from "./Default";
-import axios, {AxiosResponse} from "axios";
-import logger from "../../utility/Logger";
-import Helper from "../../utility/Helper";
 import IMoveToArea from "../../interface/request/IMoveToArea";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
-import {IMarket} from "../../interface/request/IMarket";
 import {IItem} from "../../interface/IItem";
 
 export default class Market extends Default {
 
 	onJoin(data: IMoveToArea): void {
-		if (this.bot.properties.intervalWalk != null) {
-			clearInterval(this.bot.properties.intervalWalk)
+		if (this.bot.properties.intervalAttack != null) {
+			clearInterval(this.bot.properties.intervalAttack)
 		}
 
-		if (data.strMapName != 'town') {
-			this.bot.network.send('cmd', ['tfer', '', 'town'])
-			return
+		if (this.bot.properties.intervalWalk != null) {
+			clearInterval(this.bot.properties.intervalWalk)
 		}
 
 		this.bot.properties.intervalWalk = setInterval(() => {
@@ -25,50 +20,19 @@ export default class Market extends Default {
 	}
 
 	onInventoryLoad(data: ILoadInventoryBig) {
-		data.items.forEach(item => {
-			switch (item.ItemID) {
-				case 8236: //Boss Soul
-					if (item.iQty > 50) {
-						axios
-							.get(`https://redhero.online/api/wiki/item/${item.ItemID}`)
-							.then((response: AxiosResponse) => {
-								const json: any = response.data
-
-								if (json.markets != null && json.markets.length > 0 && item.iQty > 50) {
-									const costs: Array<number> = []
-
-									json.markets.forEach((market: { Coins: any; }) => costs.push(Number(market.Coins)))
-
-									const cost: number = Helper.replaceLastDigit(Helper.decreaseByPercentage(50, Math.round(Helper.arrayAverage(costs)) * item.iQty))
-
-									logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
-
-									this.bot.network.send("sellAuctionItem", [
-										item.ItemID,
-										item.CharItemID,
-										item.iQty,
-										cost,
-										0
-									])
-								}
-							})
-							.catch(console.error)
-					}
-					break;
-			}
-		})
-
-		this.bot.network.send('loadAuction', ['All'])
+		super.onInventoryLoad(data)
+		
+		this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
 	}
 
-	onMarketLoad(data: IMarket): void {
-		data.items.forEach((item: IItem) => {
-			switch (item.ItemID) {
-				case 13397: //Boss Blood
-					this.bot.network.send("buyAuctionItem", [item.AuctionID])
-					break;
-			}
-		})
-	}
+	// onMarketLoad(data: IMarket): void {
+	// 	data.items.forEach((item: IItem) => {
+	// 		switch (item.ItemID) {
+	// 			case 13397: //Boss Blood
+	// 				this.bot.network.send("buyAuctionItem", [item.AuctionID])
+	// 				break;
+	// 		}
+	// 	})
+	// }
 
 }

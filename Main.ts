@@ -5,7 +5,9 @@ import User from "./database/model/User";
 import Bot from "./bot/Bot";
 import {Op, Sequelize} from "sequelize";
 import Seeborg from "./seeborg/Seeborg";
-import Helper from "./utility/Helper";
+import axios, {AxiosResponse} from "axios";
+import logger from "./utility/Logger";
+import {IGameWorld, IMap} from "./interface/web/IGameWorld";
 
 const yaml = require('yaml-js')
 const fs = require('fs')
@@ -13,6 +15,10 @@ const fs = require('fs')
 export default class Main {
 
 	public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
+
+	public readonly maps: Array<IMap> = []
+
+	private readonly _request: Request = new Request();
 
 	private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
 
@@ -23,22 +29,28 @@ export default class Main {
 	constructor() {
 		Main._singleton = this
 
-		this.bots.clear()
+		axios
+			.get(`https://redhero.online/api/game/world`)
+			.then((response: AxiosResponse) => {
+				const worlds: IGameWorld[] = response.data;
 
-		let i: number = 0
+				worlds.forEach((world: IGameWorld) =>this.maps.push(world.map))
 
-		User.findAll({
-			 where: {
-			 	username: 'Acid Bunny'
-			},
+				let i: number = 0
 
-			limit: 1,
-
-			order: Sequelize.literal('rand()')
-		}).then((users: User[]) => users.forEach(user => {
-			setTimeout(() => Bot.create(user), 1000 * i)
-			i++
-		}))
+				User
+					.findAll({
+						//limit: 5,
+						order: Sequelize.literal('rand()')
+					})
+					.then((users: User[]) => users.forEach(user => {
+						setTimeout(() => Bot.create(user), 1000 * i)
+						i++
+					}))
+			})
+			.catch((response: any) => {
+				logger.error(`[main] game world response error "${response}"`)
+			})
 	}
 
 	private static _singleton: Main
@@ -46,8 +58,6 @@ export default class Main {
 	public static get singleton(): Main {
 		return this._singleton;
 	}
-
-	private _request: Request = new Request();
 
 	public get request(): Request {
 		return this._request;

@@ -8,6 +8,8 @@ import {IMarket} from "../../interface/request/IMarket";
 import {IRemoveItem} from "../../interface/request/IRemoveItem";
 import Helper from "../../utility/Helper";
 import {IItem} from "../../interface/IItem";
+import {IMap} from "../../interface/web/IGameWorld";
+import Main from "../../Main";
 
 export default class Default implements IHandler {
 
@@ -30,9 +32,12 @@ export default class Default implements IHandler {
 
 		data.items.forEach((item: IItem) => this.bot.inventory.all.set(item.ItemID, item))
 
-		this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
-
 		this.bot.network.send('loadRetrieve', ['All'])
+
+		setTimeout(() => {
+			const maps: IMap[] = Main.singleton.maps.filter(value => value.ReqLevel <= this.bot.data!.intLevel)
+			this.bot.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
+		}, 3000)
 	}
 
 	onDropItem(item: IItem): void {
