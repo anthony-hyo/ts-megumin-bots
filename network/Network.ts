@@ -3,7 +3,8 @@ import logger from "../utility/Logger";
 import Bot from "../bot/Bot";
 import {INetworkSend} from "../interface/INetworkSend";
 import Main from "../Main";
-import Monster from "../bot/handler/Monster";
+import * as path from "path";
+import Default from "../bot/handler/Default";
 
 export default class Network {
 
@@ -83,7 +84,12 @@ export default class Network {
 			this.bot.properties.token
 		])
 
-		this.bot.handler = new Monster(this.bot)
+		try {
+			this.bot.handler = new (require(path.resolve(__dirname, '..', 'bot', 'handler', `${this.bot.user.handler}.ts`)).default)(this.bot)
+		} catch (ignored) {
+			logger.error(`[network] [${this.bot.user.username}] could now find any handler ${path.resolve(__dirname, '..', 'bot', 'handler', `${this.bot.user.handler}.ts`)} using Default`)
+			this.bot.handler = new Default(this.bot)
+		}
 	}
 
 	private onData(data: any): void {
