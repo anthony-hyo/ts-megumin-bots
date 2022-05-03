@@ -38,24 +38,6 @@ export default class Room {
 		return this._players;
 	}
 
-	public hasPlayer(username: string): boolean {
-		for (const target of this.players.values()) {
-			if (target.username.toLowerCase() === username.toLowerCase()) {
-				return true
-			}
-		}
-		return false
-	}
-
-	public isBot(username: string): boolean {
-		for (const target of Main.singleton.bots.values()) {
-			if (target.user.username.toLowerCase() === username.toLowerCase()) {
-				return true
-			}
-		}
-		return false
-	}
-
 	public static addPosition(name: string, frame: string, pad: string, x: number, y: number, speed: number) {
 		// noinspection JSIgnoredPromiseFromCall
 		/**
@@ -86,6 +68,24 @@ export default class Room {
 					setTimeout(() => Room.addPosition(name, frame, pad, x, y, speed), 3000)
 				}
 			})
+	}
+
+	public hasPlayer(username: string): boolean {
+		for (const target of this.players.values()) {
+			if (target.username.toLowerCase() === username.toLowerCase()) {
+				return true
+			}
+		}
+		return false
+	}
+
+	public isBot(username: string): boolean {
+		for (const target of Main.singleton.bots.values()) {
+			if (target.user.username.toLowerCase() === username.toLowerCase()) {
+				return true
+			}
+		}
+		return false
 	}
 
 	/**
