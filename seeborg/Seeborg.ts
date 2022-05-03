@@ -17,27 +17,27 @@ export default class Seeborg {
 		this.config = config
 
 		setInterval(() => {
-			logger.debug('[Seeborg] Saving dictionary...');
+			logger.debug(`[seeborg] Saving dictionary...`);
 
 			this.dictionary.save();
 
-			logger.debug('[Seeborg] Dictionary saved.');
+			logger.debug(`[seeborg] Dictionary saved.`);
 
 		}, config.autoSavePeriod() * 1000);
 	}
 
-	public onMessage(bot: Bot, channel: string, username: string, message: string) {
+	public onMessage(bot: Bot, channel: string, username: string, message: string): void {
 		try {
 			if (this.shouldProcessMessage(username, username)) { //Reply?
 				if (this.shouldComputeAnswer(channel, bot.user.username, message)) {
-					setTimeout(() => this.replyWithAnswer(bot, channel, message), Math.floor((Math.floor(Math.random() * 3) + 1) * 1000))
+					setTimeout(() => this.replyWithAnswer(bot, channel, message), Math.floor((Math.floor(Math.random() * 15) + 1) * 1000))
 				}
 				if (this.shouldLearn(channel, message)) {
 					this.learn(message);
 				}
 			}
 		} catch (error) {
-			logger.error(`[Seeborg] Seeborg error ${error}`)
+			logger.error(`[seeborg] [${bot.user.username}] error ${error}`)
 		}
 	}
 
@@ -61,16 +61,16 @@ export default class Seeborg {
 		}
 	}
 
-	private computeAnswer(message: string) {
-		const words = stringUtil.splitWords(message);
-		const knownWords = words.filter((word: any) => this.dictionary.isWordKnown(word));
+	private computeAnswer(message: string): string | null {
+		const words: string[] = stringUtil.splitWords(message);
+		const knownWords: string[] = words.filter((word: string) => this.dictionary.isWordKnown(word));
 
 		if (knownWords.length === 0) {
-			logger.debug(`[Seeborg] No sentences with ${words} found`);
+			logger.debug(`[seeborg] no sentences with ${words} found`);
 			return null;
 		}
 
-		const pivot = _.sample(knownWords);
+		const pivot: any = _.sample(knownWords);
 		const sentences = this.dictionary.sentencesWithWord(pivot);
 
 		switch (sentences.length) {
@@ -83,16 +83,16 @@ export default class Seeborg {
 		const leftSentence = _.sample(sentences);
 		const rightSentence = _.sample(sentences);
 
-		const leftSentenceWords = stringUtil.splitWords(leftSentence);
-		const rightSentenceWords = stringUtil.splitWords(rightSentence);
+		const leftSentenceWords: string[] = stringUtil.splitWords(leftSentence);
+		const rightSentenceWords: string[] = stringUtil.splitWords(rightSentence);
 
-		const leftSide = leftSentenceWords.slice(0, leftSentenceWords.indexOf(pivot));
-		const rightSide = rightSentenceWords.slice(rightSentenceWords.indexOf(pivot) + 1, rightSentenceWords.length);
+		const leftSide: string[] = leftSentenceWords.slice(0, leftSentenceWords.indexOf(pivot));
+		const rightSide: string[] = rightSentenceWords.slice(rightSentenceWords.indexOf(pivot) + 1, rightSentenceWords.length);
 
 		return [leftSide.join(' '), pivot, rightSide.join(' ')].join(' ');
 	}
 
-	private shouldComputeAnswer(channel: string, username: string, message: string) {
+	private shouldComputeAnswer(channel: string, username: string, message: string): boolean {
 		if (!this.config.speaking(channel)) { // Bot should not speak if speaking is set to false
 			return false;
 		} else if (Helper.chancePredicate(this.config.replyMention(channel), () => message.includes(username))) {// Reply mention //TODO: CHECK Whisper
@@ -106,34 +106,34 @@ export default class Seeborg {
 		}
 	}
 
-	private learn(message: string) {
-		logger.debug(`[Seeborg] Learn`);
+	private learn(message: string): void {
+		logger.debug(`[seeborg] learn`);
 
 		try {
 			this.dictionary.insertLine(message);
 		} catch (error) {
-			logger.error(`[Seeborg] Learn ${error}`)
+			logger.error(`[seeborg] learn ${error}`)
 		}
 	}
 
-	private shouldLearn(channel: string, message: string) {
+	private shouldLearn(channel: string, message: string): boolean {
 		if (!this.config.learning(channel)) {
 			return false;
 		}
 
 		// Ignore messages that match the blacklist
 		if (this.config.matchesBlacklistedPattern(channel, message)) {
-			logger.debug(`[Seeborg] Should learn is black listed ${message}`);
+			logger.debug(`[seeborg] should learn is black listed ${message}`);
 			return false;
 		}
 
 		return true;
 	}
 
-	private shouldProcessMessage(channel: string, username: string) {
+	private shouldProcessMessage(channel: string, username: string): boolean {
 		//Ignore users in the ignore list
 		if (this.config.isIgnored(channel, username)) {
-			logger.debug(`[Seeborg] Should process message ignored "${channel}" "${username}"`);
+			logger.debug(`[seeborg] should process message ignored ${channel} > ${username}`);
 			return false;
 		}
 
