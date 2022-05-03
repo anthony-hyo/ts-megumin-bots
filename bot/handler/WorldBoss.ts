@@ -1,40 +1,15 @@
-import Default from "./Default";
-import Helper from "../../utility/Helper";
-import IMoveToArea, {Monmap} from "../../interface/request/IMoveToArea";
+import Monster from "./Monster";
+import IMoveToArea from "../../interface/request/IMoveToArea";
 
-export default class WorldBoss extends Default {
+export default class WorldBoss extends Monster {
 
-	onJoin(data: IMoveToArea): void {
-		if (this.bot.properties.intervalAttack != null) {
-			clearInterval(this.bot.properties.intervalAttack)
+	onJoin(data: IMoveToArea) {
+		if (this.bot.properties.isOnWorldBoss) {
+			this.bot.properties.isOnWorldBoss = false
+			this.bot.joinMapRandom()
 		}
 
-		if (this.bot.properties.intervalWalk != null) {
-			clearInterval(this.bot.properties.intervalWalk)
-		}
-
-		if (data.monmap !== undefined && data.monmap.length > 0) {
-			const monster: Monmap = data.monmap[Helper.randomIntegerInRange(0, data.monmap.length - 1)]
-
-			setTimeout(() => {
-				this.bot.network.send('moveToCell', [
-					monster.strFrame,
-					'Left'
-				])
-
-				this.bot.properties.intervalAttack = setInterval(() => {
-					this.bot.network.send('gar', [1, `aa>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a1>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a2>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a3>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a4>m:${monster.MonMapID}`, "wvz"])
-				}, 5000)
-			}, 3000)
-		} else {
-			this.bot.properties.intervalWalk = setInterval(() => {
-				this.bot.room.freeWalk()
-			}, 60000 * 5)
-		}
+		super.onJoin(data);
 	}
 
 	onWorldBoss(data: any) {

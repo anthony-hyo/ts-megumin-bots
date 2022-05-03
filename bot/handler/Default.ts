@@ -34,10 +34,7 @@ export default class Default implements IHandler {
 
 		this.bot.network.send('loadRetrieve', ['All'])
 
-		setTimeout(() => {
-			const maps: IMap[] = Main.singleton.maps.filter(value => value.ReqLevel <= this.bot.data!.intLevel)
-			this.bot.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
-		}, 3000)
+		this.bot.joinMapRandom()
 	}
 
 	onDropItem(item: IItem): void {

@@ -12,6 +12,8 @@ import Helper from "../utility/Helper";
 import Inventory from "./data/Inventory";
 import {IItem} from "../interface/IItem";
 import {IUser} from "../interface/IUser";
+import {IMap} from "../interface/web/IGameWorld";
+import Main from "../Main";
 
 export default class Bot {
 
@@ -111,6 +113,13 @@ export default class Bot {
 		this.network.send('cmd', ['tfer', '', map])
 	}
 
+	public joinMapRandom() {
+		setTimeout(() => {
+			const maps: IMap[] = Main.singleton.maps.filter(value => value.ReqLevel <= this.data!.intLevel)
+			this.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
+		}, 3000)
+	}
+
 	public marketSell(item: IItem): void {
 		let i: number = 0
 
@@ -138,7 +147,7 @@ export default class Bot {
 							const cost: number = Helper.replaceLastDigit(json.MarketAverage * quantity)
 
 							setTimeout(() => {
-								logger.info(`[market] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
+								logger.info(`[market] [${this.user.username}] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
 
 								this.network.send("sellAuctionItem", [
 									item.ItemID,

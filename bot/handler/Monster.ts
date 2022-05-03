@@ -14,6 +14,12 @@ export default class Monster extends Default {
 		}
 
 		if (data.monmap !== undefined && data.monmap.length > 0) {
+			data.mondef.forEach(value => {
+				if (value.isWorldBoss) {
+					this.bot.properties.isOnWorldBoss = true
+				}
+			})
+
 			const monster: Monmap = data.monmap[Helper.randomIntegerInRange(0, data.monmap.length - 1)]
 
 			setTimeout(() => {
