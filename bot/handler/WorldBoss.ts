@@ -1,10 +1,6 @@
 import Default from "./Default";
-import logger from "../../utility/Logger";
 import Helper from "../../utility/Helper";
 import IMoveToArea, {Monmap} from "../../interface/request/IMoveToArea";
-import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
-import {IMarket, Item} from "../../interface/request/IMarket";
-import {IRemoveItem} from "../../interface/request/IRemoveItem";
 
 export default class WorldBoss extends Default {
 
@@ -50,38 +46,6 @@ export default class WorldBoss extends Default {
 				this.bot.room.freeWalk()
 			}, 60000 * 5)
 		}
-	}
-
-	onInventoryLoad(data: ILoadInventoryBig) {
-		this.bot.properties.inventory = data.items
-
-		this.bot.properties.inventory.forEach((item): void => this.bot.marketSell(item))
-
-		this.bot.network.send('loadRetrieve', ['All'])
-	}
-
-	onRemoveItem(data: IRemoveItem): void {
-		this.bot.properties.inventory?.forEach((item, index, arr) => {
-			if (arr[index].CharItemID === data.CharItemID) {
-
-				arr[index].iQty -= data.iQty
-
-				if (arr[index].iQty > 0) {
-					this.bot.marketSell(arr[index])
-				} else {
-					arr.splice(index, 1)
-				}
-			}
-		})
-	}
-
-	onMarketRetrieveLoad(data: IMarket): void {
-		data.items.forEach((item: Item) => {
-			if (item.Player !== 'On Listing') {
-				logger.info(`[${this.bot.user.username}] [market] ${item.Player} "${Helper.parseHTML(item.sName)}"`)
-				this.bot.network.send('retrieveAuctionItem', [item.AuctionID])
-			}
-		})
 	}
 
 	onWorldBoss(data: any) {

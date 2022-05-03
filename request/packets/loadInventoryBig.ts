@@ -1,7 +1,8 @@
 import Bot from "../../bot/Bot";
 import IRequest from "../../interface/IRequest";
-import ILoadInventoryBig, {Item} from "../../interface/request/ILoadInventoryBig";
+import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 import Helper from "../../utility/Helper";
+import {IItem} from "../../interface/IItem";
 
 export default class LoadInventoryBig implements IRequest {
 
@@ -10,7 +11,7 @@ export default class LoadInventoryBig implements IRequest {
 	handler(bot: Bot, data: ILoadInventoryBig): void {
 		bot.handler.onInventoryLoad(data)
 
-		const arr: Array<Item> = Helper.shuffle(data.items)
+		const arr: Array<IItem> = Helper.shuffle(data.items)
 
 		const toEquip = {
 			co: -1,
