@@ -41,19 +41,22 @@ export default class Seeborg {
 		}
 	}
 
-	private replyWithAnswer(bot: Bot, channel: string, message: string) {
-		logger.debug('[Seeborg] Reply with answer');
+	private replyWithAnswer(bot: Bot, channel: string, message: string): void {
+		logger.debug(`[seeborg] [${bot.user.username}] reply with answer`);
 
-		message = this.computeAnswer(message);
+		let reply: string | null = this.computeAnswer(message);
 
-		switch (message) {
+		if (reply == message) {
+			reply = null
+		}
+
+		switch (reply) {
 			case null:
-				logger.error('[Seeborg] response was null');
+				logger.error(`[seeborg] [${bot.user.username}] response was null`);
 				break;
 			default:
-				message = message.replace('@', '')
-				logger.info(`[Seeborg] Reply "${bot.room.fullName}" "${channel}" ${message}"`)
-				bot.network.send('message', [message, channel])
+				logger.info(`[seeborg] [${bot.user.username}] reply ${channel} > ${reply}`)
+				bot.network.send('message', [reply, channel])
 				break;
 		}
 	}
