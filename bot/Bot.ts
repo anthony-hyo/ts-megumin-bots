@@ -11,12 +11,15 @@ import Default from "./handler/Default";
 import Helper from "../utility/Helper";
 import Inventory from "./data/Inventory";
 import {IItem} from "../interface/IItem";
+import {IUser} from "../interface/IUser";
 
 export default class Bot {
 
 	private readonly _user!: User
 	private readonly _properties: Properties = new Properties()
 	private readonly _inventory: Inventory = new Inventory(this)
+
+	private _data: IUser | undefined;
 
 	constructor(user: User) {
 		logger.debug(`[Bot] found "${user.username}"`)
@@ -75,6 +78,14 @@ export default class Bot {
 
 	public get inventory(): Inventory {
 		return this._inventory;
+	}
+
+	public get data(): IUser | undefined {
+		return this._data;
+	}
+
+	public set data(value: IUser | undefined) {
+		this._data = value;
 	}
 
 	private _handler: IHandler = new Default(this)
