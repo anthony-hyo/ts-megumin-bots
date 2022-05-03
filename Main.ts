@@ -44,7 +44,7 @@ export default class Main {
 						order: Sequelize.literal('rand()')
 					})
 					.then((users: User[]) => users.forEach(user => {
-						setTimeout(() => Bot.create(user), 1000 * i)
+						setTimeout(() => Bot.create(user), 1500 * i)
 						i++
 					}))
 			})
