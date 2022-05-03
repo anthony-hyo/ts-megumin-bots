@@ -1,6 +1,7 @@
-import Default from "./Default";
-import Helper from "../../utility/Helper";
-import IMoveToArea, {Monmap} from "../../interface/request/IMoveToArea";
+import Default from "../Default";
+import Helper from "../../../utility/Helper";
+import IMoveToArea, {Monmap} from "../../../interface/request/IMoveToArea";
+import {AvatarState} from "../../../request/packets/CombatState";
 
 export default class Monster extends Default {
 
@@ -14,11 +15,19 @@ export default class Monster extends Default {
 		}
 
 		if (data.monmap !== undefined && data.monmap.length > 0) {
-			data.mondef.forEach(value => {
+			for (const value of data.mondef) {
 				if (value.isWorldBoss) {
+					const mon = data.monBranch.filter(value2 =>  value2.MonID === value.MonID)[0]
+
+					// join new map random if monster state dead
+					if (mon.intState == AvatarState.DEAD) {
+						this.bot.joinMapRandom()
+						return
+					}
+
 					this.bot.properties.isOnWorldBoss = true
 				}
-			})
+			}
 
 			const monster: Monmap = data.monmap[Helper.randomIntegerInRange(0, data.monmap.length - 1)]
 

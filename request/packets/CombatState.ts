@@ -7,7 +7,7 @@ const AvatarType = {
 	NPC: 'n'
 }
 
-const AvatarState = {
+export const AvatarState = {
 	DEAD: 0,
 	NEUTRAL: 1,
 	COMBAT: 2
