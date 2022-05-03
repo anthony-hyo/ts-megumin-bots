@@ -26,12 +26,33 @@ export default class LoadInventoryBig implements IRequest {
 				case 'co':
 				case 'Weapon':
 				case 'ba':
-				case 'ar':
 				case 'pe':
 					toEquip[item.sES] = item.ItemID
 					break
 			}
 		}
+
+		let classes: IItem[] = data.items.filter(value => value.sES == 'ar')
+
+		let cls: IItem | undefined = classes.filter(value => value.sName.includes('Rank ?'))[0]
+
+		if (!cls) {
+			cls = classes.filter(value => value.sName.includes('Rank S'))[0]
+			if (!cls) {
+				cls = classes.filter(value => value.sName.includes('Rank A'))[0]
+				if (!cls) {
+					cls = classes.filter(value => value.sName.includes('Rank B'))[0]
+					if (!cls) {
+						cls = classes.filter(value => value.sName.includes('Rank C'))[0]
+						if (!cls) {
+							cls = classes[0]
+						}
+					}
+				}
+			}
+		}
+
+		bot.network.send('equipItem', [ cls.ItemID ])
 
 		if (toEquip.co != -1) {
 			bot.network.send('equipItem', [ toEquip.co ])
@@ -43,10 +64,6 @@ export default class LoadInventoryBig implements IRequest {
 
 		if (toEquip.ba != -1) {
 			bot.network.send('equipItem', [ toEquip.ba ])
-		}
-
-		if (toEquip.ar != -1) {
-			bot.network.send('equipItem', [ toEquip.ar ])
 		}
 
 		if (toEquip.pe != -1) {
