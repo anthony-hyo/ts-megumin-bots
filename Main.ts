@@ -18,6 +18,8 @@ export default class Main {
 
 	public readonly maps: Array<IMap> = []
 
+	public readonly queue: Map<Number, User> = new Map<Number, User>()
+
 	private readonly _request: Request = new Request();
 
 	private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
@@ -40,6 +42,16 @@ export default class Main {
 		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
 		this.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler != 'monster/WorldBoss'")
 
+		setInterval(() => {
+			if (this.queue.size > 0) {
+				const user: User = this.queue.values().next().value
+
+				Bot.create(user)
+
+				this.queue.delete(user.id)
+			}
+		}, 1000)
+
 		axios
 			.get(`https://redhero.online/api/game/world`)
 			.then((response: AxiosResponse) => {
@@ -47,17 +59,12 @@ export default class Main {
 
 				worlds.forEach((world: IGameWorld) =>this.maps.push(world.map))
 
-				let i: number = 0
-
 				User
 					.findAll({
 						//limit: 5,
 						order: Sequelize.literal('rand()')
 					})
-					.then((users: User[]) => users.forEach(user => {
-						setTimeout(() => Bot.create(user), 1500 * i)
-						i++
-					}))
+					.then((users: User[]) => users.forEach(user => this.queue.set(user.id, user)))
 			})
 			.catch((response: any) => {
 				logger.error(`[main] game world response error "${response}"`)

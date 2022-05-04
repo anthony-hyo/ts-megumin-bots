@@ -129,7 +129,7 @@ export default class Network {
 
 		Main.singleton.bots.delete(this.id)
 
-		Bot.create(this.bot.user)
+		Main.singleton.queue.set(this.bot.user.id, this.bot.user)
 
 		logger.error(`[network] [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
 	}
