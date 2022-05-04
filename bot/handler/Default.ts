@@ -29,8 +29,6 @@ export default class Default implements IHandler {
 
 		data.items.forEach((item: IItem) => this.bot.inventory.all.set(item.ItemID, item))
 
-		this.bot.network.send('loadRetrieve', ['All'])
-
 		this.bot.joinMapRandom()
 	}
 

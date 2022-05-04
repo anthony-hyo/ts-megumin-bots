@@ -8,8 +8,10 @@ export default class Market extends Fill {
 
 	onInventoryLoad(data: ILoadInventoryBig) {
 		super.onInventoryLoad(data)
+
+		this.bot.network.send('loadRetrieve', ['All'])
 		
-		this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
+		//this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
 	}
 
 	// onMarketLoad(data: IMarket): void {
