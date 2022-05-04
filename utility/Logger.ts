@@ -14,16 +14,11 @@ const logger = winston.createLogger({
 				winston.format.colorize({
 					all: true
 				}),
-				winston.format.label({
-					label: '[LOGGER]'
-				}),
 				winston.format.timestamp({
 					format: "YY-MM-DD HH:MM:SS"
 				}),
-				winston.format.printf(
-                    (info: { label: any; timestamp: any; level: any; message: any }) => ` ${info.label}  ${info.timestamp}  ${info.level} : ${info.message}`
-				)
-			)
+				winston.format.printf((info: { label: any; timestamp: any; level: any; message: any }) => `(${info.timestamp}) ${info.level} : ${info.message}`)
+			),
 		}),
 	],
 })
