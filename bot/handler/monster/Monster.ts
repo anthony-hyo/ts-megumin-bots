@@ -1,23 +1,31 @@
 import Default from "../Default";
 import Helper from "../../../utility/Helper";
-import IMoveToArea, {Monmap} from "../../../interface/request/IMoveToArea";
+import {IMonMap} from "../../../interface/request/IMoveToArea";
 import {AvatarState} from "../../../request/packets/CombatState";
+import logger from "../../../utility/Logger";
 
 export default class Monster extends Default {
 
-	onJoin(data: IMoveToArea): void {
-		if (this.bot.properties.intervalAttack != null) {
-			clearInterval(this.bot.properties.intervalAttack)
+	onJoin(): void {
+		if (this.bot.properties.wasOnWorldBoss) {
+			this.bot.properties.wasOnWorldBoss = false
+			this.bot.joinMapRandom()
 		}
 
-		if (this.bot.properties.intervalWalk != null) {
-			clearInterval(this.bot.properties.intervalWalk)
-		}
+		this.attack()
+	}
 
-		if (data.monmap !== undefined && data.monmap.length > 0) {
-			for (const value of data.mondef) {
+	onSpawn(): void {
+		logger.debug('default onSpawn')
+
+		this.attack()
+	}
+
+	private attack() {
+		if (this.bot.room.data.monmap !== undefined && this.bot.room.data.monmap.length > 0) {
+			for (const value of this.bot.room.data.mondef) {
 				if (value.isWorldBoss) {
-					const mon = data.monBranch.filter(value2 =>  value2.MonID === value.MonID)[0]
+					const mon = this.bot.room.data.monBranch.filter(value2 => value2.MonID === value.MonID)[0]
 
 					// join new map random if monster state dead
 					if (mon.intState == AvatarState.DEAD) {
@@ -25,30 +33,23 @@ export default class Monster extends Default {
 						return
 					}
 
-					this.bot.properties.isOnWorldBoss = true
+					this.bot.properties.wasOnWorldBoss = true
 				}
 			}
 
-			const monster: Monmap = data.monmap[Helper.randomIntegerInRange(0, data.monmap.length - 1)]
+			const monster: IMonMap = this.bot.room.data.monmap[Helper.randomIntegerInRange(0, this.bot.room.data.monmap.length - 1)]
 
 			setTimeout(() => {
-				this.bot.network.send('moveToCell', [
-					monster.strFrame,
-					'Left'
-				])
+				this.bot.room.moveToCell(monster.strFrame, 'Left')
 
 				this.bot.properties.intervalAttack = setInterval(() => {
-					this.bot.network.send('gar', [1, `aa>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a1>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a2>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a3>m:${monster.MonMapID}`, "wvz"])
-					this.bot.network.send('gar', [1, `a4>m:${monster.MonMapID}`, "wvz"])
+					if (this.bot.room.frame === monster.strFrame) {
+						this.bot.network.send('gar', [1, `${['aa', 'a1', 'a2', 'a3', 'a4'][Helper.randomIntegerInRange(0, 4)]}>m:${monster.MonMapID}`, "wvz"])
+					}
 				}, 2000)
 			}, 3000)
 		} else {
-			this.bot.properties.intervalWalk = setInterval(() => {
-				this.bot.room.freeWalk()
-			}, 60000 * 5)
+			this.bot.joinMapRandom()
 		}
 	}
 

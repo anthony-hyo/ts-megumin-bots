@@ -1,22 +1,25 @@
 import Bot from "../../bot/Bot";
 import IRequest from "../../interface/IRequest";
-import IMoveToArea, {UoBranch} from "../../interface/request/IMoveToArea";
+import IMoveToArea, {IUserBranch} from "../../interface/request/IMoveToArea";
 import Room from "../../data/Room";
 import Main from "../../Main";
+import logger from "../../utility/Logger";
 
 export default class MoveToArea implements IRequest {
 
 	public command: string = 'moveToArea'
 
 	handler(bot: Bot, data: IMoveToArea): void {
-		bot.room = new Room(bot, data.areaId, data.areaName, data.strMapName)
+		logger.info(`[moveToArea] [${bot.user.username}] joined ${data.areaName}`)
 
-		bot.handler.onJoin(data)
+		bot.room = new Room(bot, data)
 
-		setTimeout(() => bot.room.freeWalk(), 3000)
+		bot.handler.onJoin()
+
+		bot.room.freeWalk()
 
 		data.uoBranch
-			.forEach((uoBranch: UoBranch): void => {
+			.forEach((uoBranch: IUserBranch): void => {
 				if (!Main.singleton.bots.has(uoBranch.entID)) {
 					Room.addPosition(data.strMapName, uoBranch.strFrame, uoBranch.strPad, uoBranch.tx, uoBranch.ty, 10)
 				}

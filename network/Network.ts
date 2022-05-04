@@ -119,13 +119,7 @@ export default class Network {
 	}
 
 	private onClose(hadError: boolean): void {
-		if (this.bot.properties.intervalAttack != null) {
-			clearInterval(this.bot.properties.intervalAttack)
-		}
-
-		if (this.bot.properties.intervalWalk != null) {
-			clearInterval(this.bot.properties.intervalWalk)
-		}
+		this.bot.properties.clearAllInterval()
 
 		Main.singleton.bots.delete(this.id)
 
