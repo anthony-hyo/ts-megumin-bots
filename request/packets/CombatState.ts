@@ -1,5 +1,6 @@
 import Bot from "../../bot/Bot";
 import IRequest from "../../interface/IRequest";
+import Avatar from "../../data/Avatar";
 
 const AvatarType = {
 	PLAYER: 'p',
@@ -43,19 +44,34 @@ export default class CombatState implements IRequest {
 			const element: any = data[pKey]
 
 			if (element.intState !== undefined) {
-				switch (element.intState) {
-					case AvatarState.DEAD:
-						//this.bot.handler.onTargetDeath()
-						if (pKey.toLocaleLowerCase() == this.bot.user.username.toLocaleLowerCase()) {
-							setTimeout(() => this.bot.network.send('resPlayerTimed'), 6000)
-						}
-						break;
-					case AvatarState.NEUTRAL:
-						//console.log(avatarType, pKey, 'NEUTRAL')
-						break;
-					case AvatarState.COMBAT:
-						//console.log(avatarType, pKey, 'COMBAT')
-						break;
+				let avatar: Avatar | null = this.bot.room.getPlayerByUsername(pKey);
+
+				switch (avatarType) {
+					case AvatarType.PLAYER:
+						avatar = this.bot.room.getPlayerByUsername(pKey);
+						break
+					case AvatarType.MONSTER:
+						avatar = this.bot.room.getMonsterByMonsterMapId(Number(pKey));
+						break
+					case AvatarType.NPC:
+						avatar = this.bot.room.getNpcByNpcMapId(Number(pKey));
+						break
+				}
+
+				if (avatar) {
+					switch (element.intState) {
+						case AvatarState.DEAD:
+							if (avatar.username.toLocaleLowerCase() == this.bot.user.username.toLocaleLowerCase()) {
+								this.bot.handler.onDeath()
+							} else {
+								this.bot.handler.onTargetDeath(avatar)
+							}
+							break;
+						case AvatarState.NEUTRAL:
+							break
+						case AvatarState.COMBAT:
+							break
+					}
 				}
 			}
 		}

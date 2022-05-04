@@ -7,7 +7,7 @@ import {IItem} from "./IItem";
 
 export interface IHandler {
 
-	onJoin(data: IMoveToArea): void
+	onJoin(): void
 
 	onInventoryLoad(data: ILoadInventoryBig): void
 
@@ -20,6 +20,10 @@ export interface IHandler {
 	onMarketLoad(data: IMarket): void
 
 	onMarketRetrieveLoad(data: IMarket): void
+
+	onDeath(): void;
+
+	onSpawn(): void;
 
 	/*
 		User
