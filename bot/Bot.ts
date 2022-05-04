@@ -40,7 +40,7 @@ export default class Bot {
 
 				this.properties.token = loginResponse.user.Hash
 
-				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == `Midgard`);
+				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == `Asgard`);
 
 				if (loginResponseServer) {
 					this._network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
@@ -50,7 +50,7 @@ export default class Bot {
 			})
 			.catch((response: any) => {
 				logger.error(`[Bot] "${response}"`)
-				Bot.create(this.user)
+				Main.singleton.queue.set(this.user.id, this.user)
 			})
 	}
 
