@@ -14,14 +14,13 @@ import {IItem} from "../interface/IItem";
 import {IUser} from "../interface/IUser";
 import {IMap} from "../interface/web/IGameWorld";
 import Main from "../Main";
+import IMoveToArea from "../interface/request/IMoveToArea";
 
 export default class Bot {
 
 	private readonly _user!: User
 	private readonly _properties: Properties = new Properties()
 	private readonly _inventory: Inventory = new Inventory(this)
-
-	private _data: IUser | undefined;
 
 	constructor(user: User) {
 		logger.debug(`[Bot] found "${user.username}"`)
@@ -43,7 +42,7 @@ export default class Bot {
 				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == `Asgard`);
 
 				if (loginResponseServer) {
-					this._network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
+					this.network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
 				} else {
 					logger.error(`[Bot] server undefined "${user.username}"`)
 				}
@@ -54,7 +53,17 @@ export default class Bot {
 			})
 	}
 
-	private _room: Room = new Room(this, -1, 'none-1', 'none')
+	private _data: IUser | undefined;
+
+	public get data(): IUser | undefined {
+		return this._data;
+	}
+
+	public set data(value: IUser | undefined) {
+		this._data = value;
+	}
+
+	private _room: Room = new Room(this, <IMoveToArea>{})
 
 	public get room(): Room {
 		return this._room;
@@ -70,6 +79,10 @@ export default class Bot {
 		return this._network
 	}
 
+	private set network(value: Network) {
+		this._network = value;
+	}
+
 	public get user(): User {
 		return this._user;
 	}
@@ -80,14 +93,6 @@ export default class Bot {
 
 	public get inventory(): Inventory {
 		return this._inventory;
-	}
-
-	public get data(): IUser | undefined {
-		return this._data;
-	}
-
-	public set data(value: IUser | undefined) {
-		this._data = value;
 	}
 
 	private _handler: IHandler = new Default(this)

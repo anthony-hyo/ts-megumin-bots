@@ -2,14 +2,11 @@ import {IHandler} from "../../interface/IHandler";
 import Bot from "../Bot";
 import logger from "../../utility/Logger";
 import Avatar from "../../data/Avatar";
-import IMoveToArea from "../../interface/request/IMoveToArea";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 import {IMarket} from "../../interface/request/IMarket";
 import {IRemoveItem} from "../../interface/request/IRemoveItem";
 import Helper from "../../utility/Helper";
 import {IItem} from "../../interface/IItem";
-import {IMap} from "../../interface/web/IGameWorld";
-import Main from "../../Main";
 
 export default class Default implements IHandler {
 
@@ -23,7 +20,7 @@ export default class Default implements IHandler {
 		return this._bot;
 	}
 
-	onJoin(data: IMoveToArea): void {
+	onJoin(): void {
 		logger.debug('default onJoin')
 	}
 
@@ -66,6 +63,18 @@ export default class Default implements IHandler {
 				this.bot.network.send('retrieveAuctionItem', [item.AuctionID])
 			}
 		})
+	}
+
+	onDeath(): void {
+		logger.debug('default onDeath')
+
+		this.bot.properties.clearAllInterval()
+
+		setTimeout(() => this.bot.network.send('resPlayerTimed'), 3000)
+	}
+
+	onSpawn(): void {
+		logger.debug('default onSpawn')
 	}
 
 	/*

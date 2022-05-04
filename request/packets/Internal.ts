@@ -62,10 +62,13 @@ export default class Internal implements IRequest {
 					const position: Move = Internal.parseMove(String(args[3]).split(','))
 
 					if (!bot.room.isBot(args[2])) {
-						Room.addPosition(bot.room.name, position.strFrame, position.strPad, position.tx, position.ty, position.sp)
+						Room.addPosition(bot.room.data.strMapName, position.strFrame, position.strPad, position.tx, position.ty, position.sp)
 					}
 				}
 				break
+			case 'resTimed':
+				bot.handler.onSpawn()
+				break;
 		}
 	}
 

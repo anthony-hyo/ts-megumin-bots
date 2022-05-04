@@ -1,41 +1,55 @@
 import Position from "../database/model/Position";
 import {Sequelize} from "sequelize";
 import Bot from "../bot/Bot";
-import Helper from "../utility/Helper";
 import Avatar from "./Avatar";
 import logger from "../utility/Logger";
 import Main from "../Main";
+import IMoveToArea from "../interface/request/IMoveToArea";
 
 export default class Room {
-
 	private readonly bot: Bot
-	private readonly _id: number = -1
-	private readonly _name: string = 'none'
-	private readonly _fullName: string = 'none'
 
-	constructor(bot: Bot, id: number, fullName: string, name: string) {
+	constructor(bot: Bot, data: IMoveToArea) {
 		this.bot = bot
-		this._id = id
-		this._name = name
-		this._fullName = fullName
+		this._data = data
 	}
 
-	public get id(): number {
-		return this._id;
+	private _data: IMoveToArea;
+
+	public get data(): IMoveToArea {
+		return this._data;
 	}
 
-	public get name(): string {
-		return this._name;
+	public set data(value: IMoveToArea) {
+		this._data = value;
 	}
 
-	public get fullName(): string {
-		return this._fullName;
+	private _frame: string = ''
+
+	public get frame(): string {
+		return this._frame;
+	}
+
+	public set frame(value: string) {
+		this._frame = value;
 	}
 
 	private _players: Map<Number, Avatar> = new Map<Number, Avatar>()
 
 	public get players(): Map<Number, Avatar> {
 		return this._players;
+	}
+
+	private _monsters: Map<Number, Avatar> = new Map<Number, Avatar>()
+
+	public get monsters(): Map<Number, Avatar> {
+		return this._monsters;
+	}
+
+	private _npcs: Map<Number, Avatar> = new Map<Number, Avatar>()
+
+	public get npcs(): Map<Number, Avatar> {
+		return this._npcs;
 	}
 
 	public static addPosition(name: string, frame: string, pad: string, x: number, y: number, speed: number) {
@@ -70,13 +84,31 @@ export default class Room {
 			})
 	}
 
-	public hasPlayer(username: string): boolean {
+	public getPlayerByUsername(username: string): null | Avatar {
 		for (const target of this.players.values()) {
 			if (target.username.toLowerCase() === username.toLowerCase()) {
-				return true
+				return target
 			}
 		}
-		return false
+		return null
+	}
+
+	public getMonsterByMonsterMapId(npcMapId: number): null | Avatar {
+		for (const target of this.monsters.values()) {
+			if (target.id === npcMapId) {
+				return target
+			}
+		}
+		return null
+	}
+
+	public getNpcByNpcMapId(monsterMapId: number): null | Avatar {
+		for (const target of this.npcs.values()) {
+			if (target.id === monsterMapId) {
+				return target
+			}
+		}
+		return null
 	}
 
 	public isBot(username: string): boolean {
@@ -88,6 +120,14 @@ export default class Room {
 		return false
 	}
 
+	public moveToCell(frame: string, pad: string) {
+		this._frame = frame
+		this.bot.network.send('moveToCell', [
+			frame,
+			pad
+		])
+	}
+
 	/**
 	 * Find position to move
 	 */
@@ -95,18 +135,14 @@ export default class Room {
 		Position
 			.findOne({
 				where: {
-					name: this.name
+					name: this.data.strMapName
 				},
 				order: Sequelize.literal('rand()')
 			})
 			.then((position: Position | null) => {
 				if (position) {
-					this.bot.network.send('moveToCell', [
-						position.frame,
-						position.pad
-					])
-
-					setTimeout(() => this.bot.network.send("mv", [position.x, position.y, position.speed]), Helper.randomIntegerInRange(2000, 5000))
+					this.moveToCell(position.frame, position.pad)
+					this.bot.network.send("mv", [position.x, position.y, position.speed])
 				}
 			})
 			.catch(e => console.error('error 3', e))

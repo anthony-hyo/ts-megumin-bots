@@ -2,8 +2,7 @@ import Default from "./Default";
 import IMoveToArea from "../../interface/request/IMoveToArea";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 import {IItem} from "../../interface/IItem";
-
-export default class Market extends Default {
+import Fill from "./Fill";
 
 export default class Market extends Fill {
 
