@@ -86,6 +86,10 @@ export default class Default implements IHandler {
 		logger.debug('default onUserLeave')
 	}
 
+	onUserMoveToCell(username: string, frame: string):void {
+		logger.debug('default onUserMoveToCell')
+	}
+
 	/*
 		Monster
 	 */

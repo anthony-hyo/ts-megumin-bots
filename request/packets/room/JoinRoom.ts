@@ -1,16 +1,13 @@
 import IRequest from "../../../interface/IRequest";
 import Bot from "../../../bot/Bot";
-import Avatar from "../../../data/Avatar";
-import Main from "../../../Main";
+import {IJoinRoom} from "../../../interface/request/IJoinRoom";
 
 export default class EnterRoom implements IRequest {
 
 	public command: string = 'joinRoom'
 
-	handler(bot: Bot, data: any): void {
+	handler(bot: Bot, data: IJoinRoom): void {
 		bot.properties.clearAllInterval()
-
-		Array(data.users).forEach(user => bot.room.players.set(data.networkId, new Avatar(user.networkId, user.username, Main.singleton.bots.has(user.networkId))))
 	}
 
 }

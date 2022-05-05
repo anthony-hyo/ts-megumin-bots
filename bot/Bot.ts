@@ -19,7 +19,7 @@ import IMoveToArea from "../interface/request/IMoveToArea";
 export default class Bot {
 
 	private readonly _user!: User
-	private readonly _properties: Properties = new Properties()
+	private readonly _properties: Properties = new Properties(this)
 	private readonly _inventory: Inventory = new Inventory(this)
 
 	constructor(user: User) {

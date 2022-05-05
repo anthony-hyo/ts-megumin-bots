@@ -14,6 +14,8 @@ export default class MoveToArea implements IRequest {
 
 		bot.room = new Room(bot, data)
 
+		data.uoBranch.forEach(user => bot.room.addPlayer(user.entID, user.strUsername))
+
 		bot.handler.onJoin()
 
 		bot.room.freeWalk()

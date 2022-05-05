@@ -160,4 +160,5 @@ export default interface IMoveToArea {
 	monmap: IMonMap[]
 	npcdef: INpcDef[]
 	npcmap: INpcMap[]
+	pvpTeam: number
 }

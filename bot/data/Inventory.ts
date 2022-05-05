@@ -4,8 +4,9 @@ import {IItem} from "../../interface/IItem";
 
 export default class Inventory {
 
+	private readonly bot: Bot
+
 	public inventory: Map<Number, IItem> = new Map<Number, IItem>()
-	private bot: Bot
 
 	public constructor(bot: Bot) {
 		this.bot = bot
