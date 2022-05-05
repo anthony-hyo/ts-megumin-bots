@@ -18,7 +18,7 @@ export default class PvP extends Fill {
 
 			this.bot.properties.isOnWarZoneQueue = true
 
-			this.bot.network.send("PVPQr", [ 'doomarena' ])
+			setTimeout(() => this.bot.network.send("PVPQr", [ 'doomarena' ]), Helper.randomIntegerInRange(30000, 60000 * 10))
 		}
 	}
 

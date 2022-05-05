@@ -26,15 +26,15 @@ export default class Internal implements IRequest {
 					bot.network.send('firstJoin')
 
 					setTimeout(() => bot.network.send('retrieveInventory', [bot.network.id]), 1500)
-					setTimeout(() => bot.network.send('retrieveUserDatas', [bot.network.id]), 2500)
 				} else {
 					logger.error(`login failed to ${bot.user.username}`)
 				}
 				break
 			case 'server':
-				// if (String(args[2]).startsWith('You joined')) {
-				// 	bot.network.send('retrieveUserDatas', [bot.network.id])
-				// }
+				if (!bot.properties.isLoad) {
+					bot.properties.isLoad = true
+					bot.network.send('retrieveUserDatas', [bot.network.id])
+				}
 				break
 			case 'chatm':
 				const split: string[] = String(args[2]).split('~')
