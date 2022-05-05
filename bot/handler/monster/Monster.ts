@@ -21,7 +21,7 @@ export default class Monster extends Default {
 		this.attack()
 	}
 
-	private attack() {
+	private attack(): void {
 		if (this.bot.room.data.monmap !== undefined && this.bot.room.data.monmap.length > 0) {
 			for (const value of this.bot.room.data.mondef) {
 				if (value.isWorldBoss) {
