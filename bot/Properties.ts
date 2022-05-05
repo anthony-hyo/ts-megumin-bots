@@ -14,6 +14,7 @@ export default class Properties {
 
 	public wasOnWorldBoss: boolean = false
 	public isOnWarZoneQueue: boolean = false
+	public isLoad: boolean = false
 
 	public constructor(bot: Bot) {
 		this.bot = bot

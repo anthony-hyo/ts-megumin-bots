@@ -3,7 +3,7 @@ import Database from "./database/Database"
 import Request from "./request/Request";
 import User from "./database/model/User";
 import Bot from "./bot/Bot";
-import {Op, Sequelize} from "sequelize";
+import {Sequelize} from "sequelize";
 import Seeborg from "./seeborg/Seeborg";
 import axios, {AxiosResponse} from "axios";
 import logger from "./utility/Logger";
@@ -37,10 +37,13 @@ export default class Main {
 		this.database.sequelize.query("UPDATE users SET handler = 'Default'")
 
 		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
-		this.database.sequelize.query("UPDATE users SET handler = 'monster/WorldBoss' ORDER BY RAND() LIMIT 20")
+		this.database.sequelize.query("UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') ORDER BY RAND() LIMIT 50") //SELECT 20 players random to join world boss
 
 		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
-		this.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler != 'monster/WorldBoss'")
+		this.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') ORDER BY RAND() LIMIT 50`) //SELECT 20 players random to join war zone
+
+		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
+		this.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN ('monster/WorldBoss', 'PvP')")
 
 		setInterval(() => {
 			if (this.queue.size > 0) {

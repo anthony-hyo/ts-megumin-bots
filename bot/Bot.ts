@@ -39,7 +39,7 @@ export default class Bot {
 
 				this.properties.token = loginResponse.user.Hash
 
-				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == `Asgard`);
+				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == `Midgard`);
 
 				if (loginResponseServer) {
 					this.network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
