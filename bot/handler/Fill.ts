@@ -10,7 +10,7 @@ export default class Fill extends Default {
 		this.walk()
 	}
 
-	private walk() {
+	private walk(): void {
 		this.bot.properties.intervalWalk = setInterval(() => this.bot.room.freeWalk(), 60000 * 2)
 	}
 

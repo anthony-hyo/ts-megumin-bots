@@ -6,7 +6,12 @@ import logger from "../utility/Logger";
 
 export default class Request {
 
-	private readonly packets: Map<String, String> = new Map<String, String>()
+	private static readonly packets: Map<String, String> = new Map<String, String>()
+
+	private static readonly ignored: Array<string> = [
+		'equipItem', 'uotls', 'updateClass', 'stu', 'cvu','joinRoom', 'enterRoom', 'userGone','enhp',
+		'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg', 'queueUpdate'
+	]
 
 	constructor() {
 		let location: string = path.resolve(__dirname, 'packets')
@@ -18,7 +23,7 @@ export default class Request {
 
 			logger.debug(`[request] ${request.command}`)
 
-			this.packets.set(request.command, file)
+			Request.packets.set(request.command, file)
 		});
 	}
 
@@ -28,10 +33,10 @@ export default class Request {
 		try {
 			logger.debug(`[request] [${bot.user.username}] received ${data.cmd}`)
 
-			const command: String | undefined = this.packets.get(data.cmd)
+			const command: String | undefined = Request.packets.get(data.cmd)
 
 			if (command == undefined) {
-				if (!['equipItem', 'uotls', 'updateClass', 'stu', 'cvu', 'joinRoom', 'enterRoom', 'userGone', 'enhp', 'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg'].includes(data.cmd)) {
+				if (!Request.ignored.includes(data.cmd)) {
 					logger.warn(`[request] [${bot.user.username}] undefined request ${data.cmd}`)
 				}
 				return
