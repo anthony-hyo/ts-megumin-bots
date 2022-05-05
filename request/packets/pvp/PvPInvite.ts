@@ -1,12 +1,12 @@
 import IRequest from "../../../interface/IRequest";
 import Bot from "../../../bot/Bot";
 
-export default class UserGone implements IRequest {
+export default class PvPInvite implements IRequest {
 
-	public command: string = 'userGone'
+	public command: string = 'PVPI'
 
 	handler(bot: Bot, data: any): void {
-		bot.room.removePlayer(data.networkId)
+		bot.network.send("PVPIr", [ 1 ])
 	}
 
 }

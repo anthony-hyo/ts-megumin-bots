@@ -1,4 +1,4 @@
-export default interface Move {
+export default interface IUOTLS {
 	tx: any
 	ty: any
 	strPad: any

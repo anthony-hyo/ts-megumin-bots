@@ -1,6 +1,9 @@
 import {IItem} from "../interface/IItem";
+import Bot from "./Bot";
 
 export default class Properties {
+
+	private readonly bot: Bot
 
 	public token!: string
 
@@ -10,8 +13,14 @@ export default class Properties {
 	public droppedItems: Map<Number, IItem> = new Map<Number, IItem>()
 
 	public wasOnWorldBoss: boolean = false
+	public isOnWarZoneQueue: boolean = false
+
+	public constructor(bot: Bot) {
+		this.bot = bot
+	}
 
 	public set intervalAttack(value: NodeJS.Timeout | null) {
+		this.bot.properties.clearAllInterval()
 		this._intervalAttack = value;
 	}
 

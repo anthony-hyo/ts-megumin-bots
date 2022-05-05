@@ -36,7 +36,7 @@ export default class Room {
 
 	private _players: Map<Number, Avatar> = new Map<Number, Avatar>()
 
-	public get players(): Map<Number, Avatar> {
+	private get players(): Map<Number, Avatar> {
 		return this._players;
 	}
 
@@ -84,6 +84,14 @@ export default class Room {
 			})
 	}
 
+	public addPlayer(networkId: number, username: string): void {
+		this.players.set(networkId, new Avatar(networkId, username, Main.singleton.bots.has(networkId)))
+	}
+
+	public removePlayer(networkId: number): void {
+		this.players.delete(networkId)
+	}
+
 	public getPlayerByUsername(username: string): null | Avatar {
 		for (const target of this.players.values()) {
 			if (target.username.toLowerCase() === username.toLowerCase()) {
@@ -121,7 +129,7 @@ export default class Room {
 	}
 
 	public moveToCell(frame: string, pad: string) {
-		this._frame = frame
+		this.frame = frame
 		this.bot.network.send('moveToCell', [
 			frame,
 			pad

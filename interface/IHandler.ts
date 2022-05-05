@@ -1,5 +1,4 @@
 import Avatar from "../data/Avatar";
-import IMoveToArea from "./request/IMoveToArea";
 import ILoadInventoryBig from "./request/ILoadInventoryBig";
 import {IMarket} from "./request/IMarket";
 import {IRemoveItem} from "./request/IRemoveItem";
@@ -31,6 +30,8 @@ export interface IHandler {
 	onUserJoin(networkId: number): void
 
 	onUserLeave(networkId: number): void
+
+	onUserMoveToCell(username: string, frame: string):void
 
 	/*
 		Monster
