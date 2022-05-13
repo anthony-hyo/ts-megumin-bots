@@ -1,12 +1,12 @@
 import {Sequelize} from 'sequelize-typescript'
 import logger from "../utility/Logger";
-import Main from "../Main";
+import MainMulti from "../MainMulti";
 
 export default class Database {
 
 	private readonly _sequelize: Sequelize
 
-	constructor(main: Main) {
+	constructor(main: MainMulti) {
 		this._sequelize = new Sequelize(main.config.database.dbname, main.config.database.user, main.config.database.password, {
 			dialect: 'mariadb',
 			host: main.config.database.host,

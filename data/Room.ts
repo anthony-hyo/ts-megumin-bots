@@ -3,10 +3,11 @@ import {Sequelize} from "sequelize";
 import Bot from "../bot/Bot";
 import Avatar from "./Avatar";
 import logger from "../utility/Logger";
-import Main from "../Main";
 import IMoveToArea from "../interface/request/IMoveToArea";
+import MainMulti from "../MainMulti";
 
 export default class Room {
+
 	private readonly bot: Bot
 
 	constructor(bot: Bot, data: IMoveToArea) {
@@ -52,7 +53,7 @@ export default class Room {
 		return this._npcs;
 	}
 
-	public static addPosition(name: string, frame: string, pad: string, x: number, y: number, speed: number) {
+	public static addPosition(name: string, frame: string, pad: string, x: number, y: number, speed: number, server: string) {
 		// noinspection JSIgnoredPromiseFromCall
 		/**
 		 * Save players positions to be used by the bots
@@ -65,7 +66,8 @@ export default class Room {
 					pad: pad,
 					x: x,
 					y: y,
-					speed: speed
+					speed: speed,
+					server: server
 				},
 				defaults: {
 					name: name,
@@ -73,19 +75,20 @@ export default class Room {
 					pad: pad,
 					x: x,
 					y: y,
-					speed: speed
+					speed: speed,
+					server: server
 				}
 			})
 			.catch((error: any) => {
 				if (error.parent.code === 'SQLITE_BUSY') {
 					logger.error(`[SQLITE_BUSY] trying again in 3s`)
-					setTimeout(() => Room.addPosition(name, frame, pad, x, y, speed), 3000)
+					setTimeout(() => Room.addPosition(name, frame, pad, x, y, speed, server), 3000)
 				}
 			})
 	}
 
 	public addPlayer(networkId: number, username: string): void {
-		this.players.set(networkId, new Avatar(networkId, username, Main.singleton.bots.has(networkId)))
+		this.players.set(networkId, new Avatar(networkId, username, MainMulti.singletons(this.bot.user.server).bots.has(networkId)))
 	}
 
 	public removePlayer(networkId: number): void {
@@ -120,7 +123,7 @@ export default class Room {
 	}
 
 	public isBot(username: string): boolean {
-		for (const target of Main.singleton.bots.values()) {
+		for (const target of MainMulti.singletons(this.bot.user.server).bots.values()) {
 			if (target.user.username.toLowerCase() === username.toLowerCase()) {
 				return true
 			}
@@ -143,7 +146,8 @@ export default class Room {
 		Position
 			.findOne({
 				where: {
-					name: this.data.strMapName
+					name: this.data.strMapName,
+					server: this.bot.user.server
 				},
 				order: Sequelize.literal('rand()')
 			})

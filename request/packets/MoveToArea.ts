@@ -2,8 +2,8 @@ import Bot from "../../bot/Bot";
 import IRequest from "../../interface/IRequest";
 import IMoveToArea, {IUserBranch} from "../../interface/request/IMoveToArea";
 import Room from "../../data/Room";
-import Main from "../../Main";
 import logger from "../../utility/Logger";
+import MainMulti from "../../MainMulti";
 
 export default class MoveToArea implements IRequest {
 
@@ -22,8 +22,8 @@ export default class MoveToArea implements IRequest {
 
 		data.uoBranch
 			.forEach((uoBranch: IUserBranch): void => {
-				if (!Main.singleton.bots.has(uoBranch.entID)) {
-					Room.addPosition(data.strMapName, uoBranch.strFrame, uoBranch.strPad, uoBranch.tx, uoBranch.ty, 10)
+				if (!MainMulti.singletons(bot.user.server).bots.has(uoBranch.entID)) {
+					Room.addPosition(data.strMapName, uoBranch.strFrame, uoBranch.strPad, uoBranch.tx, uoBranch.ty, 10, bot.user.server)
 				}
 			})
 	}

@@ -13,8 +13,8 @@ import Inventory from "./data/Inventory";
 import {IItem} from "../interface/IItem";
 import {IUser} from "../interface/IUser";
 import {IMap} from "../interface/web/IGameWorld";
-import Main from "../Main";
 import IMoveToArea from "../interface/request/IMoveToArea";
+import MainMulti from "../MainMulti";
 
 export default class Bot {
 
@@ -28,7 +28,7 @@ export default class Bot {
 		this._user = user
 
 		axios
-			.post('https://redhero.online/api/game/login', {
+			.post(`https://${MainMulti.singletons(this.user.server).url}/api/game/login`, {
 				username: this._user.username,
 				password: this._user.password
 			})
@@ -39,17 +39,18 @@ export default class Bot {
 
 				this.properties.token = loginResponse.user.Hash
 
-				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers[0];
+				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == MainMulti.singletons(this.user.server).server);
 
 				if (loginResponseServer) {
-					this.network = new Network(this, loginResponseServer.Port, '192.168.10.160')
+					//this.network = new Network(this, loginResponseServer.Port, '192.168.10.160')
+					this.network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
 				} else {
 					logger.error(`[Bot] server undefined "${user.username}"`)
 				}
 			})
 			.catch((response: any) => {
 				logger.error(`[Bot] "${response}"`)
-				Main.singleton.queue.set(this.user.id, this.user)
+				MainMulti.singletons(this.user.server).queue.set(this.user.id, this.user)
 			})
 	}
 
@@ -121,7 +122,7 @@ export default class Bot {
 	public joinMapRandom() {
 		setTimeout(() => {
 			try {
-				const maps: IMap[] = Main.singleton.maps.filter(value => value.ReqLevel <= this.data.intLevel)
+				const maps: IMap[] = MainMulti.singletons(this.user.server).maps.filter(value => value.ReqLevel <= this.data.intLevel)
 				this.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
 			} catch (e) {
 				this.network.disconnect()
@@ -138,7 +139,7 @@ export default class Bot {
 			case 16222: //Limit Break +5
 			case 14936: //Limit Break +1
 				axios
-					.get(`https://redhero.online/api/wiki/item/${item.ItemID}`)
+					.get(`https://${MainMulti.singletons(this.user.server).url}/api/wiki/item/${item.ItemID}`)
 					.then((response: AxiosResponse) => {
 						const json: any = response.data
 
