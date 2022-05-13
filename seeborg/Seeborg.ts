@@ -55,7 +55,7 @@ export default class Seeborg {
 				logger.error(`[seeborg] [${bot.user.username}] response was null`);
 				break;
 			default:
-				logger.info(`[seeborg] [${bot.user.username}] reply ${channel} > ${reply}`)
+				logger.debug(`[seeborg] [${bot.user.username}] reply ${channel} > ${reply}`)
 				bot.network.send('message', [reply, channel])
 				break;
 		}

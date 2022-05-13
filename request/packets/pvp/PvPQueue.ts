@@ -9,7 +9,7 @@ export default class PvPInvite implements IRequest {
 
 	handler(bot: Bot, data: IPvPQueue): void {
 		if (data.bitSuccess) {
-			logger.info(`[pvp] [${bot.user.username}] war zone started ${data.warzone}`)
+			logger.debug(`[pvp] [${bot.user.username}] war zone started ${data.warzone}`)
 		} else {
 			logger.warn(`[pvp] [${bot.user.username}] removed from war zone queue`)
 		}

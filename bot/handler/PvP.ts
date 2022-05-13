@@ -14,7 +14,7 @@ export default class PvP extends Fill {
 			const pad: number = this.bot.room.data.pvpTeam == 0 ? 2 : 1
 			setTimeout(() => this.bot.network.send("mtcid", [pad]), 1500)
 		} else if (!this.bot.properties.isOnWarZoneQueue) {
-			logger.info(`[pvp] [${this.bot.user.username}] join war zone queue`)
+			logger.debug(`[pvp] [${this.bot.user.username}] join war zone queue`)
 
 			this.bot.properties.isOnWarZoneQueue = true
 

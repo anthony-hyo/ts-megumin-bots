@@ -10,7 +10,7 @@ export default class MoveToArea implements IRequest {
 	public command: string = 'moveToArea'
 
 	handler(bot: Bot, data: IMoveToArea): void {
-		logger.info(`[moveToArea] [${bot.user.username}] joined ${data.areaName}`)
+		logger.debug(`[moveToArea] [${bot.user.username}] joined ${data.areaName}`)
 
 		bot.room = new Room(bot, data)
 

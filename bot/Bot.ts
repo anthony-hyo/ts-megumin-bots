@@ -39,10 +39,10 @@ export default class Bot {
 
 				this.properties.token = loginResponse.user.Hash
 
-				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == `Midgard`);
+				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers[0];
 
 				if (loginResponseServer) {
-					this.network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
+					this.network = new Network(this, loginResponseServer.Port, '192.168.10.160')
 				} else {
 					logger.error(`[Bot] server undefined "${user.username}"`)
 				}
@@ -53,13 +53,13 @@ export default class Bot {
 			})
 	}
 
-	private _data: IUser | undefined;
+	private _data: IUser = <IUser>{};
 
-	public get data(): IUser | undefined {
+	public get data(): IUser {
 		return this._data;
 	}
 
-	public set data(value: IUser | undefined) {
+	public set data(value: IUser) {
 		this._data = value;
 	}
 
@@ -114,14 +114,18 @@ export default class Bot {
 	}
 
 	public joinMap(map: string) {
-		logger.info(`[request] [${this.user.username}] joining ${map}`)
+		logger.debug(`[request] [${this.user.username}] joining ${map}`)
 		this.network.send('cmd', ['tfer', '', map])
 	}
 
 	public joinMapRandom() {
 		setTimeout(() => {
-			const maps: IMap[] = Main.singleton.maps.filter(value => value.ReqLevel <= this.data!.intLevel)
-			this.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
+			try {
+				const maps: IMap[] = Main.singleton.maps.filter(value => value.ReqLevel <= this.data.intLevel)
+				this.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
+			} catch (e) {
+				this.network.disconnect()
+			}
 		}, 3000)
 	}
 
@@ -152,7 +156,7 @@ export default class Bot {
 							const cost: number = Helper.replaceLastDigit(json.MarketAverage * quantity)
 
 							setTimeout(() => {
-								logger.info(`[market] [${this.user.username}] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
+								logger.debug(`[market] [${this.user.username}] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
 
 								this.network.send("sellAuctionItem", [
 									item.ItemID,

@@ -23,17 +23,17 @@ export default class Database {
 		this._sequelize
 			.authenticate()
 			.then(() => {
-				logger.info("Database connected")
+				logger.info("[database] connected")
 
 				this._sequelize
 					.sync()
 					.then(() => {
-						logger.info("Database sync")
+						logger.info("[database] sync")
 						main.init()
 					})
-					.catch(e => console.error('error 1', e))
+					.catch(e => console.error('[database] error 1', e))
 			})
-			.catch(e => console.error('error 2', e))
+			.catch(e => console.error('[database] error 2', e))
 	}
 
 	public get sequelize(): Sequelize {
