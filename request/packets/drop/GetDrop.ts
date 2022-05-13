@@ -12,7 +12,7 @@ export default class GetDrop implements IRequest {
 		if (data.bBank) {
 			logger.warn(`[getDrop] [${bot.user.username}] could not accept drop ${data.ItemID} in bank`)
 		} else if (data.bSuccess) {
-			logger.info(`[getDrop] [${bot.user.username}] accepted drop ${data.ItemID}`)
+			logger.debug(`[getDrop] [${bot.user.username}] accepted drop ${data.ItemID}`)
 
 			const item: IItem | undefined = bot.properties.droppedItems.get(data.ItemID)
 

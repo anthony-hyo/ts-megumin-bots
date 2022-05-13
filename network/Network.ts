@@ -64,6 +64,10 @@ export default class Network {
 		this.socket.write(`${JSON.stringify(iNetworkSend)}\0`)
 	}
 
+	public disconnect():void {
+		this.socket.end()
+	}
+
 	private listeners(): void {
 		this.socket.on('connect', this.onConnect.bind(this))
 

@@ -10,7 +10,8 @@ export default class Request {
 
 	private static readonly ignored: Array<string> = [
 		'equipItem', 'uotls', 'updateClass', 'stu', 'cvu','joinRoom', 'enterRoom', 'userGone','enhp',
-		'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg', 'queueUpdate'
+		'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg', 'queueUpdate', 'addGoldExp',
+		'addItems','sAct','getQuests','retrieveQuests', 'updateFriend', 'aura+p', 'ga', 'PVPS', 'sellItem'
 	]
 
 	constructor() {

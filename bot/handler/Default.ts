@@ -57,7 +57,7 @@ export default class Default implements IHandler {
 
 		data.items.forEach((item: IItem) => {
 			if (item.Player !== 'On Listing') {
-				logger.info(`[market] [${this.bot.user.username}] ${Helper.parseHTML(item.Player)} ${Helper.parseHTML(item.sName)}`)
+				logger.debug(`[market] [${this.bot.user.username}] ${Helper.parseHTML(item.Player)} ${Helper.parseHTML(item.sName)}`)
 				this.bot.network.send('retrieveAuctionItem', [item.AuctionID])
 			}
 		})

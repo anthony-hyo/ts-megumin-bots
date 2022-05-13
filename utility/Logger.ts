@@ -6,6 +6,7 @@ const logger = winston.createLogger({
 		new winston.transports.File({
 			handleExceptions: true,
 			filename: `./log/bot.log`,
+			format: winston.format.simple()
 		}),
 		new winston.transports.Console({
 			handleExceptions: true,

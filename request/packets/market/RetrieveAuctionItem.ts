@@ -10,7 +10,7 @@ export default class RetrieveAuctionItem implements IRequest {
 
 	handler(bot: Bot, data: IMarket): void {
 		if (data.bitSuccess) {
-			logger.info(`[market] [${bot.user.username}] retrieved ${Helper.parseHTML(data.item.sName)}`)
+			logger.debug(`[market] [${bot.user.username}] retrieved ${Helper.parseHTML(data.item.sName)}`)
 		} else {
 			logger.warn(`[market] [${bot.user.username}] retrieved error ${data.strMessage}`)
 		}
