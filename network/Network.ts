@@ -2,9 +2,9 @@ import * as net from "net";
 import logger from "../utility/Logger";
 import Bot from "../bot/Bot";
 import {INetworkSend} from "../interface/INetworkSend";
-import Main from "../Main";
 import * as path from "path";
 import Default from "../bot/handler/Default";
+import MainMulti from "../MainMulti";
 
 export default class Network {
 
@@ -107,7 +107,7 @@ export default class Network {
 
 				logger.debug(`[network] [${this.bot.user.username}] received ${string}`)
 
-				Main.singleton.request.run(string, this.bot)
+				MainMulti.singleton.request.run(string, this.bot)
 			} catch (error) {
 				logger.error(`[network] [${this.bot.user.username}] received error ${error}`)
 			}
@@ -125,9 +125,9 @@ export default class Network {
 	private onClose(hadError: boolean): void {
 		this.bot.properties.clearAllInterval()
 
-		Main.singleton.bots.delete(this.id)
+		MainMulti.singletons(this.bot.user.server).bots.delete(this.id)
 
-		Main.singleton.queue.set(this.bot.user.id, this.bot.user)
+		MainMulti.singletons(this.bot.user.server).queue.set(this.bot.user.id, this.bot.user)
 
 		logger.error(`[network] [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
 	}

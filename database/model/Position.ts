@@ -20,7 +20,7 @@ import {Column, DataType, Model, Table} from 'sequelize-typescript'
 			]
 		},
 		{
-			name: "frame_pad_x_y",
+			name: "frame_pad_x_y_server",
 			unique: true,
 			using: "BTREE",
 			fields: [
@@ -28,6 +28,7 @@ import {Column, DataType, Model, Table} from 'sequelize-typescript'
 				{name: "pad"},
 				{name: "x"},
 				{name: "y"},
+				{name: "server"},
 			]
 		},
 	]
@@ -84,5 +85,12 @@ export default class Position extends Model {
 		defaultValue: 1
 	})
 	speed!: string
+
+	@Column({
+		type: DataType.ENUM('RedHero', 'RedAQ'),
+		allowNull: false,
+		defaultValue: `RedHero`
+	})
+	server!: string
 
 }

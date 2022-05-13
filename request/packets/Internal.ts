@@ -1,9 +1,9 @@
 import IRequest from "../../interface/IRequest";
 import Bot from "../../bot/Bot";
 import logger from "../../utility/Logger";
-import Main from "../../Main";
 import Room from "../../data/Room";
 import IUOTLS from "../../interface/request/IUOTLS";
+import MainMulti from "../../MainMulti";
 
 export default class Internal implements IRequest {
 
@@ -21,7 +21,7 @@ export default class Internal implements IRequest {
 				if (status) {
 					bot.network.id = args[3]
 
-					Main.singleton.bots.set(bot.network.id, bot)
+					MainMulti.singletons(bot.user.server).bots.set(bot.network.id, bot)
 
 					bot.network.send('firstJoin')
 
@@ -45,16 +45,16 @@ export default class Internal implements IRequest {
 
 				switch (split[0]) {
 					case 'world':
-						Main.singleton.seeborg.onMessage(bot, 'world', args[3], split[1])
+						MainMulti.singleton.seeborg.onMessage(bot, 'world', args[3], split[1])
 						break;
 					case 'trade':
-						Main.singleton.seeborg.onMessage(bot, 'trade', args[3], split[1])
+						MainMulti.singleton.seeborg.onMessage(bot, 'trade', args[3], split[1])
 						break;
 					case 'crosschat':
-						Main.singleton.seeborg.onMessage(bot, 'crosschat', args[3], split[1])
+						MainMulti.singleton.seeborg.onMessage(bot, 'crosschat', args[3], split[1])
 						break;
 					default:
-						Main.singleton.seeborg.onMessage(bot, 'zone', args[3], split[1])
+						MainMulti.singleton.seeborg.onMessage(bot, 'zone', args[3], split[1])
 						break;
 				}
 				break
@@ -63,7 +63,7 @@ export default class Internal implements IRequest {
 					const position: IUOTLS = Internal.parseUOTLS(String(args[3]).split(','))
 
 					if (!bot.room.isBot(args[2])) {
-						Room.addPosition(bot.room.data.strMapName, position.strFrame, position.strPad, position.tx, position.ty, position.sp)
+						Room.addPosition(bot.room.data.strMapName, position.strFrame, position.strPad, position.tx, position.ty, position.sp, bot.user.server)
 					}
 				} else if (String(args[3]).includes('strPad') && String(args[3]).includes('tx') && String(args[3]).includes('strFrame') && String(args[3]).includes('ty')) {
 					const position: IUOTLS = Internal.parseUOTLS(String(args[3]).split(','))

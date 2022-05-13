@@ -53,4 +53,11 @@ export default class User extends Model {
 	})
 	handler!: string
 
+	@Column({
+		type: DataType.ENUM('RedHero', 'RedAQ'),
+		allowNull: false,
+		defaultValue: `RedHero`
+	})
+	server!: string
+
 }

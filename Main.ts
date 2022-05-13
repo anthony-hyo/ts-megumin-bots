@@ -1,13 +1,10 @@
-import Config from "./utility/Config"
-import Database from "./database/Database"
-import Request from "./request/Request";
 import User from "./database/model/User";
 import Bot from "./bot/Bot";
 import {Sequelize} from "sequelize";
-import Seeborg from "./seeborg/Seeborg";
 import axios, {AxiosResponse} from "axios";
 import logger from "./utility/Logger";
 import {IGameWorld, IMap} from "./interface/web/IGameWorld";
+import MainMulti from "./MainMulti";
 
 const yaml = require('yaml-js')
 const fs = require('fs')
@@ -15,35 +12,43 @@ const fs = require('fs')
 export default class Main {
 
 	public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
-
 	public readonly maps: Array<IMap> = []
-
 	public readonly queue: Map<Number, User> = new Map<Number, User>()
 
-	private readonly _request: Request = new Request();
+	private readonly _name: string
+	private readonly _server: string
+	private readonly _url: string
 
-	private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
+	constructor(name: string, server: string, url: string) {
+		this._name = name;
+		this._server = server;
+		this._url = url;
+	}
 
-	private readonly _seeborg: Seeborg = new Seeborg(this.config)
+	public get name(): string {
+		return this._name;
+	}
 
-	private readonly database: Database = new Database(this)
+	public get server(): string {
+		return this._server;
+	}
 
-	constructor() {
-		Main._singleton = this
+	public get url(): string {
+		return this._url;
 	}
 
 	public init(): void {
-		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
-		this.database.sequelize.query("UPDATE users SET handler = 'Default'")
+		logger.info(`[main] init ${this.name} at ${this.server}`)
 
-		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
-		this.database.sequelize.query("UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') ORDER BY RAND() LIMIT 50") //SELECT 20 players random to join world boss
+		const seqOption = { replacements: [ this.name ] };
 
-		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
-		this.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') ORDER BY RAND() LIMIT 50`) //SELECT 20 players random to join war zone
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Default' WHERE server = ?", seqOption)
 
-		//noinspection SqlWithoutWhere,JSIgnoredPromiseFromCall
-		this.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN ('monster/WorldBoss', 'PvP')")
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') AND  server = ? ORDER BY RAND() LIMIT 25", seqOption) //SELECT 25 players random to join world boss
+
+		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') AND  server = ? ORDER BY RAND() LIMIT 25`, seqOption) //SELECT 25 players random to join war zone
+
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') AND  server = ? ORDER BY RAND() LIMIT 400", seqOption)
 
 		setInterval(() => {
 			if (this.queue.size > 0) {
@@ -56,15 +61,17 @@ export default class Main {
 		}, 1000)
 
 		axios
-			.get(`https://redhero.online/api/game/world`)
+			.get(`https://${this.url}/api/game/world`)
 			.then((response: AxiosResponse) => {
 				const worlds: IGameWorld[] = response.data;
 
-				worlds.forEach((world: IGameWorld) =>this.maps.push(world.map))
+				worlds.forEach((world: IGameWorld) => this.maps.push(world.map))
 
 				User
 					.findAll({
-						//limit: 5,
+						where: {
+							server: this.name
+						},
 						order: Sequelize.literal('rand()')
 					})
 					.then((users: User[]) => users.forEach(user => this.queue.set(user.id, user)))
@@ -74,24 +81,4 @@ export default class Main {
 			})
 	}
 
-	private static _singleton: Main
-
-	public static get singleton(): Main {
-		return this._singleton;
-	}
-
-	public get request(): Request {
-		return this._request;
-	}
-
-	public get config(): Config {
-		return this._config
-	}
-
-	public get seeborg(): Seeborg {
-		return this._seeborg
-	}
-
 }
-
-new Main();
