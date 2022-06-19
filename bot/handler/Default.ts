@@ -7,6 +7,7 @@ import {IMarket} from "../../interface/request/IMarket";
 import {IRemoveItem} from "../../interface/request/IRemoveItem";
 import Helper from "../../utility/Helper";
 import {IItem} from "../../interface/IItem";
+import MainMulti from "../../MainMulti";
 
 export default class Default implements IHandler {
 
@@ -73,6 +74,23 @@ export default class Default implements IHandler {
 
 	onSpawn(): void {
 		logger.debug('default onSpawn')
+	}
+
+	/*
+		Connection
+	 */
+	onConnect(): void {
+		logger.debug('default onConnect')
+	}
+
+	onDisconnect(): void {
+		this.bot.properties.clearAllInterval()
+
+		if (this.bot.network) {
+			MainMulti.singletons(this.bot.user.server).bots.delete(this.bot.network.id)
+		}
+
+		MainMulti.singletons(this.bot.user.server).queue.set(this.bot.user.id, this.bot.user)
 	}
 
 	/*
