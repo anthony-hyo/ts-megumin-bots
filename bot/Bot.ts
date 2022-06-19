@@ -35,7 +35,7 @@ export default class Bot {
 			.then((response: AxiosResponse) => {
 				const loginResponse: ILoginResponse = response.data;
 
-				logger.warn(`[login] ${this.user.server} ${loginResponse.user.Name}`)
+				logger.warn(`[login] (${this.user.server}) ${loginResponse.user.Name} as "${this.user.handler}"`)
 
 				this.properties.token = loginResponse.user.Hash
 
@@ -170,6 +170,19 @@ export default class Bot {
 						}
 					})
 					.catch(console.error)
+				break;
+		}
+	}
+
+	public sendMessage(channel:string, message: string): void {
+		switch (channel) {
+			case 'world':
+			case 'trade':
+			case 'crosschat':
+				this.network.send('message', [message, channel])
+				break;
+			default:
+				this.network.send('message', [message, 'zone'])
 				break;
 		}
 	}

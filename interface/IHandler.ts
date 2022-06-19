@@ -40,6 +40,8 @@ export interface IHandler {
 
 	onUserMoveToCell(username: string, frame: string):void
 
+	onUserMessage(channel:string, username: string, message: string): void
+
 	/*
 		Monster
 	 */

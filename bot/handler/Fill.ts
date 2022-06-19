@@ -1,4 +1,5 @@
 import Default from "./Default";
+import MainMulti from "../../MainMulti";
 
 export default class Fill extends Default {
 
@@ -8,6 +9,23 @@ export default class Fill extends Default {
 
 	onSpawn(): void {
 		this.walk()
+	}
+
+	onUserMessage(channel:string, username: string, message: string) {
+		switch (channel) {
+			case 'world':
+				MainMulti.singleton.seeborg.onMessage(this.bot, 'world', username, message)
+				break;
+			case 'trade':
+				MainMulti.singleton.seeborg.onMessage(this.bot, 'trade', username, message)
+				break;
+			case 'crosschat':
+				MainMulti.singleton.seeborg.onMessage(this.bot, 'crosschat', username, message)
+				break;
+			default:
+				MainMulti.singleton.seeborg.onMessage(this.bot, 'zone', username, message)
+				break;
+		}
 	}
 
 	private walk(): void {

@@ -108,6 +108,10 @@ export default class Default implements IHandler {
 		logger.debug('default onUserMoveToCell')
 	}
 
+	onUserMessage(channel:string, username: string, message: string) {
+		logger.debug('default onUserMessage')
+	}
+
 	/*
 		Monster
 	 */

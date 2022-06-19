@@ -43,20 +43,7 @@ export default class Internal implements IRequest {
 					return
 				}
 
-				switch (split[0]) {
-					case 'world':
-						MainMulti.singleton.seeborg.onMessage(bot, 'world', args[3], split[1])
-						break;
-					case 'trade':
-						MainMulti.singleton.seeborg.onMessage(bot, 'trade', args[3], split[1])
-						break;
-					case 'crosschat':
-						MainMulti.singleton.seeborg.onMessage(bot, 'crosschat', args[3], split[1])
-						break;
-					default:
-						MainMulti.singleton.seeborg.onMessage(bot, 'zone', args[3], split[1])
-						break;
-				}
+				bot.handler.onUserMessage(split[0], args[3], split[1])
 				break
 			case 'uotls':
 				if (String(args[3]).includes('tx') && String(args[3]).includes('ty') && String(args[3]).includes('sp') && String(args[3]).includes('strFrame')) {
