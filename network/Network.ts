@@ -39,7 +39,7 @@ export default class Network {
 	}
 
 	public send(command: string, args: Array<any> = []): void {
-		logger.debug(`[network] [${this.bot.user.username}] send command: ${command} with args: ${args.toString()}`)
+		logger.debug(`[network] (${this.bot.user.server}) [${this.bot.user.username}] send command: ${command} with args: ${args.toString()}`)
 
 		this.write({
 			type: 'request',
@@ -51,7 +51,7 @@ export default class Network {
 	}
 
 	public event(command: string, args: Array<any>): void {
-		logger.debug(`[network] [${this.bot.user.username}] event command: ${command} with args: ${args.toString()}`)
+		logger.debug(`[network] (${this.bot.user.server}) [${this.bot.user.username}] event command: ${command} with args: ${args.toString()}`)
 
 		this.write({
 			type: 'event',
@@ -109,11 +109,11 @@ export default class Network {
 			try {
 				const string = this.chunk.substring(0, d_index);
 
-				logger.debug(`[network] [${this.bot.user.username}] received ${string}`)
+				logger.debug(`[network] (${this.bot.user.server}) [${this.bot.user.username}] received ${string}`)
 
 				MainMulti.singleton.request.run(string, this.bot)
 			} catch (error) {
-				logger.error(`[network] [${this.bot.user.username}] received error ${error}`)
+				logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] received error ${error}`)
 			}
 
 			this.chunk = this.chunk.substring(d_index + this.delimiter.length)
@@ -123,19 +123,19 @@ export default class Network {
 	}
 
 	private onError(err: Error): void {
-		logger.error(`[network] [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`);
+		logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`);
 
 		this.bot.handler.onDisconnect()
 	}
 
 	private onClose(hadError: boolean): void {
-		logger.error(`[network] [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
+		logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
 
 		this.bot.handler.onDisconnect()
 	}
 
 	private onEnd(): void {
-		logger.error(`[network] [${this.bot.user.username}] end "${this.bot.user.username}"`);
+		logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] end`);
 
 		this.bot.handler.onDisconnect()
 	}
