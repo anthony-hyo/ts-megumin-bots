@@ -40,8 +40,6 @@ export default class Main {
 	public init(): void {
 		logger.info(`[main] init ${this.name} at ${this.server}`)
 
-
-
 		const seqOption = {
 			replacements: { 
 				ignore: [ 'monster/Monster', 'monster/WorldBoss', 'PvP', 'Fill', 'SupportRedHero', 'SupportRedAQ' ], 

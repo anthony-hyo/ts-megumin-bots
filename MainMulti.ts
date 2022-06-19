@@ -3,6 +3,7 @@ import Config from "./utility/Config";
 import Seeborg from "./seeborg/Seeborg";
 import Request from "./request/Request";
 import Database from "./database/Database";
+import {exec} from "child_process";
 
 const yaml = require('yaml-js')
 const fs = require('fs')
@@ -49,5 +50,10 @@ export default class MainMulti {
 
 	public init = (): void => MainMulti._singletons.forEach((main: Main) => main.init());
 }
+
+setTimeout(() => {
+	exec('START start.bat')
+	process.exit(1);
+}, 3600000 * 2)
 
 new MainMulti()
