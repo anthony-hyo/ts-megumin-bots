@@ -94,6 +94,8 @@ export default class Network {
 			logger.error(`[network] [${this.bot.user.username}] could now find any handler ${path.resolve(__dirname, '..', 'bot', 'handler', `${this.bot.user.handler}.ts`)} using Default`)
 			this.bot.handler = new Default(this.bot)
 		}
+
+		this.bot.handler.onConnect()
 	}
 
 	private onData(data: any): void {
@@ -120,20 +122,20 @@ export default class Network {
 
 	private onError(err: Error): void {
 		logger.error(`[network] [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`);
+
+		this.bot.handler.onDisconnect()
 	}
 
 	private onClose(hadError: boolean): void {
-		this.bot.properties.clearAllInterval()
-
-		MainMulti.singletons(this.bot.user.server).bots.delete(this.id)
-
-		MainMulti.singletons(this.bot.user.server).queue.set(this.bot.user.id, this.bot.user)
-
 		logger.error(`[network] [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
+
+		this.bot.handler.onDisconnect()
 	}
 
 	private onEnd(): void {
 		logger.error(`[network] [${this.bot.user.username}] end "${this.bot.user.username}"`);
+
+		this.bot.handler.onDisconnect()
 	}
 
 }

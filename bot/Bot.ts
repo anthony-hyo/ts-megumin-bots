@@ -35,7 +35,7 @@ export default class Bot {
 			.then((response: AxiosResponse) => {
 				const loginResponse: ILoginResponse = response.data;
 
-				logger.warn(`[login] ${loginResponse.user.Name}`)
+				logger.warn(`[login] ${this.user.server} ${loginResponse.user.Name}`)
 
 				this.properties.token = loginResponse.user.Hash
 
@@ -50,7 +50,7 @@ export default class Bot {
 			})
 			.catch((response: any) => {
 				logger.error(`[Bot] "${response}"`)
-				MainMulti.singletons(this.user.server).queue.set(this.user.id, this.user)
+				this.handler.onDisconnect()
 			})
 	}
 
@@ -74,10 +74,10 @@ export default class Bot {
 		this._room = value;
 	}
 
-	private _network!: Network
+	private _network: Network | undefined
 
 	public get network(): Network {
-		return this._network
+		return <Network>this._network
 	}
 
 	private set network(value: Network) {
@@ -110,9 +110,7 @@ export default class Bot {
 	// 	return 1 - Math.min(Math.max(tha, -1), 0.85)
 	// }
 
-	public static create(user: User): Bot {
-		return new Bot(user)
-	}
+	public static create = (user: User): Bot => new Bot(user);
 
 	public joinMap(map: string) {
 		logger.debug(`[request] [${this.user.username}] joining ${map}`)

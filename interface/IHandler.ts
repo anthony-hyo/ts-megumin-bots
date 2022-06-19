@@ -25,6 +25,13 @@ export interface IHandler {
 	onSpawn(): void;
 
 	/*
+		Connection
+	 */
+	onConnect(): void;
+
+	onDisconnect(): void;
+
+	/*
 		User
 	 */
 	onUserJoin(networkId: number): void
