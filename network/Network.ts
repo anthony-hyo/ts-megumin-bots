@@ -6,6 +6,8 @@ import * as path from "path";
 import Default from "../bot/handler/Default";
 import MainMulti from "../MainMulti";
 
+const base64: any = require('base-64');
+
 export default class Network {
 
 	private readonly socket: net.Socket = new net.Socket()
@@ -61,7 +63,7 @@ export default class Network {
 	}
 
 	public write(iNetworkSend: INetworkSend): void {
-		this.socket.write(`${JSON.stringify(iNetworkSend)}\0`)
+		this.socket.write(`${base64.encode(JSON.stringify(iNetworkSend))}\0`)
 	}
 
 	public disconnect():void {
