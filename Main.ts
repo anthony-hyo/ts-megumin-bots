@@ -52,7 +52,7 @@ export default class Main {
 
 		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 25`, seqOption)
 
-		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 50`, seqOption)
+		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 15`, seqOption)
 
 		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 50", seqOption)
 
@@ -66,7 +66,7 @@ export default class Main {
 
 				this.queue.delete(user.id)
 			}
-		}, 750)
+		}, 1200)
 
 		User
 			.findAll({
@@ -90,7 +90,7 @@ export default class Main {
 					.findAll({
 						where: {
 							server: this.name,
-							handler: {
+							username: {
 								[Op.ne]: "Support Gwapo"
 							}
 						},
