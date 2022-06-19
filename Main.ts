@@ -40,18 +40,20 @@ export default class Main {
 	public init(): void {
 		logger.info(`[main] init ${this.name} at ${this.server}`)
 
-		const seqOption = { replacements: [ this.name ] };
+		const seqOption: { replacements: string[] } = { replacements: [ `'monster/Monster', 'monster/WorldBoss', 'PvP', 'Fill'`, this.name ] }
 
 		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Default' WHERE server = ?", seqOption)
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') AND  server = ? ORDER BY RAND() LIMIT 25", seqOption) //SELECT 25 players random to join world boss
+		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND() LIMIT 25`, seqOption) //SELECT 25 players random to join world boss
 
-		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') AND  server = ? ORDER BY RAND() LIMIT 25`, seqOption) //SELECT 25 players random to join war zone
+		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND() LIMIT 50`, seqOption) //SELECT 25 players random to join war zone
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN ('monster/WorldBoss', 'PvP') AND  server = ? ORDER BY RAND() LIMIT 400", seqOption)
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND() LIMIT 200", seqOption)
+
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Fill' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND()", seqOption)
 
 		setInterval(() => {
-			if (this.queue.size > 0) {
+			if (this.queue.size > 0 && this.bots.size < 210) {
 				const user: User = this.queue.values().next().value
 
 				Bot.create(user)
