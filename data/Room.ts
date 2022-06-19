@@ -151,7 +151,9 @@ export default class Room {
 					this.bot.network.send("mv", [position.x, position.y, position.speed])
 				}
 			})
-			//.catch(e => console.error('error 3', e))
+			.catch(e => {
+				/*console.error('error 3', e)*/
+			})
 	}
 
 }

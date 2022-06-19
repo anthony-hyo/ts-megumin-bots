@@ -1,6 +1,6 @@
 import User from "./database/model/User";
 import Bot from "./bot/Bot";
-import {Sequelize} from "sequelize";
+import {QueryTypes, Sequelize} from "sequelize";
 import axios, {AxiosResponse} from "axios";
 import logger from "./utility/Logger";
 import {IGameWorld, IMap} from "./interface/web/IGameWorld";
@@ -40,17 +40,31 @@ export default class Main {
 	public init(): void {
 		logger.info(`[main] init ${this.name} at ${this.server}`)
 
-		const seqOption: { replacements: string[] } = { replacements: [ `'monster/Monster', 'monster/WorldBoss', 'PvP', 'Fill'`, this.name ] }
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Default' WHERE server = ?", seqOption)
 
-		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND() LIMIT 25`, seqOption) //SELECT 25 players random to join world boss
+		const seqOption = {
+			replacements: { 
+				ignore: [ 'monster/Monster', 'monster/WorldBoss', 'PvP', 'Fill', 'SupportRedHero', 'SupportRedAQ' ], 
+				server: this.name
+			},
+			type: QueryTypes.UPDATE
+		}
 
-		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND() LIMIT 50`, seqOption) //SELECT 25 players random to join war zone
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Default' WHERE server = :server", seqOption)
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND() LIMIT 200", seqOption)
+		if (this.name === 'RedHero') {
+			MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'SupportRedHero' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 1`, seqOption)
+		} else {
+			MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'SupportRedAQ' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 1`, seqOption)
+		}
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Fill' WHERE handler NOT IN (?) AND  server = ? ORDER BY RAND()", seqOption)
+		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 25`, seqOption)
+
+		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 50`, seqOption)
+
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 50", seqOption)
+
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Fill' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND()", seqOption)
 
 		setInterval(() => {
 			if (this.queue.size > 0 && this.bots.size < 210) {
@@ -60,7 +74,7 @@ export default class Main {
 
 				this.queue.delete(user.id)
 			}
-		}, 1000)
+		}, 500)
 
 		axios
 			.get(`https://${this.url}/api/game/world`)
