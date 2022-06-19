@@ -2,7 +2,6 @@ import Position from "../database/model/Position";
 import {Sequelize} from "sequelize";
 import Bot from "../bot/Bot";
 import Avatar from "./Avatar";
-import logger from "../utility/Logger";
 import IMoveToArea from "../interface/request/IMoveToArea";
 import MainMulti from "../MainMulti";
 
@@ -79,12 +78,7 @@ export default class Room {
 					server: server
 				}
 			})
-			.catch((error: any) => {
-				if (error.parent.code === 'SQLITE_BUSY') {
-					logger.error(`[SQLITE_BUSY] trying again in 3s`)
-					setTimeout(() => Room.addPosition(name, frame, pad, x, y, speed, server), 3000)
-				}
-			})
+			.catch((error: any) => setTimeout(() => Room.addPosition(name, frame, pad, x, y, speed, server), 3000))
 	}
 
 	public addPlayer(networkId: number, username: string): void {
@@ -157,7 +151,7 @@ export default class Room {
 					this.bot.network.send("mv", [position.x, position.y, position.speed])
 				}
 			})
-			.catch(e => console.error('error 3', e))
+			//.catch(e => console.error('error 3', e))
 	}
 
 }
