@@ -3,6 +3,8 @@ import SupportRedHero from "./SupportRedHero";
 
 export default class SupportRedAQ extends SupportRedHero {
 
+    protected readonly map: string = 'yulgar-1'
+
     protected readonly key: ISupportWord = {
         words: [
             {

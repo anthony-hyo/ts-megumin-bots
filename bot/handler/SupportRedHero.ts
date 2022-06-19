@@ -1,9 +1,13 @@
 import Fill from "./Fill";
 import {ISupportWord, IWord} from "../../interface/ISupportWord";
+import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
+import {IItem} from "../../interface/IItem";
 
 export default class SupportRedHero extends Fill {
 
-    protected static readonly question1: RegExp = /\?|wher|wehre|onde|any|get|how/
+    protected readonly map: string = 'town-1'
+
+    protected static question1: RegExp = /\?|wher|wehre|onde|any|get|how/
 
     protected readonly key: ISupportWord = {
         words: [
@@ -85,6 +89,12 @@ export default class SupportRedHero extends Fill {
         ]
     }
 
+    onInventoryLoad(data: ILoadInventoryBig): void {
+        data.items.forEach((item: IItem) => this.bot.inventory.all.set(item.ItemID, item))
+
+        this.bot.joinMap(this.map)
+    }
+
     onUserMessage(channel: string, username: string, message: string) {
         const word: IWord | undefined = this.key.words.find(value => {
             const checkIncludes: Array<boolean> = []
@@ -104,7 +114,6 @@ export default class SupportRedHero extends Fill {
 
         if (word !== undefined) {
             word.message.forEach((message: string) => this.bot.sendMessage(channel, message))
-
         }
     }
 

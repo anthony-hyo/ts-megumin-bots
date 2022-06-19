@@ -1,6 +1,6 @@
 import User from "./database/model/User";
 import Bot from "./bot/Bot";
-import {QueryTypes, Sequelize} from "sequelize";
+import {Op, QueryTypes, Sequelize} from "sequelize";
 import axios, {AxiosResponse} from "axios";
 import logger from "./utility/Logger";
 import {IGameWorld, IMap} from "./interface/web/IGameWorld";
@@ -48,13 +48,7 @@ export default class Main {
 			type: QueryTypes.UPDATE
 		}
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Default' WHERE server = :server", seqOption)
-
-		if (this.name === 'RedHero') {
-			MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'SupportRedHero' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 1`, seqOption)
-		} else {
-			MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'SupportRedAQ' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 1`, seqOption)
-		}
+		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Default' WHERE username != 'Support Gwapo' AND server = :server", seqOption)
 
 		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 25`, seqOption)
 
@@ -72,7 +66,18 @@ export default class Main {
 
 				this.queue.delete(user.id)
 			}
-		}, 500)
+		}, 750)
+
+		User
+			.findAll({
+				where: {
+					server: this.name,
+					username: "Support Gwapo"
+				},
+			})
+			.then((users: User[]) => {
+				users.forEach(user => Bot.create(user));
+			})
 
 		axios
 			.get(`https://${this.url}/api/game/world`)
@@ -84,7 +89,10 @@ export default class Main {
 				User
 					.findAll({
 						where: {
-							server: this.name
+							server: this.name,
+							handler: {
+								[Op.ne]: "Support Gwapo"
+							}
 						},
 						order: Sequelize.literal('rand()')
 					})
