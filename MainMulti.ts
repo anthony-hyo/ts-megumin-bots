@@ -49,6 +49,7 @@ export default class MainMulti {
 	public static singletons: (server: string) => Main = (server: string) => this._singletons.get(server)!;
 
 	public init = (): void => MainMulti._singletons.forEach((main: Main) => main.init());
+
 }
 
 setTimeout(() => {
