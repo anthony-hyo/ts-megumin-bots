@@ -97,13 +97,13 @@ export default class Seeborg {
 			return false;
 		} else if (Helper.chancePredicate(this.config.replyMention(channel), () => message.includes(username))) {// Reply mention //TODO: CHECK Whisper
 			return true;
-		}else if (Helper.chancePredicate(this.config.replyMagic(channel), () => this.config.matchesMagicPattern(channel, message))) { // Reply magic
+		} else if (Helper.chancePredicate(this.config.replyMagic(channel), () => this.config.matchesMagicPattern(channel, message))) { // Reply magic
 			return true;
 		} else if (Helper.chancePredicate(this.config.replyRate(channel), () => true)) { // Reply rate
 			return true
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	private learn(message: string): void {
