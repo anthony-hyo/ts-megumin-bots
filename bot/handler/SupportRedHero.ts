@@ -2,6 +2,7 @@ import Fill from "./Fill";
 import {ISupportWord, IWord} from "../../interface/ISupportWord";
 import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
 import {IItem} from "../../interface/IItem";
+import logger from "../../utility/Logger";
 
 export default class SupportRedHero extends Fill {
 
@@ -113,6 +114,7 @@ export default class SupportRedHero extends Fill {
         })
 
         if (word !== undefined) {
+            logger.info(`[Support] (${this.bot.user.server}) ${this.bot.user.username} reply "${username} (${channel}): ${message}" with "${word.message}"`)
             word.message.forEach((message: string) => this.bot.sendMessage(channel, message))
         }
     }

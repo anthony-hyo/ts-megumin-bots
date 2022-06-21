@@ -1,11 +1,10 @@
-import Network from "../network/Network";
 import axios, {AxiosResponse} from "axios";
 import logger from "../utility/Logger";
-import User from "../database/model/User";
+import GameUser from "../database/model/GameUser";
 import {ILoginResponseServer} from "../interface/ILoginResponseServer";
 import {ILoginResponse} from "../interface/ILoginResponse";
 import {IHandler} from "../interface/IHandler";
-import Room from "../data/Room";
+import Room from "./data/Room";
 import Properties from "./Properties";
 import Default from "./handler/Default";
 import Helper from "../utility/Helper";
@@ -15,14 +14,15 @@ import {IUser} from "../interface/IUser";
 import {IMap} from "../interface/web/IGameWorld";
 import IMoveToArea from "../interface/request/IMoveToArea";
 import MainMulti from "../MainMulti";
+import Network from "./network/Network";
 
 export default class Bot {
 
-	private readonly _user!: User
+	private readonly _user!: GameUser
 	private readonly _properties: Properties = new Properties(this)
 	private readonly _inventory: Inventory = new Inventory(this)
 
-	constructor(user: User) {
+	constructor(user: GameUser) {
 		logger.debug(`[Bot] found "${user.username}"`)
 
 		this._user = user
@@ -35,21 +35,28 @@ export default class Bot {
 			.then((response: AxiosResponse) => {
 				const loginResponse: ILoginResponse = response.data;
 
-				logger.warn(`[login] (${this.user.server}) ${loginResponse.user.Name} as "${this.user.handler}"`)
+				if (loginResponse.user === undefined) {
+					logger.error(`[Bot] [login] (${this.user.server}) ${user.username} user undefined "${user.username}"`)
+					this.handler.onDisconnect()
+					return
+				}
+
+				logger.debug(`[Bot] [login] (${this.user.server}) ${user.username} as "${this.user.handler}"`)
 
 				this.properties.token = loginResponse.user.Hash
 
 				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == MainMulti.singletons(this.user.server).server);
 
 				if (loginResponseServer) {
-					//this.network = new Network(this, loginResponseServer.Port, '192.168.10.160')
+					//this.bot.network = new Network(this, loginResponseServer.Port, '192.168.10.160')
 					this.network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
 				} else {
-					logger.error(`[Bot] server undefined "${user.username}"`)
+					logger.error(`[Bot] [login] (${this.user.server}) ${user.username} server undefined "${user.username}"`)
+					this.handler.onDisconnect()
 				}
 			})
 			.catch((response: any) => {
-				logger.error(`[Bot] "${response}"`)
+				logger.error(`[Bot] [login] (${this.user.server}) ${user.username} "${response}"`)
 				this.handler.onDisconnect()
 			})
 	}
@@ -84,7 +91,7 @@ export default class Bot {
 		this._network = value;
 	}
 
-	public get user(): User {
+	public get user(): GameUser {
 		return this._user;
 	}
 
@@ -110,7 +117,7 @@ export default class Bot {
 	// 	return 1 - Math.min(Math.max(tha, -1), 0.85)
 	// }
 
-	public static create = (user: User): Bot => new Bot(user);
+	public static create = (user: GameUser): Bot => new Bot(user);
 
 	public joinMap(map: string) {
 		logger.debug(`[request] [${this.user.username}] joining ${map}`)

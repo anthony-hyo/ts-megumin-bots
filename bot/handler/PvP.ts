@@ -1,7 +1,7 @@
 import Fill from "./Fill";
 import Helper from "../../utility/Helper";
 import logger from "../../utility/Logger";
-import Avatar from "../../data/Avatar";
+import Avatar from "../data/Avatar";
 
 export default class PvP extends Fill {
 
