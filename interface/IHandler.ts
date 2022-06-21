@@ -1,4 +1,4 @@
-import Avatar from "../data/Avatar";
+import Avatar from "../bot/data/Avatar";
 import ILoadInventoryBig from "./request/ILoadInventoryBig";
 import {IMarket} from "./request/IMarket";
 import {IRemoveItem} from "./request/IRemoveItem";

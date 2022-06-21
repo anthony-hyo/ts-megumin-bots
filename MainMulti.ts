@@ -1,7 +1,7 @@
 import Main from "./Main";
 import Config from "./utility/Config";
 import Seeborg from "./seeborg/Seeborg";
-import Request from "./request/Request";
+import Request from "./bot/network/request/Request";
 import Database from "./database/Database";
 import {exec} from "child_process";
 

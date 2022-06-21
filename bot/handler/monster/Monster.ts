@@ -1,8 +1,8 @@
 import Default from "../Default";
 import Helper from "../../../utility/Helper";
 import {IMonMap} from "../../../interface/request/IMoveToArea";
-import {AvatarState} from "../../../request/packets/CombatState";
 import logger from "../../../utility/Logger";
+import {AvatarState} from "../../network/request/packets/CombatState";
 
 export default class Monster extends Default {
 

@@ -1,4 +1,4 @@
-import User from "./database/model/User";
+import GameUser from "./database/model/GameUser";
 import Bot from "./bot/Bot";
 import {Op, QueryTypes, Sequelize} from "sequelize";
 import axios, {AxiosResponse} from "axios";
@@ -6,14 +6,11 @@ import logger from "./utility/Logger";
 import {IGameWorld, IMap} from "./interface/web/IGameWorld";
 import MainMulti from "./MainMulti";
 
-const yaml = require('yaml-js')
-const fs = require('fs')
-
 export default class Main {
 
 	public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
 	public readonly maps: Array<IMap> = []
-	public readonly queue: Map<Number, User> = new Map<Number, User>()
+	public readonly queue: Map<Number, GameUser> = new Map<Number, GameUser>()
 
 	private readonly _name: string
 	private readonly _server: string
@@ -48,19 +45,19 @@ export default class Main {
 			type: QueryTypes.UPDATE
 		}
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Default' WHERE username != 'Support Gwapo' AND server = :server", seqOption)
+		MainMulti.singleton.database.sequelize.query("UPDATE game_users SET handler = 'Default' WHERE username != 'Support Gwapo' AND server = :server", seqOption)
 
-		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 25`, seqOption)
+		MainMulti.singleton.database.sequelize.query(`UPDATE game_users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 25`, seqOption)
 
-		MainMulti.singleton.database.sequelize.query(`UPDATE users SET handler = 'PvP' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 15`, seqOption)
+		MainMulti.singleton.database.sequelize.query(`UPDATE game_users SET handler = 'PvP' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 15`, seqOption)
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'monster/Monster' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 50", seqOption)
+		MainMulti.singleton.database.sequelize.query("UPDATE game_users SET handler = 'monster/Monster' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 50", seqOption)
 
-		MainMulti.singleton.database.sequelize.query("UPDATE users SET handler = 'Fill' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND()", seqOption)
+		MainMulti.singleton.database.sequelize.query("UPDATE game_users SET handler = 'Fill' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND()", seqOption)
 
 		setInterval(() => {
 			if (this.queue.size > 0 && this.bots.size < 210) {
-				const user: User = this.queue.values().next().value
+				const user: GameUser = this.queue.values().next().value
 
 				Bot.create(user)
 
@@ -68,14 +65,14 @@ export default class Main {
 			}
 		}, 1200)
 
-		User
+		GameUser
 			.findAll({
 				where: {
 					server: this.name,
 					username: "Support Gwapo"
 				},
 			})
-			.then((users: User[]) => {
+			.then((users: GameUser[]) => {
 				users.forEach(user => Bot.create(user));
 			})
 
@@ -86,7 +83,7 @@ export default class Main {
 
 				worlds.forEach((world: IGameWorld) => this.maps.push(world.map))
 
-				User
+				GameUser
 					.findAll({
 						where: {
 							server: this.name,
@@ -96,7 +93,7 @@ export default class Main {
 						},
 						order: Sequelize.literal('rand()')
 					})
-					.then((users: User[]) => users.forEach(user => this.queue.set(user.id, user)))
+					.then((users: GameUser[]) => users.forEach(user => this.queue.set(user.id, user)))
 			})
 			.catch((response: any) => {
 				logger.error(`[main] game world response error "${response}"`)
