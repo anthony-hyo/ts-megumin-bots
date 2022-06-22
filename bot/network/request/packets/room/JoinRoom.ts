@@ -1,6 +1,6 @@
 import Bot from "../../../../Bot";
-import IRequest from "../../../../../interface/IRequest";
-import {IJoinRoom} from "../../../../../interface/request/IJoinRoom";
+import IRequest from "../../../../../interfaces/game/IRequest";
+import {IJoinRoom} from "../../../../../interfaces/game/request/IJoinRoom";
 
 export default class EnterRoom implements IRequest {
 

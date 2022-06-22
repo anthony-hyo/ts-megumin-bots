@@ -1,4 +1,4 @@
-import {IItem} from "../interface/IItem";
+import {IItem} from "../interfaces/game/IItem";
 import Bot from "./Bot";
 
 export default class Properties {

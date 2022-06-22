@@ -1,8 +1,8 @@
 import Bot from "../../../Bot";
-import IRequest from "../../../../interface/IRequest";
+import IRequest from "../../../../interfaces/game/IRequest";
 import MainMulti from "../../../../MainMulti";
 import logger from "../../../../utility/Logger";
-import IUOTLS from "../../../../interface/request/IUOTLS";
+import IUOTLS from "../../../../interfaces/game/request/IUOTLS";
 import Room from "../../../data/Room";
 
 export default class Internal implements IRequest {

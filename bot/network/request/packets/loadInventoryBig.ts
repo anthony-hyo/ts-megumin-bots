@@ -1,7 +1,7 @@
 import Bot from "../../../Bot";
-import IRequest from "../../../../interface/IRequest";
-import ILoadInventoryBig from "../../../../interface/request/ILoadInventoryBig";
-import {IItem} from "../../../../interface/IItem";
+import IRequest from "../../../../interfaces/game/IRequest";
+import ILoadInventoryBig from "../../../../interfaces/game/request/ILoadInventoryBig";
+import {IItem} from "../../../../interfaces/game/IItem";
 import Helper from "../../../../utility/Helper";
 
 export default class LoadInventoryBig implements IRequest {

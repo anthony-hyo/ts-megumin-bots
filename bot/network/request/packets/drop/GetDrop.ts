@@ -1,8 +1,8 @@
 import Bot from "../../../../Bot";
-import IRequest from "../../../../../interface/IRequest";
-import {IGetDrop} from "../../../../../interface/request/IDrop";
+import IRequest from "../../../../../interfaces/game/IRequest";
+import {IGetDrop} from "../../../../../interfaces/game/request/IDrop";
 import logger from "../../../../../utility/Logger";
-import {IItem} from "../../../../../interface/IItem";
+import {IItem} from "../../../../../interfaces/game/IItem";
 
 export default class GetDrop implements IRequest {
 

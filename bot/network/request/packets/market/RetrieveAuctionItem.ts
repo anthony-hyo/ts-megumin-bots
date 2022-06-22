@@ -1,6 +1,6 @@
 import Bot from "../../../../Bot";
-import IRequest from "../../../../../interface/IRequest";
-import {IMarket} from "../../../../../interface/request/IMarket";
+import IRequest from "../../../../../interfaces/game/IRequest";
+import {IMarket} from "../../../../../interfaces/game/request/IMarket";
 import logger from "../../../../../utility/Logger";
 import Helper from "../../../../../utility/Helper";
 

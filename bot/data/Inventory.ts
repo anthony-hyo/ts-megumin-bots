@@ -1,6 +1,6 @@
 import Bot from "../Bot";
-import {IRemoveItem} from "../../interface/request/IRemoveItem";
-import {IItem} from "../../interface/IItem";
+import {IRemoveItem} from "../../interfaces/game/request/IRemoveItem";
+import {IItem} from "../../interfaces/game/IItem";
 
 export default class Inventory {
 

@@ -1,6 +1,6 @@
 import Bot from "../../../Bot";
-import IRequest from "../../../../interface/IRequest";
-import {IInitUserData, IUsers} from "../../../../interface/request/IInitUserData";
+import IRequest from "../../../../interfaces/game/IRequest";
+import {IInitUserData, IUsers} from "../../../../interfaces/game/request/IInitUserData";
 
 export default class InitUserDatas implements IRequest {
 

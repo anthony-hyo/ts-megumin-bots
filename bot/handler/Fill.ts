@@ -14,16 +14,16 @@ export default class Fill extends Default {
 	onUserMessage(channel:string, username: string, message: string) {
 		switch (channel) {
 			case 'world':
-				MainMulti.singleton.seeborg.onMessage(this.bot, 'world', username, message)
+				MainMulti.singleton.seeborgGame.onMessage(this.bot, 'world', username, message)
 				break;
 			case 'trade':
-				MainMulti.singleton.seeborg.onMessage(this.bot, 'trade', username, message)
+				MainMulti.singleton.seeborgGame.onMessage(this.bot, 'trade', username, message)
 				break;
 			case 'crosschat':
-				MainMulti.singleton.seeborg.onMessage(this.bot, 'crosschat', username, message)
+				MainMulti.singleton.seeborgGame.onMessage(this.bot, 'crosschat', username, message)
 				break;
 			default:
-				MainMulti.singleton.seeborg.onMessage(this.bot, 'zone', username, message)
+				MainMulti.singleton.seeborgGame.onMessage(this.bot, 'zone', username, message)
 				break;
 		}
 	}

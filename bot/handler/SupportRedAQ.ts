@@ -1,4 +1,4 @@
-import {ISupportWord} from "../../interface/ISupportWord";
+import {ISupportWord} from "../../interfaces/game/ISupportWord";
 import SupportRedHero from "./SupportRedHero";
 
 export default class SupportRedAQ extends SupportRedHero {

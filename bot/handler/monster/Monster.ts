@@ -1,6 +1,6 @@
 import Default from "../Default";
 import Helper from "../../../utility/Helper";
-import {IMonMap} from "../../../interface/request/IMoveToArea";
+import {IMonMap} from "../../../interfaces/game/request/IMoveToArea";
 import logger from "../../../utility/Logger";
 import {AvatarState} from "../../network/request/packets/CombatState";
 

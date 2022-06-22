@@ -1,3 +1,5 @@
+import {ISeeborgDictionary} from "../interfaces/ISeeborgDictionary";
+
 const fs = require('fs');
 
 const stringUtil = require('../utility/stringutil');
@@ -12,43 +14,43 @@ const splitSentences = stringUtil.splitSentences;
 
 export default class Dictionary {
 
-	private readonly dictionary: any;
+	private dictionary!: ISeeborgDictionary
 
-	private readonly filename = 'dictionary.json';
+	private filename: string = 'dictionary.json'
 
-	constructor() {
+	public init(filename: string) {
+		this.filename = filename
+
 		if (!fs.existsSync(this.filename)) {
 			fs.writeFileSync(this.filename, '{"sentences":[],"mappings":{}}');
 		}
 
-		let data = fs.readFileSync(this.filename, 'utf8');
+		let data: string = fs.readFileSync(this.filename, 'utf8');
 
 		this.dictionary = JSON.parse(data);
 	}
 
-	public save() {
+	public save(): void {
 		fs.writeFileSync(this.filename, JSON.stringify(this.dictionary), {
 			encoding: 'utf8',
 			flag: 'w+'
 		});
 	}
 
-	public insertLine(line: any) {
-		for (let sentence of splitSentences(line)) {
+	public insertLine(message: string): void {
+		for (const sentence of splitSentences(message)) {
 			this.insertSentence(sentence);
 		}
 	}
 
-	public isWordKnown(word: any) {
-		return this.wordIndexList(word) !== null;
+	public isWordKnown = (word: string) => this.wordIndexList(word) !== null;
+
+	public sentencesWithWord(word: any): (string | undefined)[] {
+		const indexList: number[] | null = this.wordIndexList(word);
+		return indexList === null ? [] : indexList.map((index: number) => this.dictionary.sentences.at(index));
 	}
 
-	public sentencesWithWord(word: any) {
-		let indexList = this.wordIndexList(word);
-		return indexList === null ? [] : indexList.map((index: string | number) => this.dictionary.sentences[index]);
-	}
-
-	private insertSentence(sentence: any) {
+	private insertSentence(sentence: string): void {
 		if (!this.hasSentence(sentence)) {
 			this.dictionary.sentences.push(sentence);
 			for (let word of splitWords(sentence)) {
@@ -57,8 +59,9 @@ export default class Dictionary {
 		}
 	}
 
-	private insertWord(word: string | number, sentenceIndex: number) {
-		let wordIndexList = this.wordIndexList(word);
+	private insertWord(word: string, sentenceIndex: number): void {
+		const wordIndexList: number[] | null = this.wordIndexList(word);
+
 		if (wordIndexList === null) {
 			this.dictionary.mappings[word] = [sentenceIndex]
 		} else if (!wordIndexList.includes(sentenceIndex)) {
@@ -66,12 +69,10 @@ export default class Dictionary {
 		}
 	}
 
-	private hasSentence(sentence: any) {
-		return this.dictionary.sentences.includes(sentence);
-	}
+	private hasSentence: (sentence: string) => boolean = (sentence: string) => this.dictionary.sentences.includes(sentence);
 
-	private wordIndexList(word: string | number) {
-		let indexList = this.dictionary.mappings[word];
+	private wordIndexList(word: string): null | number[] {
+		const indexList: number[] = this.dictionary.mappings[word];
 		return indexList === null || indexList === undefined ? null : indexList;
 	}
 

@@ -2,7 +2,7 @@ import GamePosition from "../../database/model/GamePosition";
 import {Sequelize} from "sequelize";
 import Bot from "../Bot";
 import Avatar from "./Avatar";
-import IMoveToArea from "../../interface/request/IMoveToArea";
+import IMoveToArea from "../../interfaces/game/request/IMoveToArea";
 import MainMulti from "../../MainMulti";
 
 export default class Room {

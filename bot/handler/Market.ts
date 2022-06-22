@@ -1,4 +1,4 @@
-import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
+import ILoadInventoryBig from "../../interfaces/game/request/ILoadInventoryBig";
 import Fill from "./Fill";
 
 export default class Market extends Fill {
