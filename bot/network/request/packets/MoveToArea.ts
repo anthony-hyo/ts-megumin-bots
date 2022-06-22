@@ -1,6 +1,6 @@
 import Bot from "../../../Bot";
-import IRequest from "../../../../interface/IRequest";
-import IMoveToArea, {IUserBranch} from "../../../../interface/request/IMoveToArea";
+import IRequest from "../../../../interfaces/game/IRequest";
+import IMoveToArea, {IUserBranch} from "../../../../interfaces/game/request/IMoveToArea";
 import Room from "../../../data/Room";
 import MainMulti from "../../../../MainMulti";
 import logger from "../../../../utility/Logger";

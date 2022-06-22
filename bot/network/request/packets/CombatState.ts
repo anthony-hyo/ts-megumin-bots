@@ -1,5 +1,5 @@
 import Bot from "../../../Bot";
-import IRequest from "../../../../interface/IRequest";
+import IRequest from "../../../../interfaces/game/IRequest";
 import Avatar from "../../../data/Avatar";
 
 const AvatarType = {

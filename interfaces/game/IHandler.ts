@@ -1,7 +1,7 @@
-import Avatar from "../bot/data/Avatar";
-import ILoadInventoryBig from "./request/ILoadInventoryBig";
-import {IMarket} from "./request/IMarket";
-import {IRemoveItem} from "./request/IRemoveItem";
+import Avatar from "../../bot/data/Avatar";
+import ILoadInventoryBig from "../request/ILoadInventoryBig";
+import {IMarket} from "../request/IMarket";
+import {IRemoveItem} from "../request/IRemoveItem";
 import {IItem} from "./IItem";
 
 export interface IHandler {

@@ -1,4 +1,4 @@
-import {IUser} from "../IUser"
+import {IUser} from "../game/IUser"
 
 export interface IUsers {
 	uid: number

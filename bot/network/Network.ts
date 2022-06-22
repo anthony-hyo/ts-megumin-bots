@@ -1,12 +1,12 @@
 import * as net from "net";
 import Bot from "../Bot";
 import logger from "../../utility/Logger";
-import {INetworkSend} from "../../interface/INetworkSend";
+import {INetworkSend} from "../../interfaces/game/INetworkSend";
 import * as path from "path";
 import MainMulti from "../../MainMulti";
 import Default from "../handler/Default";
 
-const base64: any = require('base-64');
+import {encode} from 'js-base64';
 
 export default class Network {
 
@@ -39,7 +39,7 @@ export default class Network {
 	}
 
 	public send(command: string, args: Array<any> = []): void {
-		logger.debug(`[network] (${this.bot.user.server}) [${this.bot.user.username}] send command: ${command} with args: ${args.toString()}`)
+		logger.debug(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] send command: ${command} with args: ${args.toString()}`)
 
 		this.write({
 			type: 'request',
@@ -51,7 +51,7 @@ export default class Network {
 	}
 
 	public event(command: string, args: Array<any>): void {
-		logger.debug(`[network] (${this.bot.user.server}) [${this.bot.user.username}] event command: ${command} with args: ${args.toString()}`)
+		logger.debug(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] event command: ${command} with args: ${args.toString()}`)
 
 		this.write({
 			type: 'event',
@@ -63,7 +63,7 @@ export default class Network {
 	}
 
 	public write(iNetworkSend: INetworkSend): void {
-		this.socket.write(`${base64.encode(JSON.stringify(iNetworkSend))}\0`)
+		this.socket.write(`${encode(JSON.stringify(iNetworkSend))}\0`)
 	}
 
 	public disconnect():void {
@@ -83,7 +83,7 @@ export default class Network {
 	}
 
 	private onConnect(): void {
-		logger.debug(`[network] [${this.bot.user.username}] connected to server`)
+		logger.debug(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] connected to server`)
 
 		this.event('login', [
 			this.bot.user.username,
@@ -93,7 +93,7 @@ export default class Network {
 		try {
 			this.bot.handler = new (require(path.resolve(__dirname, '..', 'handler', `${this.bot.user.handler}.ts`)).default)(this.bot)
 		} catch (ignored) {
-			logger.error(`[network] [${this.bot.user.username}] could now find or error "${path.resolve(__dirname, '..', 'handler', `${this.bot.user.handler}.ts`)}" handler using "Default"`)
+			logger.error(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] could now find or error "${path.resolve(__dirname, '..', 'handler', `${this.bot.user.handler}.ts`)}" handler using "Default"`)
 			this.bot.handler = new Default(this.bot)
 		}
 
@@ -109,11 +109,11 @@ export default class Network {
 			try {
 				const string = this.chunk.substring(0, d_index);
 
-				logger.debug(`[network] (${this.bot.user.server}) [${this.bot.user.username}] received ${string}`)
+				logger.silly(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] received ${string}`)
 
 				MainMulti.singleton.request.run(string, this.bot)
 			} catch (error) {
-				logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] received error ${error}`)
+				logger.error(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] received error ${error}`)
 			}
 
 			this.chunk = this.chunk.substring(d_index + this.delimiter.length)
@@ -123,19 +123,19 @@ export default class Network {
 	}
 
 	private onError(err: Error): void {
-		logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`);
+		logger.error(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] error "${this.bot.user.username}" "${err.message}"`);
 
 		this.bot.handler.onDisconnect()
 	}
 
 	private onClose(hadError: boolean): void {
-		logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
+		logger.error(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] close ${hadError ? `"with error"` : ``}`)
 
 		this.bot.handler.onDisconnect()
 	}
 
 	private onEnd(): void {
-		logger.error(`[network] (${this.bot.user.server}) [${this.bot.user.username}] end`);
+		logger.error(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] end`);
 
 		this.bot.handler.onDisconnect()
 	}

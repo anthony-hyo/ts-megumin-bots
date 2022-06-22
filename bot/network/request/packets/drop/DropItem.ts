@@ -1,7 +1,7 @@
 import Bot from "../../../../Bot";
-import IRequest from "../../../../../interface/IRequest";
-import {IDropItem} from "../../../../../interface/request/IDrop";
-import {IItem} from "../../../../../interface/IItem";
+import IRequest from "../../../../../interfaces/game/IRequest";
+import {IDropItem} from "../../../../../interfaces/game/request/IDrop";
+import {IItem} from "../../../../../interfaces/game/IItem";
 
 export default class DropItem implements IRequest {
 

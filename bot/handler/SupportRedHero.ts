@@ -1,7 +1,7 @@
 import Fill from "./Fill";
-import {ISupportWord, IWord} from "../../interface/ISupportWord";
-import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
-import {IItem} from "../../interface/IItem";
+import {ISupportWord, IWord} from "../../interfaces/game/ISupportWord";
+import ILoadInventoryBig from "../../interfaces/game/request/ILoadInventoryBig";
+import {IItem} from "../../interfaces/game/IItem";
 import logger from "../../utility/Logger";
 
 export default class SupportRedHero extends Fill {

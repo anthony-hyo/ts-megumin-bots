@@ -1,6 +1,6 @@
 import Bot from "../../../Bot";
-import IRequest from "../../../../interface/IRequest";
-import {IRemoveItem} from "../../../../interface/request/IRemoveItem";
+import IRequest from "../../../../interfaces/game/IRequest";
+import {IRemoveItem} from "../../../../interfaces/game/request/IRemoveItem";
 
 export default class RemoveItem implements IRequest {
 

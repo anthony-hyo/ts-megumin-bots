@@ -1,18 +1,18 @@
 import axios, {AxiosResponse} from "axios";
 import logger from "../utility/Logger";
 import GameUser from "../database/model/GameUser";
-import {ILoginResponseServer} from "../interface/ILoginResponseServer";
-import {ILoginResponse} from "../interface/ILoginResponse";
-import {IHandler} from "../interface/IHandler";
+import {ILoginResponseServer} from "../interfaces/web/ILoginResponseServer";
+import {ILoginResponse} from "../interfaces/web/ILoginResponse";
+import {IHandler} from "../interfaces/game/IHandler";
 import Room from "./data/Room";
 import Properties from "./Properties";
 import Default from "./handler/Default";
 import Helper from "../utility/Helper";
 import Inventory from "./data/Inventory";
-import {IItem} from "../interface/IItem";
-import {IUser} from "../interface/IUser";
-import {IMap} from "../interface/web/IGameWorld";
-import IMoveToArea from "../interface/request/IMoveToArea";
+import {IItem} from "../interfaces/game/IItem";
+import {IUser} from "../interfaces/game/IUser";
+import {IMap} from "../interfaces/web/IGameWorld";
+import IMoveToArea from "../interfaces/game/request/IMoveToArea";
 import MainMulti from "../MainMulti";
 import Network from "./network/Network";
 

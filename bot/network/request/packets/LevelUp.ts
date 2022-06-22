@@ -1,5 +1,5 @@
 import Bot from "../../../Bot";
-import IRequest from "../../../../interface/IRequest";
+import IRequest from "../../../../interfaces/game/IRequest";
 
 export default class DropItem implements IRequest {
 

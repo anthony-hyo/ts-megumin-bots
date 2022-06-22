@@ -1,6 +1,6 @@
 import Bot from "../../../../Bot";
-import IRequest from "../../../../../interface/IRequest";
-import {ISellMarketItem} from "../../../../../interface/request/IMarket";
+import IRequest from "../../../../../interfaces/game/IRequest";
+import {ISellMarketItem} from "../../../../../interfaces/game/request/IMarket";
 import logger from "../../../../../utility/Logger";
 
 export default class SellAuctionItem implements IRequest {

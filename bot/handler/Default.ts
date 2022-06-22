@@ -1,12 +1,12 @@
-import {IHandler} from "../../interface/IHandler";
+import {IHandler} from "../../interfaces/game/IHandler";
 import Bot from "../Bot";
 import logger from "../../utility/Logger";
 import Avatar from "../data/Avatar";
-import ILoadInventoryBig from "../../interface/request/ILoadInventoryBig";
-import {IMarket} from "../../interface/request/IMarket";
-import {IRemoveItem} from "../../interface/request/IRemoveItem";
+import ILoadInventoryBig from "../../interfaces/game/request/ILoadInventoryBig";
+import {IMarket} from "../../interfaces/game/request/IMarket";
+import {IRemoveItem} from "../../interfaces/game/request/IRemoveItem";
 import Helper from "../../utility/Helper";
-import {IItem} from "../../interface/IItem";
+import {IItem} from "../../interfaces/game/IItem";
 import MainMulti from "../../MainMulti";
 
 export default class Default implements IHandler {

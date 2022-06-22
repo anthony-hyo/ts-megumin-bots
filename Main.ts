@@ -3,7 +3,7 @@ import Bot from "./bot/Bot";
 import {Op, QueryTypes, Sequelize} from "sequelize";
 import axios, {AxiosResponse} from "axios";
 import logger from "./utility/Logger";
-import {IGameWorld, IMap} from "./interface/web/IGameWorld";
+import {IGameWorld, IMap} from "./interfaces/web/IGameWorld";
 import MainMulti from "./MainMulti";
 
 export default class Main {

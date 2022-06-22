@@ -1,9 +1,11 @@
 import Main from "./Main";
 import Config from "./utility/Config";
-import Seeborg from "./seeborg/Seeborg";
+import SeeborgGame from "./seeborg/SeeborgGame";
 import Request from "./bot/network/request/Request";
 import Database from "./database/Database";
 import {exec} from "child_process";
+import Megumin from "./megumin/Megumin";
+import SeeborgDiscord from "./seeborg/SeeborgDiscord";
 
 const yaml = require('yaml-js')
 const fs = require('fs')
@@ -14,7 +16,9 @@ export default class MainMulti {
 
 	private readonly _request: Request = new Request();
 	private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
-	private readonly _seeborg: Seeborg = new Seeborg(this.config)
+	private readonly _megumin: Megumin = new Megumin(this.config);
+	private readonly _seeborgGame: SeeborgGame = new SeeborgGame(this.config, this.config.seeborg.game, 'dictionary_game.json')
+	private readonly _seeborgDiscord: SeeborgDiscord = new SeeborgDiscord(this.config, this.config.seeborg.discord, 'dictionary_discord.json')
 	private readonly _database: Database = new Database(this)
 
 	constructor() {
@@ -38,8 +42,16 @@ export default class MainMulti {
 		return this._config
 	}
 
-	public get seeborg(): Seeborg {
-		return this._seeborg
+	public get megumin(): Megumin {
+		return this._megumin;
+	}
+
+	public get seeborgGame(): SeeborgGame {
+		return this._seeborgGame
+	}
+
+	public get seeborgDiscord(): SeeborgDiscord {
+		return this._seeborgDiscord
 	}
 
 	public get database(): Database {

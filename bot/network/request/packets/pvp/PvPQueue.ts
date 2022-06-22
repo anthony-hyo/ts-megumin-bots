@@ -1,6 +1,6 @@
 import Bot from "../../../../Bot";
-import IRequest from "../../../../../interface/IRequest";
-import {IPvPQueue} from "../../../../../interface/request/IPvPQueue";
+import IRequest from "../../../../../interfaces/game/IRequest";
+import {IPvPQueue} from "../../../../../interfaces/game/request/IPvPQueue";
 import logger from "../../../../../utility/Logger";
 
 export default class PvPInvite implements IRequest {
