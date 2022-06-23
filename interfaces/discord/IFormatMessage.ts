@@ -1,12 +1,13 @@
 import {Guild, User} from "discord.js";
-import Invite from "../../../bot/src/database/model/discord/Invite";
+import DiscordUser from "../../database/model/DiscordUser";
+import DiscordInvite from "../../database/model/DiscordInvite";
 
 export interface IFormatMessage {
     guild?: Guild
     user?: User
 
-    inviter?: User
-    invite?: Invite
+    inviter?: DiscordUser | undefined
+    invite?: DiscordInvite | undefined
 
     channelId?: string
 }
