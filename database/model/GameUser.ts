@@ -10,15 +10,7 @@ import {Column, DataType, Model, Table} from 'sequelize-typescript'
 			fields: [
 				{name: "id"},
 			]
-		},
-		{
-			name: "id",
-			unique: true,
-			using: "BTREE",
-			fields: [
-				{name: "id"},
-			]
-		},
+		}
 	]
 })
 export default class GameUser extends Model {
@@ -47,9 +39,9 @@ export default class GameUser extends Model {
 	password!: string
 
 	@Column({
-	    type: DataType.STRING(64),
-	    allowNull: false,
-	    defaultValue: `WorldBoss`
+		type: DataType.STRING(64),
+		allowNull: false,
+		defaultValue: `WorldBoss`
 	})
 	handler!: string
 

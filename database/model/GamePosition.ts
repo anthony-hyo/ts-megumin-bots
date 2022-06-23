@@ -12,14 +12,6 @@ import {Column, DataType, Model, Table} from 'sequelize-typescript'
 			]
 		},
 		{
-			name: "id",
-			unique: true,
-			using: "BTREE",
-			fields: [
-				{name: "id"},
-			]
-		},
-		{
 			name: "frame_pad_x_y_server",
 			unique: true,
 			using: "BTREE",

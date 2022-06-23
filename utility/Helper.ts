@@ -1,9 +1,4 @@
 import * as fs from "fs"
-import {Collection, Guild as GuildDiscord, Invite as InviteDiscord, User as UserDiscord} from "discord.js"
-import DiscordInvite from "../database/model/DiscordInvite";
-import DiscordGuild from "../database/model/DiscordGuild";
-import DiscordUser from "../database/model/DiscordUser";
-import logger from "./Logger";
 import {IFormatMessage} from "../interfaces/discord/IFormatMessage";
 
 const Request = require('Request')
@@ -23,7 +18,7 @@ export default class Helper {
 
 			w.on('finish', () => {
 				if (Animated(fs.readFileSync(path))) {
-					GifFrames({ url: gif, frames: 0 }).then((gifFinal: any) => {
+					GifFrames({url: gif, frames: 0}).then((gifFinal: any) => {
 						let x = fs.createWriteStream(path)
 						gifFinal[0].getImage().pipe(x)
 						return x.on('finish', res)
@@ -67,7 +62,7 @@ export default class Helper {
 		return true
 	}
 
-	public static async formatMessage(message: string, formatMessage: IFormatMessage): Promise<string> {
+	public static formatMessage(message: string, formatMessage: IFormatMessage): string {
 		moment.locale('en')
 
 		if (formatMessage.user !== undefined) {
@@ -90,7 +85,7 @@ export default class Helper {
 
 		if (formatMessage.inviter !== undefined) {
 			message = message.replace(/{inviter}/g, formatMessage.inviter.toString())
-			message = message.replace(/{inviter.tag}/g, formatMessage.inviter.tag)
+			message = message.replace(/{inviter.tag}/g, `${formatMessage.inviter.username}#${formatMessage.inviter.discriminator}`)
 			message = message.replace(/{inviter.name}/g, formatMessage.inviter.username)
 			message = message.replace(/{inviter.id}/g, formatMessage.inviter.id)
 			//message = message.replace(/{inviter.invites}/g, String(inviterData.regular + inviterData.bonus - inviterData.fake - inviterData.leaves))
@@ -147,106 +142,6 @@ export default class Helper {
 		return 'less than a second' //'just now' //or other string you like
 	}
 
-	public static async fetchUser(userObj: { userId: string; user: UserDiscord | undefined }): Promise<DiscordUser> {
-		logger.debug(`[fetchUser] fetch user ${userObj.user?.username}(${userObj.userId})`)
-
-		let [user]: [DiscordUser, boolean] = await DiscordUser.findCreateFind({
-			where: {
-				userId: userObj.userId,
-			}
-		}).catch(logger.error)
-
-		if (userObj.user !== undefined) {
-			user.username = userObj.user.username
-			user.discriminator = userObj.user.discriminator
-			user.isBot = userObj.user.bot
-			user.avatar = userObj.user.avatar
-			user.createdAt = userObj.user.createdAt
-
-			user.save()
-				.catch(error => logger.error(`User ${userObj.user?.username} findCreateFind Save error ${error}`))
-		}
-
-		return user
-	}
-
-	public static async fetchGuild(guildDiscord: GuildDiscord): Promise<DiscordGuild> {
-		logger.debug(`[fetchGuild] fetch guild ${guildDiscord.name}(${guildDiscord.id})`)
-
-		let [guild]: [DiscordGuild, boolean] = await DiscordGuild.findCreateFind({
-			where: {
-				guildId: guildDiscord.id,
-			}
-		}).catch(logger.error)
-
-		await Helper.fetchUser({
-			userId: guildDiscord.ownerId,
-			user: (await guildDiscord.fetchOwner()).user
-		})
-			.catch(error => logger.error(`fetchGuild ${error}`))
-
-		guild.shardId = guildDiscord.shardId
-		guild.ownerId = guildDiscord.ownerId
-		guild.name = guildDiscord.name
-		guild.description = guildDiscord.description ? guildDiscord.description : ``
-
-		guild.save()
-			.catch(error => logger.error(`Guild ${guildDiscord.name} findCreateFind Save error ${error}`))
-
-		return guild
-	}
-
-	public static async fetchInviteAll(guildDiscord: GuildDiscord): Promise<Array<DiscordInvite>> {
-		logger.debug(`[fetchInvite] fetch guild ${guildDiscord.name}(${guildDiscord.id}) invites`)
-
-		let invites: Array<DiscordInvite> = new Array<DiscordInvite>()
-
-		if (guildDiscord.me !== null && guildDiscord.me.permissions.has("MANAGE_GUILD")) {
-			guildDiscord.invites.fetch()
-				.then((guildInvites: Collection<string, InviteDiscord>) => {
-					guildInvites.forEach(async guildInvite => {
-						invites.push(await Helper.fetchInvite(guildInvite))
-					})
-				}).catch(error => logger.error(`Guild invites ${error}`));
-		}
-
-		return invites
-	}
-
-	public static async fetchInvite(inviteDiscord: InviteDiscord): Promise<DiscordInvite> {
-		let inviterId: string | null = inviteDiscord.inviter ? inviteDiscord.inviter.id : null
-
-		if (inviterId !== null && inviteDiscord.inviter !== null) {
-			await Helper.fetchUser({
-				userId: inviterId,
-				user: inviteDiscord.inviter
-			})
-		}
-
-		let [invite]: [DiscordInvite, boolean] = await DiscordInvite.findCreateFind({
-			where: {
-				code: inviteDiscord.code,
-				inviterId: inviteDiscord.inviter ? inviteDiscord.inviter.id : null,
-				guildId: inviteDiscord.guild ? inviteDiscord.guild.id : null
-			}
-		}).catch(error => logger.error(`findCreateFind ${inviteDiscord.code} ${inviteDiscord.inviter?.username} (${inviteDiscord.inviter?.id}) error ${error}`))
-
-		invite.channelId = inviteDiscord.channel.id ? inviteDiscord.channel.id : null
-		invite.isDeletable = inviteDiscord.deletable
-		invite.createdAt = inviteDiscord.createdAt
-		invite.expiresAt = inviteDiscord.expiresAt
-		invite.inviterId = inviterId
-		invite.maxAge = inviteDiscord.maxAge
-		invite.maxUses = inviteDiscord.maxUses
-		invite.isTemporary = inviteDiscord.temporary ? inviteDiscord.temporary : false
-		invite.uses = inviteDiscord.uses
-
-		invite.save()
-			.catch(error => logger.error(`Invite ${inviteDiscord.code} findCreateFind Save error ${error}`))
-
-		return invite
-	}
-
 	public static getAllFilesFromFolder(dir: string): string[] {
 		let results: string[] = []
 
@@ -294,7 +189,7 @@ export default class Helper {
 
 	public static replaceLastDigit(value: number): number {
 		const l: number = value.toString().length - 1
-		return Math.floor(value  / l) * l
+		return Math.floor(value / l) * l
 	}
 
 	public static increaseByPercentage(percent: number, value: number): number {
@@ -305,12 +200,8 @@ export default class Helper {
 		return value - this.calculatePercent(percent, value)
 	}
 
-	private static calculatePercent(percent: number, value: number){
-		return (percent / 100) * value
-	}
-
 	public static shuffle(array: Array<any>): Array<any> {
-		let currentIndex: number = array.length,  randomIndex;
+		let currentIndex: number = array.length, randomIndex;
 
 		// While there remain elements to shuffle.
 		while (currentIndex != 0) {
@@ -319,10 +210,14 @@ export default class Helper {
 			currentIndex--;
 
 			// And swap it with the current element.
-			[array[currentIndex], array[randomIndex]] = [ array[randomIndex], array[currentIndex] ];
+			[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
 		}
 
 		return array;
+	}
+
+	private static calculatePercent(percent: number, value: number) {
+		return (percent / 100) * value
 	}
 
 }

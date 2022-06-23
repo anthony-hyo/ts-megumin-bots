@@ -5,41 +5,73 @@ import DiscordUser from "../../database/model/DiscordUser";
 import Helper from "../../utility/Helper";
 import DiscordLogInvite from "../../database/model/DiscordLogInvite";
 import logger from "../../utility/Logger";
+import {Sequelize} from "sequelize";
 
 module.exports = {
-    name: `guildMemberRemove`,
-    execute: async function (rem: Megumin, member: GuildMember) {
-        let guild = member.guild
+	name: `guildMemberRemove`,
+	execute: async function (rem: Megumin, member: GuildMember) {
+		DiscordGuild
+			.upsert({
+				guildId: member.guild.id,
+				shardId: member.guild.shardId,
+				ownerId: member.guild.ownerId,
+				name: member.guild.name,
+				description: member.guild.description ? member.guild.description : ``
+			})
+			.then(([discordGuild]: [DiscordGuild, (boolean | null)]) => {
+				const channel: TextChannel = member.guild.channels.cache.get(discordGuild.leaveChannelId) as TextChannel
 
-        const guildData: DiscordGuild = await Helper.fetchGuild(guild)
+				if (channel) {
+					DiscordUser
+						.upsert({
+							userId: member.user.id,
+							username: member.user.username,
+							discriminator: member.user.discriminator,
+							isBot: member.user.bot,
+							avatar: member.user.avatar,
+							createdAt: member.user.createdAt
+						})
+						.then(([invitedData]: [DiscordUser, (boolean | null)]) => {
+							DiscordLogInvite
+								.findOne({
+									include: {
+										model: DiscordUser,
+									},
+									where: {
+										guildId: member.guild.id,
+										userId: member.user.id,
+									},
+									order: Sequelize.literal(`DESC`)
+								})
+								.then((discordLogInvite: DiscordLogInvite | null) => {
+									DiscordLogInvite
+										.create({
+											guildId: member.guild.id,
+											userId: invitedData.userId,
+											inviteCode: discordLogInvite ? discordLogInvite.inviteCode : null,
+											type: `leave`,
+										})
+										.then(() => {
+											channel.send(
+												Helper.formatMessage(discordGuild.leaveMessage, {
+													guild: member.guild,
+													user: member.user,
 
-        let channel: TextChannel = guild.channels.cache.get(guildData.leaveChannelId) as TextChannel
+													inviter: discordLogInvite ? discordLogInvite.invite.inviter : undefined,
+													invite: discordLogInvite ? discordLogInvite.invite : undefined,
 
-        if (channel) {
-            const invitedData: DiscordUser = await Helper.fetchUser({
-                userId: member.user.id,
-                user: member.user
-            })
+													channelId: discordGuild.leaveChannelId
+												})
+											).catch(error => logger.error(`Message send error ${error}`))
+										})
+										.catch(error => logger.error(`[guildMemberAdd] ${error}`))
+								})
+								.catch(error => logger.error(`[guildMemberAdd] ${error}`))
 
-            await DiscordLogInvite.create({
-                guildId: guild.id,
-                userId: invitedData.userId,
-                inviteCode: null,
-                type: "leave",
-            })
-
-            channel.send(
-                await Helper.formatMessage(guildData.leaveMessage, {
-                    guild: member.guild,
-                    user: member.user,
-
-                    //TODO: Find invite used and inviter
-                    //inviter: inviter === null ? undefined : inviter,
-                    //invite: inviteUsed,
-
-                    channelId: guildData.leaveChannelId
-                })
-            ).catch(error => logger.error(`Message send error ${error}`))
-        }
-    },
+						})
+						.catch(error => logger.error(`[guildMemberAdd] ${error}`))
+				}
+			})
+			.catch(error => logger.error(`[guildMemberRemove] ${error}`))
+	},
 }
