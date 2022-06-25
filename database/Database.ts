@@ -12,7 +12,7 @@ export default class Database {
 			host: main.config.database.host,
 			port: main.config.database.port,
 			pool: {
-				max: 100
+				max: 25
 			},
 			logging: false,
 			modelPaths: [
