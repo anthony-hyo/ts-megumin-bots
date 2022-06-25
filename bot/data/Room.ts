@@ -4,6 +4,7 @@ import Bot from "../Bot";
 import Avatar from "./Avatar";
 import IMoveToArea from "../../interfaces/game/request/IMoveToArea";
 import MainMulti from "../../MainMulti";
+import logger from "../../utility/Logger";
 
 export default class Room {
 
@@ -52,33 +53,18 @@ export default class Room {
 		return this._npcs;
 	}
 
-	public static addPosition(name: string, frame: string, pad: string, x: number, y: number, speed: number, server: string) {
-		// noinspection JSIgnoredPromiseFromCall
-		/**
-		 * Save players positions to be used by the bots
-		 */
-		GamePosition
-			.findOrCreate({
-				where: {
-					name: name,
-					frame: frame,
-					pad: pad,
-					x: x,
-					y: y,
-					speed: speed,
-					server: server
-				},
-				defaults: {
-					name: name,
-					frame: frame,
-					pad: pad,
-					x: x,
-					y: y,
-					speed: speed,
-					server: server
-				}
+	public static addPosition(name: string, frame: string, pad: string, x: number, y: number, speed: number, server: string): void {
+		if (x >= 0 && y >= 0 && y <= 550 && x <= 960) {
+			MainMulti.queue_positions.push({
+				name: name,
+				frame: frame,
+				pad: pad,
+				x: x,
+				y: y,
+				speed: speed,
+				server: server
 			})
-			.catch((error: any) => setTimeout(() => Room.addPosition(name, frame, pad, x, y, speed, server), 3000))
+		}
 	}
 
 	public addPlayer(networkId: number, username: string): void {
@@ -151,9 +137,7 @@ export default class Room {
 					this.bot.network.send("mv", [position.x, position.y, position.speed])
 				}
 			})
-			.catch(e => {
-				/*console.error('error 3', e)*/
-			})
+			.catch(error => logger.error(`[Room] ${error}`))
 	}
 
 }

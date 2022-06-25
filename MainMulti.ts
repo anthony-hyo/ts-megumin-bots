@@ -6,6 +6,8 @@ import Database from "./database/Database";
 import {exec} from "child_process";
 import Megumin from "./megumin/Megumin";
 import SeeborgDiscord from "./seeborg/SeeborgDiscord";
+import GamePosition from "./database/model/GamePosition";
+import logger from "./utility/Logger";
 
 const yaml = require('yaml-js')
 const fs = require('fs')
@@ -14,9 +16,11 @@ export default class MainMulti {
 
 	private static _singletons: Map<string, Main> = new Map<string, Main>()
 
+	public static readonly queue_positions: Array<any> = new Array<any>()
+
 	private readonly _request: Request = new Request();
 	private readonly _config: Config = new Config(yaml.load(fs.readFileSync('./config.yml')))
-	private readonly _megumin: Megumin = new Megumin(this.config);
+	private readonly _megumin: Megumin = new Megumin();
 	private readonly _seeborgGame: SeeborgGame = new SeeborgGame(this.config, this.config.seeborg.game, 'dictionary_game.json')
 	private readonly _seeborgDiscord: SeeborgDiscord = new SeeborgDiscord(this.config, this.config.seeborg.discord, 'dictionary_discord.json')
 	private readonly _database: Database = new Database(this)
@@ -60,7 +64,23 @@ export default class MainMulti {
 
 	public static singletons: (server: string) => Main = (server: string) => this._singletons.get(server)!;
 
-	public init = (): void => MainMulti._singletons.forEach((main: Main) => main.init());
+	public async init(): Promise<void> {
+		MainMulti._singletons.forEach( (main: Main) => main.init())
+
+		this.megumin.init(this.config.token)
+
+		setInterval(() => {
+			if (MainMulti.queue_positions.length > 0) {
+				const gamePositionData: IteratorYieldResult<any> | IteratorReturnResult<any> = MainMulti.queue_positions.values().next()
+
+				GamePosition
+					.upsert(gamePositionData.value)
+					.catch(error => logger.error(`[Room] ${error}`))
+
+				MainMulti.queue_positions.splice(MainMulti.queue_positions.indexOf(gamePositionData), 1)
+			}
+		}, 3000)
+	};
 
 }
 
