@@ -22,7 +22,7 @@ export default class SeeborgDiscord extends Seeborg {
                             }
 
                             message.channel
-                                .send(reply)
+                                .send(reply.replace(/<@.?\d*?>/, ''))
                                 .catch(error => logger.error(`[Seeborg] replyWithAnswer ${error}`))
                         }, Math.floor((Math.floor(Math.random() * 3) + 1) * 1000)))
                         .catch(error => logger.error(`[Seeborg] sendTyping error ${error}`))
