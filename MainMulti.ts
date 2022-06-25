@@ -3,7 +3,6 @@ import Config from "./utility/Config";
 import SeeborgGame from "./seeborg/SeeborgGame";
 import Request from "./bot/network/request/Request";
 import Database from "./database/Database";
-import {exec} from "child_process";
 import Megumin from "./megumin/Megumin";
 import SeeborgDiscord from "./seeborg/SeeborgDiscord";
 import GamePosition from "./database/model/GamePosition";
@@ -83,10 +82,5 @@ export default class MainMulti {
 	};
 
 }
-
-setTimeout(() => {
-	exec('START start.bat')
-	process.exit(1);
-}, 3600000 * 2)
 
 new MainMulti()

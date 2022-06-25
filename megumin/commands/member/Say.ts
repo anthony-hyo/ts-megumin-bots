@@ -12,7 +12,7 @@ export default class Ready extends DefaultCommand {
     public readonly helper: string = `(message)`
 
     public handler(megumin: Megumin, message: Message, member: GuildMember, guild: DiscordGuild, args: CommandArg): void {
-        message.delete().then(r => {
+        message.delete().then(() => {
             const msg: string | undefined = args.list().join(" ")
 
             if (msg == "" || msg === undefined) {
