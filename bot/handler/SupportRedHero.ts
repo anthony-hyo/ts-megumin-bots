@@ -8,7 +8,7 @@ export default class SupportRedHero extends Fill {
 
     protected readonly map: string = 'town-1'
 
-    protected static question1: RegExp = /\?|wher|wehre|onde|any|get|how/
+    protected static question1: RegExp = /\?|wher|wehre|\bonde\b|\bany\b|\bget\b|\bhow\b/
 
     protected readonly key: ISupportWord = {
         words: [
@@ -23,7 +23,7 @@ export default class SupportRedHero extends Fill {
             },
             {
                 key: [
-                    /coin|cion|coisn|hc|ac|moeda/,
+                    /coin|cion|coisn|\bhc\b|\bac\b|\brc\b|\bhcs\b|\bacs\b|\brcs\b|moeda/,
                     SupportRedHero.question1
                 ],
                 message: [
@@ -32,7 +32,7 @@ export default class SupportRedHero extends Fill {
             },
             {
                 key: [
-                    /level|lvl|levl|lvel|upa/,
+                    /\blevel\b|\blvl\b|levl|lvel|\bupa\b/,
                     SupportRedHero.question1
                 ],
                 message: [
@@ -41,7 +41,7 @@ export default class SupportRedHero extends Fill {
             },
             {
                 key: [
-                    /redeem|code|codig/,
+                    /redeem|\bcode\b|codig/,
                     SupportRedHero.question1
                 ],
                 message: [
@@ -51,7 +51,7 @@ export default class SupportRedHero extends Fill {
             },
             {
                 key: [
-                    /staff|mod|adm|artist|add/,
+                    /staff|\bmod\b|\bmoderator\b|\badm\b|\badmin\b|\badministrator\b|artist|add/,
                     /\?|wher|wehre|onde|any|apply|ser|viro|how/
                 ],
                 message: [
