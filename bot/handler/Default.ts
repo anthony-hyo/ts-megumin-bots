@@ -90,7 +90,7 @@ export default class Default implements IHandler {
 			MainMulti.singletons(this.bot.user.server).bots.delete(this.bot.network.id)
 		}
 
-		MainMulti.singletons(this.bot.user.server).queue.set(this.bot.user.id, this.bot.user)
+		MainMulti.singletons(this.bot.user.server).queue_users.set(this.bot.user.id, this.bot.user)
 	}
 
 	/*
