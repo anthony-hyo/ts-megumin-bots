@@ -8,6 +8,8 @@ export default class Request {
 
 	private static readonly packets: Map<String, String> = new Map<String, String>()
 
+	private static readonly location: string = path.resolve(__dirname, 'packets')
+
 	/*private static readonly ignored: Array<string> = [
 		'equipItem', 'uotls', 'updateClass', 'stu', 'cvu','joinRoom', 'enterRoom', 'userGone','enhp',
 		'aura+', 'aura-', 'clearAuras', 'updateGuild', 'sendLinkedItems', 'umsg', 'queueUpdate', 'addGoldExp',
@@ -15,14 +17,10 @@ export default class Request {
 	]*/
 
 	constructor() {
-		const location: string = path.resolve(__dirname, 'packets')
-
-		const files: string[] = Helper.getAllFilesFromFolder(location)
-
-		files.forEach(file => {
+		Helper.getAllFilesFromFolder(Request.location).forEach(file => {
 			const request: IRequest = new (require(file).default)()
 
-			logger.debug(`[Request] ${request.command}`)
+			logger.warn(`[Request] ${request.command}`)
 
 			Request.packets.set(request.command, file)
 		});

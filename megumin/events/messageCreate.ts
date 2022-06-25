@@ -55,7 +55,7 @@ module.exports = {
 						if (!authorPerms || !authorPerms.has(<PermissionResolvable>command.permission)) {
 							message
 								.reply('You can not do this!')
-								.catch(error => logger.error(`Message send error ${error}`))
+								.catch(error => logger.error(`Message send error 1 ${error}`))
 							return
 						}
 					}
@@ -63,18 +63,19 @@ module.exports = {
 					if (command.isAdminOnly && !MainMulti.singleton.config.administrator.includes(message.member.user.id)) {
 						message
 							.reply('You can not do this!')
-							.catch(error => logger.error(`Message send error ${error}`))
+							.catch(error => logger.error(`Message send error 2 ${error}`))
 						return
 					}
 
 					const cooldown: ICooldown | undefined = megumin.cooldown(message.member.id, commandName)
 
-					const now: number = new Date().getMilliseconds()
+					const now: number = new Date().getTime()
 
-					if (cooldown != undefined && cooldown.timeout >= now) {
-						let timeLeft: string = Helper.millisecondsToStr(cooldown.timeout - now)
-						message.reply(`please wait \`${timeLeft}\` before reusing the \`${command.name}\` command.`)
-							.catch(error => logger.error(`Message send error ${error}`))
+					if (cooldown && cooldown.timeout >= now) {
+						const timeLeft: string = Helper.millisecondsToStr(cooldown.timeout - now)
+						message
+							.reply(`please wait \`${timeLeft}\` before reusing the \`${command.name}\` command.`)
+							.catch(error => logger.error(`Message send error 3 ${error}`))
 						return
 					}
 
@@ -101,7 +102,7 @@ module.exports = {
 					logger.warn(`[messageCreate] command not found ${commandName}`)
 				}
 			})
-			.catch(error => logger.error(`[messageCreate] ${error}`))
+			.catch(error => logger.error(`[messageCreate] 4 ${error}`))
 
 		MainMulti.singleton.seeborgDiscord.onMessage(message)
 	},

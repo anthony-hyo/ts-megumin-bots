@@ -48,8 +48,7 @@ export default class Bot {
 				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == MainMulti.singletons(this.user.server).server);
 
 				if (loginResponseServer) {
-					//this.bot.network = new Network(this, loginResponseServer.Port, '192.168.10.160')
-					this.network = new Network(this, loginResponseServer.Port, loginResponseServer.IP)
+					this.network = new Network(this, loginResponseServer.Port, MainMulti.singleton.config.database.password === '123' ? loginResponseServer.IP : '192.168.10.160')
 				} else {
 					logger.error(`[Bot] [login] (${this.user.server}) ${user.username} server undefined "${user.username}"`)
 					this.handler.onDisconnect()
