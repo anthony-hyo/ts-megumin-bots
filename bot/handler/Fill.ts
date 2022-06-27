@@ -11,7 +11,7 @@ export default class Fill extends Default {
 		this.walk()
 	}
 
-	onUserMessage(channel:string, username: string, message: string) {
+	onUserMessage(channel:string, username: string, message: string): void {
 		switch (channel) {
 			case 'world':
 				MainMulti.singleton.seeborgGame.onMessage(this.bot, 'world', username, message)
