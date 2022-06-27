@@ -142,6 +142,7 @@ export default class Bot {
 			case 13397: //Boss Blood
 			case 16222: //Limit Break +5
 			case 14936: //Limit Break +1
+			case 19031: //Daemon's dimension fragment
 				axios
 					.get(`https://${MainMulti.singletons(this.user.server).url}/api/wiki/item/${item.ItemID}`)
 					.then((response: AxiosResponse) => {
@@ -161,7 +162,7 @@ export default class Bot {
 							const cost: number = Helper.replaceLastDigit(json.MarketAverage * quantity)
 
 							setTimeout(() => {
-								logger.debug(`[market] [${this.user.username}] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
+								logger.info(`[market] [${this.user.username}] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
 
 								this.network.send("sellAuctionItem", [
 									item.ItemID,

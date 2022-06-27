@@ -39,7 +39,7 @@ export default class Main {
 
 		const seqOption = {
 			replacements: {
-				ignore: [ 'monster/Monster', 'monster/WorldBoss', 'PvP', 'Fill', 'SupportRedHero', 'SupportRedAQ' ],
+				ignore: [ 'monster/Monster', 'monster/WorldBoss', 'MarketWorldBoss', 'PvP', 'Fill', 'SupportRedHero', 'SupportRedAQ' ],
 				server: this.name
 			},
 			type: QueryTypes.UPDATE
@@ -49,7 +49,10 @@ export default class Main {
 			.query("UPDATE game_users SET handler = 'Default' WHERE username != 'Support Gwapo' AND server = :server", seqOption)
 
 		await MainMulti.singleton.database.sequelize
-			.query(`UPDATE game_users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 25`, seqOption)
+			.query(`UPDATE game_users SET handler = 'monster/WorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 10`, seqOption)
+
+		await MainMulti.singleton.database.sequelize
+			.query(`UPDATE game_users SET handler = 'MarketWorldBoss' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 5`, seqOption)
 
 		await MainMulti.singleton.database.sequelize
 			.query(`UPDATE game_users SET handler = 'PvP' WHERE handler NOT IN (:ignore) AND server = :server ORDER BY RAND() LIMIT 15`, seqOption)
