@@ -12,7 +12,7 @@ export default class SeeborgGame extends Seeborg {
 
 		try {
 			if (this.shouldProcessMessage(channel, username)) {
-				if (this.shouldComputeAnswer(channel, message.includes(username), message)) {
+				if (this.shouldComputeAnswer(channel, message.includes(bot.user.username), message)) {
 					setTimeout(() => {
 						const reply: string | undefined = this.computeAnswer(message);
 
