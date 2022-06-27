@@ -34,7 +34,10 @@ export default class Help extends DefaultCommand {
             //.addField('Inline field title', 'Some value here', true)
             //.setImage('https://i.imgur.com/wSTFkRM.png')
             .setTimestamp()
-            .setFooter('Rem', 'https://i.imgur.com/lsYvXMT.png')
+            .setFooter({
+                iconURL: 'https://i.imgur.com/lsYvXMT.png',
+                text: 'Rem'
+            })
 
         message.channel
             .send({
