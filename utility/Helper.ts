@@ -1,32 +1,24 @@
 import * as fs from "fs"
 import {IFormatMessage} from "../interfaces/discord/IFormatMessage";
-
-const Request = require('Request')
+import axios, {AxiosResponse} from "axios";
 
 const moment = require('moment')
 
-const GifFrames = require('gif-frames')
-const Animated = require('animated-gif-detector')
-
 export default class Helper {
 
-	public static async gifToPNG(gif: string, path: string) {
-		return new Promise((res, rej) => {
-			let w = fs.createWriteStream(path)
+	public static async axiosSaveImage(image: string, location: string): Promise<unknown> {
+		const writer: any = fs.createWriteStream(location)
 
-			Request(gif).pipe(w)
+		const response: AxiosResponse = await axios.get(image, {
+			method: 'GET',
+			responseType: 'stream'
+		})
 
-			w.on('finish', () => {
-				if (Animated(fs.readFileSync(path))) {
-					GifFrames({url: gif, frames: 0}).then((gifFinal: any) => {
-						let x = fs.createWriteStream(path)
-						gifFinal[0].getImage().pipe(x)
-						return x.on('finish', res)
-					})
-				} else {
-					res(true)
-				}
-			})
+		response.data.pipe(writer)
+
+		return new Promise((resolve, reject) => {
+			writer.on('finish', resolve)
+			writer.on('error', reject)
 		})
 	}
 
