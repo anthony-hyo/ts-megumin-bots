@@ -9,7 +9,7 @@ export default class SupportRedAQ extends SupportRedHero {
         words: [
             {
                 key: [
-                    /enh|enhan|enahn|anhan|encanta/,
+                    /enh|enhan|enahn|anhan|encanta|ench/,
                     SupportRedHero.question1
                 ],
                 message: [
