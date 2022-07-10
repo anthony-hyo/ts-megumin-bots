@@ -19,7 +19,7 @@ export default class Profile extends DefaultCommand {
 	public handler(megumin: Megumin, message: Message, member: GuildMember, guild: DiscordGuild, args: CommandArg): void {
 		const name: string = args.list().join(" ")
 
-		if (!/^[A-Za-z][A-Za-z0-9\s]*(?:_[A-Za-z0-9]+)*$/.exec(name)) {
+		if (!/^[A-Za-z][A-Za-z\d\s]*(?:_[A-Za-z\d]+)*$/.exec(name)) {
 			message
 				.reply("Wrong username format.")
 				.catch(error => logger.error(`Message send error ${error}`))
@@ -44,7 +44,7 @@ export default class Profile extends DefaultCommand {
 
 		axios
 			.get(`https://${url}/api/user/data/${name}/F53831D23FC8D97E1CE1283234D2B`)
-			.then((response: AxiosResponse) => {
+			.then(async (response: AxiosResponse) => {
 				const user: any = response.data;
 
 				if (user.unique === undefined) {
@@ -69,62 +69,41 @@ export default class Profile extends DefaultCommand {
 					Fs.mkdirSync(path)
 				}
 
-				Helper.gifToPNG(`https://${url}/api/image/user/cover/${user.data.id}`, `${path}cover.png`)
-					.then(() =>
-						Helper.gifToPNG(`https://${url}/api/image/user/avatar/${user.data.id}/${user.data.ProviderID}`, `${path}avatar.png`)
-							.then(() =>
-								Helper.gifToPNG(`https://${url}/api/image/render/character/${user.data.id}?${user.unique}`, `${path}character.png`)
-									.then(() => {
-											const cover: any = Jimp.read(path + 'cover.png')
-											const avatar: any = Jimp.read(path + 'avatar.png')
-											const character: any = Jimp.read(path + 'character.png')
+				await Helper.axiosSaveImage(`https://${url}/api/image/user/cover/${user.data.id}?${user.data.ProfileVersion}`, `${path}cover.png`)
 
-											const text: any = Jimp.loadFont('assets/fonts/candara.fnt')
+				await Helper.axiosSaveImage(`https://${url}/api/image/user/avatar/${user.data.id}/${user.data.ProviderID}?${user.data.ProfileVersion}`, `${path}avatar.png`)
 
-											const model: any = Jimp.read('assets/images/model.png')
-											const background: any = Jimp.read('assets/images/background.png')
+				await Helper.axiosSaveImage(`https://${url}/api/image/render/character/${user.data.id}?${user.unique}`, `${path}character.png`)
 
-											Promise.all([background, cover, model, text, avatar, character])
-												.then(data => {
-													const cover = data[1]
-													const avatar = data[4]
-													const character = data[5]
+				const cover: any = await Jimp.read(path + 'cover.png')
+				const avatar: any = await Jimp.read(path + 'avatar.png')
+				const character: any = await Jimp.read(path + 'character.png')
 
-													const text = data[3]
+				const text: any = await Jimp.loadFont('assets/fonts/candara.fnt')
 
-													const model = data[2]
-													const background = data[0]
+				const model: any = await Jimp.read('assets/images/model.png')
+				const background: any = await Jimp.read('assets/images/background.png')
 
-													cover.resize(786, Jimp.AUTO)
-													cover.crop(0, 0, 786, 290)
+				cover.resize(786, Jimp.AUTO)
+				cover.crop(0, 0, 786, 290)
 
-													character.flip(true, false)
+				character.flip(true, false)
 
-													avatar.resize(Jimp.AUTO, 151)
+				avatar.resize(Jimp.AUTO, 151)
 
-													model.print(text, 15, 280, user.data.Username)
-													//model.print(text, 658, 125.5, `${user.data.Level}`)
+				model.print(text, 15, 280, user.data.Username)
+				//model.print(text, 658, 125.5, `${user.data.Level}`)
 
-													background.composite(cover, 7, 8)
-													background.composite(model, 0, 0)
-													background.composite(character, -50, -17)
-													background.composite(avatar, 70, 64)
+				background.composite(cover, 7, 8)
+				background.composite(model, 0, 0)
+				background.composite(character, -50, -17)
+				background.composite(avatar, 70, 64)
 
-													background.write(file, () =>
-														message.channel.send({
-															files: [file]
-														})
-													)
-												})
-												.catch(error => logger.error(`gifToPNG error ${error}`))
-
-										}
-									)
-									.catch(error => logger.error(`gifToPNG error ${error}`))
-							)
-							.catch(error => logger.error(`gifToPNG error ${error}`))
-					)
-					.catch(error => logger.error(`gifToPNG error ${error}`))
+				background.write(file, () =>
+					message.channel.send({
+						files: [file]
+					})
+				)
 			})
 			.catch((response: any) => logger.error(`[Profile] error "${response}"`))
 	}
