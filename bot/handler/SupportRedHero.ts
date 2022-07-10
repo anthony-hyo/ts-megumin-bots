@@ -14,7 +14,7 @@ export default class SupportRedHero extends Fill {
         words: [
             {
                 key: [
-                    /enh|enhan|enahn|anhan|encanta/,
+                    /enh|enhan|enahn|anhan|encanta|ench/,
                     SupportRedHero.question1
                 ],
                 message: [
@@ -51,7 +51,7 @@ export default class SupportRedHero extends Fill {
             },
             {
                 key: [
-                    /staff|\bmod\b|\bmoderator\b|\badm\b|\badmin\b|\badministrator\b|artist|add/,
+                    /\bstaff\b|\bmod\b|\bmoderator\b|\badm\b|\badmin\b|\badministrator\b|artist|add/,
                     /\?|wher|wehre|onde|any|apply|ser|viro|how/
                 ],
                 message: [
@@ -70,7 +70,7 @@ export default class SupportRedHero extends Fill {
             },
             {
                 key: [
-                    /soul|blood/,
+                    /\bsoul\b|\bblood\b/,
                     SupportRedHero.question1
                 ],
                 message: [
@@ -85,6 +85,25 @@ export default class SupportRedHero extends Fill {
                 message: [
                     `You can get Boost (XP, Coin, Rep and Cp) in /join blackhorn by killing Resless Undead monster.`,
                     `or /join training and complete the quest Training Support.`
+                ]
+            },
+            {
+                key: [
+                    'xp token',
+                    SupportRedHero.question1
+                ],
+                message: [
+                    `You can get XP Token in /join newbie by killing Lady Knight and Sir Knight monster.`,
+                    `or /join training and killing any monster in the map.`
+                ]
+            },
+            {
+                key: [
+                    /\bvip\b|\bhero\b/,
+                    SupportRedHero.question1
+                ],
+                message: [
+                    `You can get VIP by claiming daily or buying redhero.online/store`
                 ]
             }
         ]
