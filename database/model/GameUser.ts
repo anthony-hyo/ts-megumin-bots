@@ -52,4 +52,11 @@ export default class GameUser extends Model {
 	})
 	server!: string
 
+	@Column({
+		type: DataType.BOOLEAN,
+		allowNull: false,
+		defaultValue: 0
+	})
+	isUnique!: string
+
 }
