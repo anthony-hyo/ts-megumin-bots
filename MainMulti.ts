@@ -25,8 +25,8 @@ export default class MainMulti {
 	private readonly _database: Database = new Database(this)
 
 	constructor() {
-		//MainMulti._singletons.set('RedHero', new Main('RedHero', 'Midgard', 'redhero.online'))
-		//MainMulti._singletons.set('RedAQ', new Main('RedAQ', 'Gondor', 'redaq.net'))
+		MainMulti._singletons.set('RedHero', new Main('RedHero', 'Midgard', 'redhero.online'))
+		MainMulti._singletons.set('RedAQ', new Main('RedAQ', 'Gondor', 'redaq.net'))
 
 		MainMulti._singleton = this
 	}
