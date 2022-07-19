@@ -12,9 +12,10 @@ import Inventory from "./data/Inventory";
 import {IItem} from "../interfaces/game/IItem";
 import {IUser} from "../interfaces/game/IUser";
 import {IMap} from "../interfaces/web/IGameWorld";
-import IMoveToArea from "../interfaces/game/request/IMoveToArea";
+import IMoveToArea, {IMonMap} from "../interfaces/game/request/IMoveToArea";
 import MainMulti from "../MainMulti";
 import Network from "./network/Network";
+import {AvatarState} from "./network/request/packets/CombatState";
 
 export default class Bot {
 
@@ -55,7 +56,7 @@ export default class Bot {
 				}
 			})
 			.catch((response: any) => {
-				logger.error(`[Bot] [login] (${this.user.server}) ${user.username} "${response}"`)
+				logger.error(`[Bot] [login] (${this.user.server}) ${user.username} 1 "${response}"`)
 				this.handler.onDisconnect()
 			})
 	}
@@ -192,6 +193,36 @@ export default class Bot {
 				this.network.send('message', [message, 'zone'])
 				break;
 		}
+	}
+
+	public attackRandomTarget(): void {
+		if (this.room.data.monmap !== undefined && this.room.data.monmap.length > 0) {
+			for (const value of this.room.data.mondef) {
+				if (value.isWorldBoss) {
+					const mon = this.room.data.monBranch.filter(value2 => value2.MonID === value.MonID)[0]
+
+					// join new map random if monster state dead
+					if (mon.intState == AvatarState.DEAD) {
+						this.joinMapRandom()
+						return
+					}
+
+					this.properties.wasOnWorldBoss = true
+				}
+			}
+
+			const monster: IMonMap = this.room.data.monmap[Helper.randomIntegerInRange(0, this.room.data.monmap.length - 1)]
+
+			setTimeout(() => {
+				this.room.moveToCell(monster.strFrame, 'Left')
+
+				this.properties.intervalAttack = setInterval(() => {
+					if (this.room.frame === monster.strFrame) {
+						this.network.send('gar', [1, `${['aa', 'a1', 'a2', 'a3', 'a4'][Helper.randomIntegerInRange(0, 4)]}>m:${monster.MonMapID}`, "wvz"])
+					}
+				}, 2000)
+			}, 3000)
+		} //TODO: check if has no monster ?
 	}
 
 }
