@@ -26,7 +26,7 @@ export default class MainMulti {
 
 	constructor() {
 		MainMulti._singletons.set('RedHero', new Main('RedHero', 'Midgard', 'redhero.online'))
-		//MainMulti._singletons.set('RedAQ', new Main('RedAQ', 'Gondor', 'redaq.net'))
+		MainMulti._singletons.set('RedAQ', new Main('RedAQ', 'Gondor', 'redaq.net'))
 
 		MainMulti._singleton = this
 	}

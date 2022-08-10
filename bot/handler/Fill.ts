@@ -5,6 +5,13 @@ import ILoadInventoryBig from "../../interfaces/game/request/ILoadInventoryBig";
 export default class Fill extends Default {
 
 	onJoin(): void {
+		const maxBots: number = this.bot.room.data.areaCap / 3
+
+		if (this.bot.room.bots.length > maxBots) {
+			this.bot.joinMapRandom()
+			return
+		}
+
 		this.walk()
 	}
 

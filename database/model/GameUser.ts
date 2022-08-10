@@ -50,7 +50,7 @@ export default class GameUser extends Model {
 		allowNull: false,
 		defaultValue: `RedHero`
 	})
-	server!: string
+	server!: 'RedHero' | 'RedAQ'
 
 	@Column({
 		type: DataType.BOOLEAN,

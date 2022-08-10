@@ -17,11 +17,11 @@ export default class Main {
 		market_items: new Map<number, number>(),
 	}
 
-	private readonly _name: string
+	private readonly _name: 'RedHero' | 'RedAQ'
 	private readonly _server: string
 	private readonly _url: string
 
-	constructor(name: string, server: string, url: string) {
+	constructor(name: 'RedHero' | 'RedAQ', server: string, url: string) {
 		this._name = name;
 		this._server = server;
 		this._url = url;
@@ -31,7 +31,7 @@ export default class Main {
 		return Array.from(this.data.bots.values()).find((bot: Bot) => bot.user.username.toLowerCase() === username.toLowerCase()) !== undefined
 	}
 
-	public get name(): string {
+	public get name(): 'RedHero' | 'RedAQ' {
 		return this._name;
 	}
 
@@ -42,14 +42,6 @@ export default class Main {
 	public get url(): string {
 		return this._url;
 	}
-
-	private readonly available_handlers: string[] = [
-		'market/Market',
-		//'monster/Monster',
-		//'monster/WorldBoss',
-		//'PvP',
-		//'Fill'
-	]
 
 	public async init(): Promise<void> {
 		logger.info(`[Main] init ${this.name} at ${this.server}`)
@@ -74,7 +66,6 @@ export default class Main {
 		 * Login
 		 */
 		setInterval(() => {
-			console.log(`this.data.bots size`, this.data.bots.size)
 			if (this.data.users_queue.size > 0 && this.data.bots.size < 99999) {
 				const user: GameUser = this.data.users_queue.values().next().value
 
@@ -102,13 +93,43 @@ export default class Main {
 		/**
 		 * Items
 		 */
-		const items: number[] = [
-			8236, //Boss Soul
-			13397, //Boss Blood
-			16222, //Limit Break +5
-			14936, //Limit Break +1
-			19031 //Daemon's dimension fragment
-		]
+		let items: number[]
+		let available_handlers: string[]
+
+		if (this.name === 'RedHero') {
+			items = [
+				8236, //Boss Soul
+				13397, //Boss Blood
+				16222, //Limit Break +5
+				14936, //Limit Break +1
+				19031, //Daemon's dimension fragment
+				19599, //Boss Gem I
+				19600, //Boss Gem II
+				19601, //Boss Gem III
+			];
+
+			available_handlers = [
+				'market/Market',
+				'monster/Monster',
+				'monster/WorldBoss',
+				'PvP',
+				'Fill'
+			]
+		} else {
+			items = [
+				1934, //Boss Soul
+				2070, //Boss Blood
+				16222, //Limit Break +5
+				14936, //Limit Break +1
+			];
+
+			available_handlers = [
+				'monster/Monster',
+				'monster/WorldBoss',
+				'PvP',
+				'Fill'
+			]
+		}
 
 		items.forEach(itemId =>
 			axios
@@ -139,7 +160,7 @@ export default class Main {
 			})
 
 		users.forEach(user => {
-			user.handler = this.available_handlers[Helper.randomIntegerInRange(0, this.available_handlers.length - 1)]
+			user.handler = available_handlers[Helper.randomIntegerInRange(0, available_handlers.length - 1)]
 			user.save()
 			this.data.users_queue.set(user.id, user)
 		});
