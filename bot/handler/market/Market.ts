@@ -3,32 +3,48 @@ import {IItem} from "../../../interfaces/game/IItem";
 import Helper from "../../../utility/Helper";
 import logger from "../../../utility/Logger";
 import Default from "../Default";
+import Bot from "../../Bot";
 
 export default class Market extends Default {
 
 	private intervalMarket: NodeJS.Timer | null = null
 
-	private static readonly frames: string[] = [
-		'RightWay',
-		'LeftWay',
-		'CentralWay',
-		'RigthPath',
-		'LeftPath',
-		'CentralPath',
-		'Enter',
-	]
+	private readonly frames: string[]
+	private readonly max: number
+
+	constructor(bot: Bot) {
+		super(bot);
+
+		if (bot.user.server === 'RedHero') {
+			this.frames = [
+				'RightWay',
+				'LeftWay',
+				'CentralWay',
+				'RigthPath',
+				'LeftPath',
+				'CentralPath',
+				'Enter',
+			]
+			this.max = 35
+		} else {
+			this.frames = [
+				'Enter',
+				'Area2',
+				'Area3',
+			]
+			this.max = 15
+		}
+	}
 
 	onJoin(): void {
-		const frame = Market.frames[Helper.randomIntegerInRange(0, Market.frames.length - 1)];
-
-		console.log(`>>>>>>>>>>>>>>>>>>>>>>>>> `, frame)
+		const frame = this.frames[Helper.randomIntegerInRange(0, this.frames.length - 1)];
 
 		if (this.bot.room.data.strMapName !== 'town') {
 			this.bot.joinMap('town', frame)
 			return
 		}
 
-		if (this.bot.room.data.strMapName === 'town' && this.bot.room.bots.length > 25) {
+		if (this.bot.room.data.strMapName === 'town' && this.bot.room.bots.length > this.max) {
 			this.bot.joinMap('town-' + this.bot.room.data.areaName.split('-')[1] + 1, frame)
 			return
 		}

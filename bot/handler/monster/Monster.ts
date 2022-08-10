@@ -11,6 +11,14 @@ export default class Monster extends Default {
 		if (this.bot.properties.wasOnWorldBoss) {
 			this.bot.properties.wasOnWorldBoss = false
 			this.bot.joinMapRandom()
+			return
+		}
+
+		const maxBots: number = this.bot.room.data.areaCap / 3
+
+		if (this.bot.room.bots.length > maxBots) {
+			this.bot.joinMapRandom()
+			return
 		}
 
 		this.bot.attackRandomTarget()
