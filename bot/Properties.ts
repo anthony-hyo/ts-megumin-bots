@@ -10,7 +10,7 @@ export default class Properties {
 	private _intervalAttack: NodeJS.Timeout | null = null
 	private _intervalWalk: NodeJS.Timer | null = null
 
-	public droppedItems: Map<Number, IItem> = new Map<Number, IItem>()
+	public droppedItems: Map<number, IItem> = new Map<number, IItem>()
 
 	public wasOnWorldBoss: boolean = false
 	public isOnWarZoneQueue: boolean = false
@@ -21,11 +21,12 @@ export default class Properties {
 	}
 
 	public set intervalAttack(value: NodeJS.Timeout | null) {
-		this.bot.properties.clearAllInterval()
+		this.bot.properties.clearAttack()
 		this._intervalAttack = value;
 	}
 
 	public set intervalWalk(value: NodeJS.Timer | null) {
+		this.bot.properties.clearWalk()
 		this._intervalWalk = value;
 	}
 

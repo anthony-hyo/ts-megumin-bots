@@ -28,14 +28,14 @@ export default class Network {
 		this.listeners()
 	}
 
-	private _id = -1
+	private _id: number = -1
 
 	public get id(): number {
 		return this._id;
 	}
 
 	public set id(value: number) {
-		this._id = value;
+		this._id = Number(value);
 	}
 
 	public send(command: string, args: Array<any> = []): void {

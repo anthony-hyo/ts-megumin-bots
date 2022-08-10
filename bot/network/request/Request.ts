@@ -30,7 +30,7 @@ export default class Request {
 		const data: any = JSON.parse(json)
 
 		try {
-			logger.silly(`[Request] (${bot.user.server}) [${bot.user.username}] received ${data.cmd}`)
+			logger.silly(`[Request] (${bot.user.server}) [${bot.user.username}] received "${data.cmd}"`)
 
 			const command: String | undefined = Request.packets.get(data.cmd)
 
@@ -46,10 +46,10 @@ export default class Request {
 			if (request) {
 				request.handler(bot, data)
 			} else {
-				logger.error(`[Request] (${bot.user.server}) [${bot.user.username}] not found ${data.cmd}`)
+				logger.error(`[Request] (${bot.user.server}) [${bot.user.username}] not found "${data.cmd}"`)
 			}
 		} catch (error) {
-			logger.error(`[Request] (${bot.user.server}) [${bot.user.username}] error ${data.cmd} ${error}`)
+			logger.error(`[Request] (${bot.user.server}) [${bot.user.username}] error "${json}" ${error}"`)
 		}
 	}
 

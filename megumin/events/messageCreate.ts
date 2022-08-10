@@ -24,7 +24,7 @@ module.exports = {
 		DiscordGuild
 			.findOrCreate({
 				where: {
-					guildId: Number(message.guild?.id),
+					guildId: message.guild?.id,
 				}
 			})
 			.then(([discordGuild]: [DiscordGuild, boolean]) => {

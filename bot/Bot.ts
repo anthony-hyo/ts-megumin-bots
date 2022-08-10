@@ -9,13 +9,13 @@ import Properties from "./Properties";
 import Default from "./handler/Default";
 import Helper from "../utility/Helper";
 import Inventory from "./data/Inventory";
-import {IItem} from "../interfaces/game/IItem";
 import {IUser} from "../interfaces/game/IUser";
 import {IMap} from "../interfaces/web/IGameWorld";
 import IMoveToArea, {IMonMap} from "../interfaces/game/request/IMoveToArea";
 import MainMulti from "../MainMulti";
 import Network from "./network/Network";
 import {AvatarState} from "./network/request/packets/CombatState";
+import Main from "../Main";
 
 export default class Bot {
 
@@ -23,13 +23,17 @@ export default class Bot {
 	private readonly _properties: Properties = new Properties(this)
 	private readonly _inventory: Inventory = new Inventory(this)
 
+	public readonly singleton: Main
+
 	constructor(user: GameUser) {
 		logger.debug(`[Bot] found "${user.username}"`)
 
 		this._user = user
 
+		this.singleton = MainMulti.singletons(this._user.server)
+
 		axios
-			.post(`https://${MainMulti.singletons(this.user.server).url}/api/game/login`, {
+			.post(`https://${this.singleton.url}/api/game/login`, {
 				username: this._user.username,
 				password: this._user.password
 			})
@@ -42,11 +46,11 @@ export default class Bot {
 					return
 				}
 
-				logger.debug(`[Bot] [login] (${this.user.server}) ${user.username} as "${this.user.handler}"`)
+				logger.info(`[Bot] [login] (${this.user.server}) ${user.username} as "${this.user.handler}"`)
 
 				this.properties.token = loginResponse.user.Hash
 
-				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == MainMulti.singletons(this.user.server).server);
+				const loginResponseServer: ILoginResponseServer | undefined = loginResponse.servers.find(server => server.Name == this.singleton.server);
 
 				if (loginResponseServer) {
 					this.network = new Network(this, loginResponseServer.Port, MainMulti.singleton.config.database.password === '123' ? loginResponseServer.IP : '192.168.10.160')
@@ -113,73 +117,32 @@ export default class Bot {
 		this._handler = value;
 	}
 
-	// public get haste():Number {
+	// public get haste():number {
 	// 	return 1 - Math.min(Math.max(tha, -1), 0.85)
 	// }
 
 	public static create = (user: GameUser): Bot => new Bot(user);
 
-	public joinMap(map: string) {
-		logger.debug(`[request] [${this.user.username}] joining ${map}`)
-		this.network.send('cmd', ['tfer', '', map])
+	public joinMap(map: string, frame: string = 'Enter', pad: string = 'Spawn') {
+		logger.warn(`[request] [${this.user.username}] joining ${map}-${frame}-${pad}`)
+		this.network.send('cmd', [
+			'tfer',
+			'', //username kkk
+			map, //area name
+			frame, //area frame
+			pad, //area pad
+		])
 	}
 
 	public joinMapRandom() {
 		setTimeout(() => {
 			try {
-				const maps: IMap[] = MainMulti.singletons(this.user.server).maps.filter(value => value.ReqLevel <= this.data.intLevel)
+				const maps: IMap[] = this.singleton.data.maps.filter(value => value.ReqLevel <= this.data.intLevel)
 				this.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
 			} catch (e) {
 				this.network.disconnect()
 			}
 		}, 3000)
-	}
-
-	public marketSell(item: IItem): void {
-		let i: number = 0
-
-		switch (item.ItemID) {
-			case 8236: //Boss Soul
-			case 13397: //Boss Blood
-			case 16222: //Limit Break +5
-			case 14936: //Limit Break +1
-			case 19031: //Daemon's dimension fragment
-				axios
-					.get(`https://${MainMulti.singletons(this.user.server).url}/api/wiki/item/${item.ItemID}`)
-					.then((response: AxiosResponse) => {
-						const json: any = response.data
-
-						if (i > 4) {
-							return
-						}
-
-						if (json.markets != null && json.markets.length > 0 && item.iQty > 50) {
-							const costs: Array<number> = []
-
-							json.markets.forEach((market: { Coins: any; }) => costs.push(Number(market.Coins)))
-
-							const quantity: number = Math.min(item.iQty, 20)
-
-							const cost: number = Helper.replaceLastDigit(json.MarketAverage * quantity)
-
-							setTimeout(() => {
-								logger.info(`[market] [${this.user.username}] selling "${Helper.parseHTML(item.sName)}" for "${cost}" Coins`)
-
-								this.network.send("sellAuctionItem", [
-									item.ItemID,
-									item.CharItemID,
-									quantity,
-									cost,
-									0
-								])
-							}, Helper.randomIntegerInRange(1000, 60000))
-
-							i++
-						}
-					})
-					.catch(console.error)
-				break;
-		}
 	}
 
 	public sendMessage(channel:string, message: string): void {

@@ -1,6 +1,5 @@
-import ILoadInventoryBig from "../../interfaces/game/request/ILoadInventoryBig";
-import {IItem} from "../../interfaces/game/IItem";
-import WorldBoss from "./monster/WorldBoss";
+import ILoadInventoryBig from "../../../interfaces/game/request/ILoadInventoryBig";
+import WorldBoss from "../monster/WorldBoss";
 
 export default class MarketWorldBoss extends WorldBoss {
 
@@ -11,11 +10,11 @@ export default class MarketWorldBoss extends WorldBoss {
 
 		this.bot.network.send('loadRetrieve', ['All'])
 		
-		this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
+		/*this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
 
 		this.intervalMarket = setInterval(() => {
 			this.bot.inventory.all.forEach((item: IItem): void => this.bot.marketSell(item))
-		}, 600000)
+		}, 600000)*/
 	}
 
 	/*onMarketLoad(data: IMarket): void {
