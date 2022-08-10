@@ -7,7 +7,6 @@ import {IMarket} from "../../interfaces/game/request/IMarket";
 import {IRemoveItem} from "../../interfaces/game/request/IRemoveItem";
 import Helper from "../../utility/Helper";
 import {IItem} from "../../interfaces/game/IItem";
-import MainMulti from "../../MainMulti";
 
 export default class Default implements IHandler {
 
@@ -29,8 +28,6 @@ export default class Default implements IHandler {
 		logger.debug('default onInventoryLoad')
 
 		data.items.forEach((item: IItem) => this.bot.inventory.all.set(item.ItemID, item))
-
-		this.bot.joinMapRandom()
 	}
 
 	onDropItem(item: IItem): void {
@@ -59,7 +56,10 @@ export default class Default implements IHandler {
 		data.items.forEach((item: IItem) => {
 			if (item.Player !== 'On Listing') {
 				logger.debug(`[market] [${this.bot.user.username}] ${Helper.parseHTML(item.Player)} ${Helper.parseHTML(item.sName)}`)
-				this.bot.network.send('retrieveAuctionItem', [item.AuctionID])
+				this.bot.network.send('retrieveAuctionItem', [
+					item.AuctionID,
+					this.bot.user.username
+				])
 			}
 		})
 	}
@@ -87,10 +87,10 @@ export default class Default implements IHandler {
 		this.bot.properties.clearAllInterval()
 
 		if (this.bot.network) {
-			MainMulti.singletons(this.bot.user.server).bots.delete(this.bot.network.id)
+			this.bot.singleton.data.bots.delete(this.bot.network.id)
 		}
 
-		MainMulti.singletons(this.bot.user.server).queue_users.set(this.bot.user.id, this.bot.user)
+		this.bot.singleton.data.users_queue.set(this.bot.user.id, this.bot.user)
 	}
 
 	/*

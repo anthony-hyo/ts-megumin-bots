@@ -1,10 +1,17 @@
 import Default from "./Default";
 import MainMulti from "../../MainMulti";
+import ILoadInventoryBig from "../../interfaces/game/request/ILoadInventoryBig";
 
 export default class Fill extends Default {
 
 	onJoin(): void {
 		this.walk()
+	}
+
+	onInventoryLoad(data: ILoadInventoryBig): void {
+		super.onInventoryLoad(data)
+
+		this.bot.joinMapRandom()
 	}
 
 	onSpawn(): void {

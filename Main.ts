@@ -3,15 +3,19 @@ import Bot from "./bot/Bot";
 import {Sequelize} from "sequelize";
 import axios, {AxiosResponse} from "axios";
 import logger from "./utility/Logger";
-import {IGameWorld, IMap} from "./interfaces/web/IGameWorld";
+import {IGameWorld} from "./interfaces/web/IGameWorld";
 import MainMulti from "./MainMulti";
 import Helper from "./utility/Helper";
+import {IGameData} from "./interfaces/game/IGameData";
 
 export default class Main {
 
-	public readonly bots: Map<Number, Bot> = new Map<Number, Bot>()
-	public readonly maps: Array<IMap> = []
-	public readonly queue_users: Map<Number, GameUser> = new Map<Number, GameUser>()
+	public readonly data: IGameData = {
+		bots: new Map<number, Bot>(),
+		users_queue: new Map<number, GameUser>(),
+		maps: [],
+		market_items: new Map<number, number>(),
+	}
 
 	private readonly _name: string
 	private readonly _server: string
@@ -21,6 +25,10 @@ export default class Main {
 		this._name = name;
 		this._server = server;
 		this._url = url;
+	}
+
+	public isBotByUsername(username: string): boolean {
+		return Array.from(this.data.bots.values()).find((bot: Bot) => bot.user.username.toLowerCase() === username.toLowerCase()) !== undefined
 	}
 
 	public get name(): string {
@@ -36,10 +44,11 @@ export default class Main {
 	}
 
 	private readonly available_handlers: string[] = [
-		'monster/Monster',
-		'monster/WorldBoss',
-		'PvP',
-		'Fill'
+		'market/Market',
+		//'monster/Monster',
+		//'monster/WorldBoss',
+		//'PvP',
+		//'Fill'
 	]
 
 	public async init(): Promise<void> {
@@ -52,24 +61,34 @@ export default class Main {
 			},
 		})
 
+		/**
+		 * Uniques
+		 */
 		logger.warn(`[Main] (${this.name}) creating uniques..`)
 
 		uniques.forEach(user => Bot.create(user));
 
 		logger.info(`[Main] (${this.name}) uniques created.`)
 
+		/**
+		 * Login
+		 */
 		setInterval(() => {
-			if (this.queue_users.size > 0 && this.bots.size < 50) {
-				const user: GameUser = this.queue_users.values().next().value
+			console.log(`this.data.bots size`, this.data.bots.size)
+			if (this.data.users_queue.size > 0 && this.data.bots.size < 99999) {
+				const user: GameUser = this.data.users_queue.values().next().value
 
 				Bot.create(user)
 
-				this.queue_users.delete(user.id)
+				this.data.users_queue.delete(user.id)
 			}
-		}, 1200)
+		}, 750)
 
 		logger.info(`[Main] (${this.name}) game login interval initialized.`)
 
+		/**
+		 * Maps
+		 */
 		logger.warn(`[Main] (${this.name}) loading maps..`)
 
 		const maps: AxiosResponse = await axios.get(`https://${this.url}/api/game/world`)
@@ -78,8 +97,33 @@ export default class Main {
 
 		const worlds: IGameWorld[] = maps.data;
 
-		worlds.forEach((world: IGameWorld) => this.maps.push(world.map))
+		worlds.forEach((world: IGameWorld) => this.data.maps.push(world.map))
 
+		/**
+		 * Items
+		 */
+		const items: number[] = [
+			8236, //Boss Soul
+			13397, //Boss Blood
+			16222, //Limit Break +5
+			14936, //Limit Break +1
+			19031 //Daemon's dimension fragment
+		]
+
+		items.forEach(itemId =>
+			axios
+				.get(`https://${this.url}/api/wiki/item/${itemId}`)
+				.then((response: AxiosResponse) => {
+					const json: any = response.data
+					if (json.markets != null && json.markets.length) {
+						this.data.market_items.set(itemId, json.MarketAverage)
+					}
+				})
+				.catch(console.error))
+
+		/**
+		 * Users
+		 */
 		logger.warn(`[Main] (${this.name}) creating users..`)
 
 		await MainMulti.singleton.database.sequelize
@@ -97,7 +141,7 @@ export default class Main {
 		users.forEach(user => {
 			user.handler = this.available_handlers[Helper.randomIntegerInRange(0, this.available_handlers.length - 1)]
 			user.save()
-			this.queue_users.set(user.id, user)
+			this.data.users_queue.set(user.id, user)
 		});
 
 		logger.info(`[Main] (${this.name}) users created.`)

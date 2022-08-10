@@ -1,6 +1,5 @@
 import Bot from "../../../Bot";
 import IRequest from "../../../../interfaces/game/IRequest";
-import MainMulti from "../../../../MainMulti";
 import logger from "../../../../utility/Logger";
 import IUOTLS from "../../../../interfaces/game/request/IUOTLS";
 import Room from "../../../data/Room";
@@ -21,7 +20,7 @@ export default class Internal implements IRequest {
 				if (status) {
 					bot.network.id = args[3]
 
-					MainMulti.singletons(bot.user.server).bots.set(bot.network.id, bot)
+					bot.singleton.data.bots.set(bot.network.id, bot)
 
 					bot.network.send('firstJoin')
 
@@ -39,7 +38,7 @@ export default class Internal implements IRequest {
 			case 'chatm':
 				const split: string[] = String(args[2]).split('~')
 
-				if (bot.room.isBot(args[3])) {
+				if (bot.singleton.isBotByUsername(args[3])) {
 					return
 				}
 
@@ -49,7 +48,7 @@ export default class Internal implements IRequest {
 				if (String(args[3]).includes('tx') && String(args[3]).includes('ty') && String(args[3]).includes('sp') && String(args[3]).includes('strFrame')) {
 					const position: IUOTLS = Internal.parseUOTLS(String(args[3]).split(','))
 
-					if (!bot.room.isBot(args[2])) {
+					if (!bot.singleton.isBotByUsername(args[2])) {
 						Room.addPosition(bot.room.data.strMapName, position.strFrame, position.strPad, position.tx, position.ty, position.sp, bot.user.server)
 					}
 				} else if (String(args[3]).includes('strPad') && String(args[3]).includes('tx') && String(args[3]).includes('strFrame') && String(args[3]).includes('ty')) {

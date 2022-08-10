@@ -12,7 +12,7 @@ export default class NHentai extends DefaultCommand {
     public readonly helper: string = `(number)`
 
     public handler(megumin: Megumin, message: Message, member: GuildMember, guild: DiscordGuild, args: CommandArg): void {
-        const nh: Number = args.getInt(0)
+        const nh: number = args.getInt(0)
 
         message.channel
             .send(`https://nhentai.net/g/${nh}`)

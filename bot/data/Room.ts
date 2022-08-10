@@ -35,21 +35,25 @@ export default class Room {
 		this._frame = value;
 	}
 
-	private _players: Map<Number, Avatar> = new Map<Number, Avatar>()
+	private _players: Map<number, Avatar> = new Map<number, Avatar>()
 
-	private get players(): Map<Number, Avatar> {
+	public get players(): Map<number, Avatar> {
 		return this._players;
 	}
 
-	private _monsters: Map<Number, Avatar> = new Map<Number, Avatar>()
+	public get bots(): Avatar[] {
+		return Array.from(this._players.values()).filter((avatar: Avatar) => avatar.isBot)
+	}
 
-	public get monsters(): Map<Number, Avatar> {
+	private _monsters: Map<number, Avatar> = new Map<number, Avatar>()
+
+	public get monsters(): Map<number, Avatar> {
 		return this._monsters;
 	}
 
-	private _npcs: Map<Number, Avatar> = new Map<Number, Avatar>()
+	private _npcs: Map<number, Avatar> = new Map<number, Avatar>()
 
-	public get npcs(): Map<Number, Avatar> {
+	public get npcs(): Map<number, Avatar> {
 		return this._npcs;
 	}
 
@@ -68,15 +72,15 @@ export default class Room {
 	}
 
 	public addPlayer(networkId: number, username: string): void {
-		this.players.set(networkId, new Avatar(networkId, username, MainMulti.singletons(this.bot.user.server).bots.has(networkId)))
+		this._players.set(networkId, new Avatar(networkId, username, this.bot.singleton.data.bots.has(networkId)))
 	}
 
 	public removePlayer(networkId: number): void {
-		this.players.delete(networkId)
+		this._players.delete(networkId)
 	}
 
 	public getPlayerByUsername(username: string): null | Avatar {
-		for (const target of this.players.values()) {
+		for (const target of this._players.values()) {
 			if (target.username.toLowerCase() === username.toLowerCase()) {
 				return target
 			}
@@ -100,15 +104,6 @@ export default class Room {
 			}
 		}
 		return null
-	}
-
-	public isBot(username: string): boolean {
-		for (const target of MainMulti.singletons(this.bot.user.server).bots.values()) {
-			if (target.user.username.toLowerCase() === username.toLowerCase()) {
-				return true
-			}
-		}
-		return false
 	}
 
 	public moveToCell(frame: string, pad: string) {
@@ -137,7 +132,28 @@ export default class Room {
 					this.bot.network.send("mv", [position.x, position.y, position.speed])
 				}
 			})
-			.catch(error => logger.error(`[Room] ${error}`))
+			.catch(error => logger.error(`[Room] freeWalk ${error}`))
+	}
+
+	/**
+	 * Find frame position to move
+	 */
+	public freeWalkFrame(): void {
+		GamePosition
+			.findOne({
+				where: {
+					name: this.data.strMapName,
+					server: this.bot.user.server,
+					frame: this._frame
+				},
+				order: Sequelize.literal('rand()')
+			})
+			.then((position: GamePosition | null) => {
+				if (position) {
+					this.bot.network.send("mv", [position.x, position.y, position.speed])
+				}
+			})
+			.catch(error => logger.error(`[Room] freeWalkFrame ${error}`))
 	}
 
 }

@@ -6,13 +6,13 @@ export default class Inventory {
 
 	private readonly bot: Bot
 
-	public inventory: Map<Number, IItem> = new Map<Number, IItem>()
+	public inventory: Map<number, IItem> = new Map<number, IItem>()
 
 	public constructor(bot: Bot) {
 		this.bot = bot
 	}
 
-	public get all(): Map<Number, IItem> {
+	public get all(): Map<number, IItem> {
 		return this.inventory
 	}
 
@@ -21,7 +21,7 @@ export default class Inventory {
 	}
 
 	public removeByCharItemID(remove: IRemoveItem): void {
-		this.inventory.forEach((value: IItem, key: Number) => {
+		this.inventory.forEach((value: IItem, key: number) => {
 			if (value.CharItemID === remove.CharItemID) {
 				this.inventory.delete(key)
 			}
