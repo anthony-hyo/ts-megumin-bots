@@ -3,7 +3,7 @@ import Default from "../Default";
 export default class Monster extends Default {
 
 	onJoin(): void {
-		if (this.bot.room.data.monmap !== undefined && this.bot.room.data.monmap.length > 0) {
+		if (this.bot.room.data.monmap === undefined || this.bot.room.data.monmap.length <= 0) {
 			this.bot.joinMapRandom()
 			return
 		}

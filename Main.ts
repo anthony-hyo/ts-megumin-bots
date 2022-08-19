@@ -66,7 +66,7 @@ export default class Main {
 		 * Login
 		 */
 		setInterval(() => {
-			if (this.data.users_queue.size > 0 && this.data.bots.size < 99999) {
+			if (this.data.users_queue.size > 0 && this.data.bots.size < 200) {
 				const user: GameUser = this.data.users_queue.values().next().value
 
 				Bot.create(user)
