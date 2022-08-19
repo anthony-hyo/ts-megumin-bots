@@ -41,12 +41,12 @@ export default class Bot {
 				const loginResponse: ILoginResponse = response.data;
 
 				if (loginResponse.user === undefined) {
-					logger.error(`[Bot] [login] (${this.user.server}) ${user.username} user undefined "${user.username}"`)
+					logger.error(`[Bot] [login] (${this.user.server}) [${user.username}] user undefined "${user.username}"`)
 					this.handler.onDisconnect()
 					return
 				}
 
-				logger.info(`[Bot] [login] (${this.user.server}) ${user.username} as "${this.user.handler}"`)
+				logger.info(`[Bot] [login] (${this.user.server}) [${user.username}] as "${this.user.handler}"`)
 
 				this.properties.token = loginResponse.user.Hash
 
@@ -55,12 +55,12 @@ export default class Bot {
 				if (loginResponseServer) {
 					this.network = new Network(this, loginResponseServer.Port, MainMulti.singleton.config.database.password === '123' ? loginResponseServer.IP : '192.168.10.160')
 				} else {
-					logger.error(`[Bot] [login] (${this.user.server}) ${user.username} server undefined "${user.username}"`)
+					logger.error(`[Bot] [login] (${this.user.server}) [${user.username}] server undefined "${user.username}"`)
 					this.handler.onDisconnect()
 				}
 			})
 			.catch((response: any) => {
-				logger.error(`[Bot] [login] (${this.user.server}) ${user.username} 1 "${response}"`)
+				logger.error(`[Bot] [login] (${this.user.server}) [${user.username}] 1 "${response}"`)
 				this.handler.onDisconnect()
 			})
 	}
@@ -124,7 +124,8 @@ export default class Bot {
 	public static create = (user: GameUser): Bot => new Bot(user);
 
 	public joinMap(map: string, frame: string = 'Enter', pad: string = 'Spawn') {
-		logger.warn(`[request] [${this.user.username}] joining ${map}-${frame}-${pad}`)
+		logger.warn(`[Bot] [joinMap] (${this.user.server}) [${this.user.username}] joining ${map}-${frame}-${pad}`)
+
 		this.network.send('cmd', [
 			'tfer',
 			'', //username kkk
@@ -164,7 +165,9 @@ export default class Bot {
 				if (value.isWorldBoss) {
 					const mon = this.room.data.monBranch.filter(value2 => value2.MonID === value.MonID)[0]
 
-					// join new map random if monster state dead
+					/**
+					 * Join new map random if World Boss state dead
+					 */
 					if (mon.intState == AvatarState.DEAD) {
 						this.joinMapRandom()
 						return
@@ -176,6 +179,9 @@ export default class Bot {
 
 			const monster: IMonMap = this.room.data.monmap[Helper.randomIntegerInRange(0, this.room.data.monmap.length - 1)]
 
+			/**
+			 * Move to cell and Attack
+			 */
 			setTimeout(() => {
 				this.room.moveToCell(monster.strFrame, 'Left')
 
@@ -185,7 +191,7 @@ export default class Bot {
 					}
 				}, 2000)
 			}, 3000)
-		} //TODO: check if has no monster ?
+		}
 	}
 
 }
