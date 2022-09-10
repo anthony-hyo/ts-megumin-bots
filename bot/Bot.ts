@@ -124,7 +124,7 @@ export default class Bot {
 	public static create = (user: GameUser): Bot => new Bot(user);
 
 	public joinMap(map: string, frame: string = 'Enter', pad: string = 'Spawn') {
-		logger.warn(`[Bot] [joinMap] (${this.user.server}) [${this.user.username}] joining ${map}-${frame}-${pad}`)
+		logger.debug(`[Bot] [joinMap] (${this.user.server}) [${this.user.username}] joining ${map}-${frame}-${pad}`)
 
 		this.network.send('cmd', [
 			'tfer',
