@@ -94,7 +94,7 @@ export default class Main {
 		 * Items
 		 */
 		let items: number[]
-		let available_handlers: string[]
+		let available_handlers: { max: number; count: number ; package: string }[]
 
 		if (this.name === 'RedHero') {
 			items = [
@@ -109,11 +109,26 @@ export default class Main {
 			];
 
 			available_handlers = [
-				'market/Market',
-				'monster/Monster',
-				'monster/WorldBoss',
-				'PvP',
-				'Fill'
+				{
+					max: 15,
+					count: 0,
+					package: 'monster/Monster',
+				},
+				{
+					max: 100,
+					count: 0,
+					package: 'monster/WorldBoss',
+				},
+				{
+					max: 10,
+					count: 0,
+					package: 'PvP',
+				},
+				{
+					max: 30,
+					count: 0,
+					package: 'market/Market',
+				},
 			]
 		} else {
 			items = [
@@ -124,10 +139,21 @@ export default class Main {
 			];
 
 			available_handlers = [
-				'monster/Monster',
-				'monster/WorldBoss',
-				'PvP',
-				'Fill'
+				{
+					max: 60,
+					count: 0,
+					package: 'monster/Monster',
+				},
+				{
+					max: 15,
+					count: 0,
+					package: 'monster/WorldBoss',
+				},
+				{
+					max: 10,
+					count: 0,
+					package: 'PvP',
+				}
 			]
 		}
 
@@ -160,9 +186,16 @@ export default class Main {
 			})
 
 		users.forEach(user => {
-			user.handler = available_handlers[Helper.randomIntegerInRange(0, available_handlers.length - 1)]
+			const handler: { max: number; count: number; package: string } = available_handlers[Helper.randomIntegerInRange(0, available_handlers.length - 1)]
+
+			console.log(handler.package, handler.count > handler.max, handler.count, handler.max)
+			user.handler = handler.count > handler.max ? 'Fill' : handler.package
+
 			user.save()
+
 			this.data.users_queue.set(user.id, user)
+
+			handler.count++;
 		});
 
 		logger.info(`[Main] (${this.name}) users created.`)
