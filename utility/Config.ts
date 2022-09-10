@@ -1,4 +1,4 @@
-import {IBehavior, IConfig, IDatabase, ISeeborg, ISeeborgType} from "../interfaces/IConfig";
+import {IBehavior, IChannelOverride, IConfig, IDatabase, ISeeborg, ISeeborgType} from "../interfaces/IConfig";
 
 export default class Config {
 
@@ -64,7 +64,7 @@ export default class Config {
 	 * @returns {?Object}
 	 */
 	private static _overrideForChannel(where: ISeeborg, channel: string): any | null {
-		const channelOverrides: any = where.channelOverrides
+		const channelOverrides: IChannelOverride[] = where.channelOverrides
 
 		for (const override of channelOverrides) {
 			if (override.channel === channel) {
@@ -75,22 +75,22 @@ export default class Config {
 		return null
 	}
 
-	public autoSavePeriod = () => this.seeborg.autoSavePeriod;
+	public autoSavePeriod: () => number = () => this.seeborg.autoSavePeriod;
 
-	public isIgnored = (where: ISeeborg, channel: string, username: string) => Config.behavior(where, channel, 'ignoredUsers').includes(username);
+	public isIgnored: (where: ISeeborg, channel: string, username: string) => boolean = (where: ISeeborg, channel: string, username: string) => Config.behavior(where, channel, 'ignoredUsers').includes(username);
 
-	public matchesBlacklistedPattern = (where: ISeeborg, channel: string, line: string) => Config.match(Config.behavior(where, channel, 'blacklistedPatterns'), line);
+	public matchesBlacklistedPattern: (where: ISeeborg, channel: string, line: string) => boolean = (where: ISeeborg, channel: string, line: string) => Config.match(Config.behavior(where, channel, 'blacklistedPatterns'), line);
 
-	public matchesMagicPattern = (where: ISeeborg, channel: string, line: string) => Config.match(Config.behavior(where, channel, 'magicPatterns'), line);
+	public matchesMagicPattern: (where: ISeeborg, channel: string, line: string) => boolean = (where: ISeeborg, channel: string, line: string) => Config.match(Config.behavior(where, channel, 'magicPatterns'), line);
 
-	public replyRate = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'replyRate');
+	public replyRate: (where: ISeeborg, channel: string) => number = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'replyRate');
 
-	public replyMention = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'replyMention');
+	public replyMention: (where: ISeeborg, channel: string) => number = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'replyMention');
 
-	public replyMagic = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'replyMagic');
+	public replyMagic: (where: ISeeborg, channel: string) => number = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'replyMagic');
 
-	public speaking = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'speaking');
+	public speaking: (where: ISeeborg, channel: string) => boolean = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'speaking');
 
-	public learning = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'learning');
+	public learning: (where: ISeeborg, channel: string) => boolean = (where: ISeeborg, channel: string) => Config.behavior(where, channel, 'learning');
 
 }
