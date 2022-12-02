@@ -1,6 +1,5 @@
 import Bot from "../../../Bot";
 import IRequest from "../../../../interfaces/game/IRequest";
-import logger from "../../../../utility/Logger";
 import IUOTLS from "../../../../interfaces/game/request/IUOTLS";
 import Room from "../../../data/Room";
 
@@ -14,21 +13,6 @@ export default class Internal implements IRequest {
 		const args: Array<any> = data.args
 
 		switch (command) {
-			case 'loginResponse':
-				const status: Boolean = args[2]
-
-				if (status) {
-					bot.network.id = args[3]
-
-					bot.singleton.data.bots.set(bot.network.id, bot)
-
-					bot.network.send('firstJoin')
-
-					setTimeout(() => bot.network.send('retrieveInventory', [bot.network.id]), 1500)
-				} else {
-					logger.error(`login failed to ${bot.user.username}`)
-				}
-				break
 			case 'server':
 				if (!bot.properties.isLoad) {
 					bot.properties.isLoad = true
