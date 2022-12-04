@@ -66,7 +66,7 @@ export default class Main {
 		 * Login
 		 */
 		setInterval(() => {
-			if (this.data.users_queue.size > 0 && this.data.bots.size < 200) {
+			if (this.data.users_queue.size > 0 && this.data.bots.size < 100) {
 				const user: GameUser = this.data.users_queue.values().next().value
 
 				Bot.create(user)
@@ -110,6 +110,21 @@ export default class Main {
 
 			available_handlers = [
 				{
+					max: 85,
+					count: 0,
+					package: 'monster/Monster',
+				},
+				{
+					max: 10,
+					count: 0,
+					package: 'monster/WorldBoss',
+				},
+				{
+					max: 5,
+					count: 0,
+					package: 'PvP',
+				}
+				/*{
 					max: 15,
 					count: 0,
 					package: 'monster/Monster',
@@ -128,7 +143,7 @@ export default class Main {
 					max: 30,
 					count: 0,
 					package: 'market/Market',
-				},
+				},*/
 			]
 		} else {
 			items = [
@@ -139,7 +154,7 @@ export default class Main {
 			];
 
 			available_handlers = [
-				{
+				/*{
 					max: 60,
 					count: 0,
 					package: 'monster/Monster',
@@ -151,6 +166,21 @@ export default class Main {
 				},
 				{
 					max: 10,
+					count: 0,
+					package: 'PvP',
+				}*/
+				{
+					max: 85,
+					count: 0,
+					package: 'monster/Monster',
+				},
+				{
+					max: 10,
+					count: 0,
+					package: 'monster/WorldBoss',
+				},
+				{
+					max: 5,
 					count: 0,
 					package: 'PvP',
 				}
@@ -188,7 +218,6 @@ export default class Main {
 		users.forEach(user => {
 			const handler: { max: number; count: number; package: string } = available_handlers[Helper.randomIntegerInRange(0, available_handlers.length - 1)]
 
-			console.log(handler.package, handler.count > handler.max, handler.count, handler.max)
 			user.handler = handler.count > handler.max ? 'Fill' : handler.package
 
 			user.save()
