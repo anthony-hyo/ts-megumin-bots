@@ -13,8 +13,6 @@ const fs = require('fs')
 
 export default class MainMulti {
 
-	private static _singletons: Map<string, Main> = new Map<string, Main>()
-
 	public static readonly queue_positions: Array<any> = new Array<any>()
 
 	private readonly _request: Request = new Request();
@@ -29,6 +27,12 @@ export default class MainMulti {
 		MainMulti._singletons.set('RedAQ', new Main('RedAQ', 'Gondor', 'redaq.net'))
 
 		MainMulti._singleton = this
+	}
+
+	private static _singletons: Map<string, Main> = new Map<string, Main>()
+
+	public static get singletons(): Map<string, Main> {
+		return this._singletons;
 	}
 
 	private static _singleton: MainMulti;
@@ -61,10 +65,10 @@ export default class MainMulti {
 		return this._database;
 	}
 
-	public static singletons: (server: string) => Main = (server: string) => this._singletons.get(server)!;
+	public static singletonServer: (server: string) => Main = (server: string) => this._singletons.get(server)!;
 
 	public async init(): Promise<void> {
-		MainMulti._singletons.forEach( (main: Main) => main.init())
+		MainMulti._singletons.forEach((main: Main) => main.init())
 
 		this.megumin.init(this.config.token)
 

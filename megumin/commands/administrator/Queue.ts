@@ -15,7 +15,7 @@ export default class Queue extends DefaultCommand {
 	public handler(megumin: Megumin, message: Message, member: GuildMember, guild: DiscordGuild, args: CommandArg): void {
 		let messageFinal: string = ``
 
-		MainMulti.singletons(args.getStr(0).toLowerCase() === 'redhero' ? 'RedHero' : 'RedAQ').data.users_queue.forEach((gameUser: GameUser) => {
+		MainMulti.singletonServer(args.getStr(0).toLowerCase() === 'redhero' ? 'RedHero' : 'RedAQ').data.users_queue.forEach((gameUser: GameUser) => {
 			if (messageFinal.length <= 1700) {
 				messageFinal += `\`${gameUser.server}\` ***${gameUser.username}*** as ***${gameUser.handler}***\n`;
 			}

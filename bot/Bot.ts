@@ -30,7 +30,7 @@ export default class Bot {
 
 		this._user = user
 
-		this.singleton = MainMulti.singletons(this._user.server)
+		this.singleton = MainMulti.singletonServer(this._user.server)
 
 		axios
 			.post(`https://${this.singleton.url}/api/game/login`, {
@@ -138,7 +138,7 @@ export default class Bot {
 	public joinMapRandom() {
 		setTimeout(() => {
 			try {
-				const maps: IMap[] = this.singleton.data.maps.filter(value => value.ReqLevel <= this.data.intLevel)
+				const maps: IMap[] = this.singleton.data.maps.filter(value => value.ReqLevel <= this.data.intLevel && !value.Name.includes(`damagetest`))
 				this.joinMap(maps[Helper.randomIntegerInRange(0, maps.length - 1)].Name)
 			} catch (e) {
 				this.network.disconnect()
