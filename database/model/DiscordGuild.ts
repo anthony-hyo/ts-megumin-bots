@@ -67,47 +67,6 @@ export default class DiscordGuild extends Model {
 	prefix!: string
 
 	@Column({
-		type: DataType.STRING(32),
-		allowNull: false,
-		defaultValue: `us`
-	})
-
-	@Column({
-		type: DataType.STRING(32),
-		allowNull: false,
-		defaultValue: 0
-	})
-	leaveChannelId!: string
-
-	@Column({
-		type: DataType.TEXT,
-		allowNull: false,
-		defaultValue: `{user} left the server`
-	})
-	leaveMessage!: string
-
-	@Column({
-		type: DataType.STRING(32),
-		allowNull: false,
-		defaultValue: 0
-	})
-	joinChannelId!: string
-
-	@Column({
-		type: DataType.TEXT,
-		allowNull: false,
-		defaultValue: `{user}  **joined** - Invited **by** {inviter} ({invite.uses} invites)`
-	})
-	joinMessage!: string
-
-	@Column({
-		type: DataType.BOOLEAN,
-		allowNull: false,
-		defaultValue: false
-	})
-	isKicked!: boolean
-
-	@Column({
 		type: DataType.DATE,
 		allowNull: false,
 		defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
