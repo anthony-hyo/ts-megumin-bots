@@ -5,8 +5,6 @@ import Request from "./bot/network/request/Request";
 import Database from "./database/Database";
 import Megumin from "./megumin/Megumin";
 import SeeborgDiscord from "./seeborg/SeeborgDiscord";
-import GamePosition from "./database/model/GamePosition";
-import logger from "./utility/Logger";
 
 const yaml = require('yaml-js')
 const fs = require('fs')
@@ -23,8 +21,8 @@ export default class MainMulti {
 	private readonly _database: Database = new Database(this)
 
 	constructor() {
-		MainMulti._singletons.set('RedHero', new Main('RedHero', 'Midgard', 'redhero.online'))
-		MainMulti._singletons.set('RedAQ', new Main('RedAQ', 'Gondor', 'redaq.net'))
+		//MainMulti._singletons.set('RedHero', new Main('RedHero', 'Midgard', 'redhero.online'))
+		//MainMulti._singletons.set('RedAQ', new Main('RedAQ', 'Gondor', 'redaq.net'))
 
 		MainMulti._singleton = this
 	}
@@ -72,7 +70,7 @@ export default class MainMulti {
 
 		this.megumin.init(this.config.token)
 
-		setInterval(() => {
+		/*setInterval(() => {
 			if (MainMulti.queue_positions.length > 0) {
 				const gamePositionData: IteratorYieldResult<any> | IteratorReturnResult<any> = MainMulti.queue_positions.values().next()
 
@@ -82,7 +80,7 @@ export default class MainMulti {
 
 				MainMulti.queue_positions.splice(MainMulti.queue_positions.indexOf(gamePositionData), 1)
 			}
-		}, 3000)
+		}, 3000)*/
 	};
 
 }
