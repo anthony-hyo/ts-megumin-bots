@@ -6,8 +6,6 @@ import * as path from "path";
 import MainMulti from "../../MainMulti";
 import Default from "../handler/Default";
 
-import {encode} from 'js-base64';
-
 export default class Network {
 
 	private readonly socket: net.Socket = new net.Socket()
@@ -38,6 +36,26 @@ export default class Network {
 		this._id = Number(value);
 	}
 
+	public static encrypt(str: String): String {
+		// Initialize the result string
+		let result: String = "";
+
+		// Loop through each character in the string
+		for (let i: number = 0; i < str.length; i++) {
+			// Get the ASCII value of the character
+			let c: number = str.charCodeAt(i);
+
+			// Shift the character by the key value
+			c += 69;
+
+			// Add the shifted character to the result string
+			result += String.fromCharCode(c);
+		}
+
+		// Return the result string
+		return result;
+	}
+
 	public send(command: string, args: Array<any> = []): void {
 		logger.debug(`[Network] (${this.bot.user.server}) [${this.bot.user.username}] send command: ${command} with args: ${args.toString()}`)
 
@@ -63,10 +81,10 @@ export default class Network {
 	}
 
 	public write(iNetworkSend: INetworkSend): void {
-		this.socket.write(`${encode(JSON.stringify(iNetworkSend))}\0`)
+		this.socket.write(`${Network.encrypt(JSON.stringify(iNetworkSend))}\0`)
 	}
 
-	public disconnect():void {
+	public disconnect(): void {
 		this.socket.end()
 	}
 

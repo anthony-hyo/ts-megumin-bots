@@ -1,18 +1,8 @@
-import {BelongsTo, Column, DataType, Model, Sequelize, Table} from 'sequelize-typescript'
+import {BelongsTo, Column, DataType, Model, PrimaryKey, Sequelize, Table} from 'sequelize-typescript'
 import DiscordUser from "./DiscordUser"
 
 @Table({
-	tableName: 'discord_guilds',
-	indexes: [
-		{
-			name: "PRIMARY",
-			unique: true,
-			using: "BTREE",
-			fields: [
-				{name: "guildId"},
-			]
-		}
-	]
+	tableName: 'discord_guilds'
 })
 export default class DiscordGuild extends Model {
 
@@ -25,10 +15,10 @@ export default class DiscordGuild extends Model {
 	})
 	owner!: DiscordUser;
 
+	@PrimaryKey
 	@Column({
-		unique: true,
 		type: DataType.STRING(32),
-		allowNull: false
+		allowNull: false,
 	})
 	guildId!: string
 
