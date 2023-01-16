@@ -1,4 +1,4 @@
-import {IItem} from "../game/IItem";
+import {IItem} from "../IItem";
 
 export interface ISellMarketItem {
 	cmd: string
