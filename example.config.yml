@@ -1,0 +1,23 @@
+database:
+    user: "root"
+    password: "321"
+    dbname: "rem"
+seeborg:
+    autoSavePeriod: 200
+    behavior:
+        speaking: true
+        learning: true
+        replyRate: 1.0
+        replyMention: 1.0
+        replyMagic: 5.0
+        blacklistedPatterns: []
+        ignoredUsers:
+            - 'Market'
+        magicPatterns:
+            - 'fofa'
+            - 'redhero'
+            - 'redaq'
+            - 'help'
+            - 'sell'
+            - 'buy'
+    channelOverrides: []
