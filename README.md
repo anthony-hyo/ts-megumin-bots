@@ -5,13 +5,12 @@
 
 TypeScript bot manager designed to demonstrate automation and management of game-like systems in a simulated server environment. It includes a Seeborg and a Discord bot integrated with Seeborg, providing features for player interaction, room management, event handling, and inventory tracking.
 
-## 🤝 Contributing
+## Contributing
 
-Contributions, issues, and feature requests are welcome!
-Feel free to fork the repo and submit pull requests.
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page and submit pull requests.
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License.
